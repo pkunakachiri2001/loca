@@ -1,0 +1,556 @@
+// ============================================================
+// FleetNest — Prisma Schema
+// A complete, scalable PostgreSQL schema for the transportation
+// services marketplace platform.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────────────────────
+// ENUMS
+// ──────────────────────────────────────────────────────────────
+
+enum UserRole {
+  CUSTOMER
+  COMPANY_OWNER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum CompanyStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum ListingStatus {
+  DRAFT
+  PENDING_APPROVAL
+  ACTIVE
+  INACTIVE
+  REJECTED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  STRIPE
+  MOCK
+  CASH
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  BOOKING_COMPLETED
+  BOOKING_REMINDER
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  REVIEW_RECEIVED
+  COMPANY_VERIFIED
+  LISTING_APPROVED
+  LISTING_REJECTED
+  PROMO_CODE
+  SYSTEM
+}
+
+enum ServiceCategory {
+  CAR_RENTAL
+  BUS_RENTAL
+  DRIVER
+  MECHANIC
+  CAR_WASH
+  VEHICLE_DEALER
+  COURIER
+  EMERGENCY_ROADSIDE
+}
+
+enum FuelType {
+  PETROL
+  DIESEL
+  ELECTRIC
+  HYBRID
+  CNG
+  LPG
+}
+
+enum TransmissionType {
+  MANUAL
+  AUTOMATIC
+  SEMI_AUTOMATIC
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+// ──────────────────────────────────────────────────────────────
+// USER
+// ──────────────────────────────────────────────────────────────
+
+model User {
+  id                String     @id @default(cuid())
+  email             String     @unique
+  password          String?    // null for Google OAuth users
+  firstName         String
+  lastName          String
+  phone             String?
+  avatar            String?    // URL to profile picture
+  role              UserRole   @default(CUSTOMER)
+  status            UserStatus @default(ACTIVE)
+  isEmailVerified   Boolean    @default(false)
+  emailVerifyToken  String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  googleId          String?    @unique
+  refreshToken      String?
+  loyaltyPoints     Int        @default(0)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  // Relations
+  company           Company?
+  bookings          Booking[]
+  reviews           Review[]
+  wishlistItems     WishlistItem[]
+  notifications     Notification[]
+  loyaltyTransactions LoyaltyTransaction[]
+  payments          Payment[]
+
+  @@map("users")
+}
+
+// ──────────────────────────────────────────────────────────────
+// COMPANY
+// ──────────────────────────────────────────────────────────────
+
+model Company {
+  id              String        @id @default(cuid())
+  ownerId         String        @unique
+  owner           User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name            String
+  slug            String        @unique
+  description     String        @db.Text
+  logo            String?       // Cloudinary URL
+  coverImage      String?
+  email           String
+  phone           String
+  whatsappNumber  String?
+  address         String
+  city            String
+  state           String
+  country         String        @default("NG")
+  postalCode      String?
+  latitude        Float?
+  longitude       Float?
+  website         String?
+  businessRegNo   String?
+  taxId           String?
+  status          CompanyStatus @default(PENDING)
+  verifiedAt      DateTime?
+  verifiedBy      String?       // Admin user ID
+  rejectionReason String?       @db.Text
+  rating          Float         @default(0)
+  totalReviews    Int           @default(0)
+  totalBookings   Int           @default(0)
+  totalRevenue    Float         @default(0)
+  categories      ServiceCategory[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  listings        Listing[]
+  bookings        Booking[]
+  reviews         Review[]
+
+  @@map("companies")
+}
+
+// ──────────────────────────────────────────────────────────────
+// LISTING (Vehicle / Service)
+// ──────────────────────────────────────────────────────────────
+
+model Listing {
+  id               String          @id @default(cuid())
+  companyId        String
+  company          Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title            String
+  slug             String          @unique
+  description      String          @db.Text
+  category         ServiceCategory
+  status           ListingStatus   @default(PENDING_APPROVAL)
+  approvedAt       DateTime?
+  approvedBy       String?
+
+  // Vehicle-specific fields (nullable for non-vehicle services)
+  make             String?         // e.g., Toyota
+  model            String?         // e.g., Camry
+  year             Int?
+  color            String?
+  licensePlate     String?
+  seatingCapacity  Int?
+  luggageCapacity  Int?
+  fuelType         FuelType?
+  transmission     TransmissionType?
+  mileage          Int?            // km driven
+  engineSize       String?         // e.g., 2.0L
+
+  // Pricing
+  pricePerDay      Float
+  pricePerHour     Float?
+  pricePerKm       Float?
+  minimumDays      Int             @default(1)
+  deposit          Float           @default(0)
+  currency         String          @default("NGN")
+
+  // Location
+  city             String
+  state            String
+  country          String          @default("NG")
+  latitude         Float?
+  longitude        Float?
+  pickupAddress    String?
+  deliveryAvailable Boolean        @default(false)
+
+  // Features & Tags
+  features         String[]        // ["AC", "GPS", "Bluetooth", ...]
+  tags             String[]        // for search
+  amenities        String[]        // for buses: WiFi, TV, etc.
+
+  // Stats
+  rating           Float           @default(0)
+  totalReviews     Int             @default(0)
+  totalBookings    Int             @default(0)
+  viewCount        Int             @default(0)
+
+  // Media
+  images           ListingImage[]
+
+  // Availability
+  availabilities   Availability[]
+
+  // Relations
+  bookings         Booking[]
+  reviews          Review[]
+  wishlistItems    WishlistItem[]
+
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@map("listings")
+}
+
+// ──────────────────────────────────────────────────────────────
+// LISTING IMAGE
+// ──────────────────────────────────────────────────────────────
+
+model ListingImage {
+  id         String   @id @default(cuid())
+  listingId  String
+  listing    Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  url        String
+  publicId   String?  // Cloudinary public ID
+  alt        String?
+  isPrimary  Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  @@map("listing_images")
+}
+
+// ──────────────────────────────────────────────────────────────
+// AVAILABILITY (Calendar Blocking)
+// ──────────────────────────────────────────────────────────────
+
+model Availability {
+  id        String   @id @default(cuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  isBlocked Boolean  @default(false)
+  reason    String?  // "booked", "maintenance", "holiday"
+  bookingId String?  // reference if blocked by booking
+  createdAt DateTime @default(now())
+
+  @@unique([listingId, date])
+  @@map("availabilities")
+}
+
+// ──────────────────────────────────────────────────────────────
+// BOOKING
+// ──────────────────────────────────────────────────────────────
+
+model Booking {
+  id              String        @id @default(cuid())
+  bookingRef      String        @unique @default(cuid()) // human-readable ref
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  listingId       String
+  listing         Listing       @relation(fields: [listingId], references: [id])
+  companyId       String
+  company         Company       @relation(fields: [companyId], references: [id])
+  status          BookingStatus @default(PENDING)
+
+  // Dates
+  startDate       DateTime
+  endDate         DateTime
+  startTime       String?       // "09:00" for hourly bookings
+  endTime         String?
+  durationDays    Int
+  durationHours   Int?
+
+  // Pricing
+  baseAmount      Float
+  discountAmount  Float         @default(0)
+  couponCode      String?
+  taxAmount       Float         @default(0)
+  totalAmount     Float
+  currency        String        @default("NGN")
+  deposit         Float         @default(0)
+
+  // Pickup/Delivery
+  pickupLocation  String?
+  dropoffLocation String?
+  pickupLat       Float?
+  pickupLng       Float?
+  dropoffLat      Float?
+  dropoffLng      Float?
+  deliveryRequested Boolean     @default(false)
+
+  // Additional info
+  specialRequests String?       @db.Text
+  guestCount      Int?
+  driverRequested Boolean       @default(false)
+
+  // Status tracking
+  confirmedAt     DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  cancellationReason String?    @db.Text
+  rejectionReason String?       @db.Text
+
+  // Promo/Coupon
+  coupon          Coupon?       @relation(fields: [couponCode], references: [code])
+
+  // Relations
+  payment         Payment?
+  review          Review?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("bookings")
+}
+
+// ──────────────────────────────────────────────────────────────
+// PAYMENT
+// ──────────────────────────────────────────────────────────────
+
+model Payment {
+  id              String        @id @default(cuid())
+  bookingId       String        @unique
+  booking         Booking       @relation(fields: [bookingId], references: [id])
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  amount          Float
+  currency        String        @default("NGN")
+  method          PaymentMethod @default(MOCK)
+  status          PaymentStatus @default(PENDING)
+
+  // Stripe fields
+  stripePaymentIntentId String?
+  stripeClientSecret    String?
+  stripeChargeId        String?
+
+  // Receipt
+  receiptUrl      String?
+  transactionRef  String?       @unique @default(cuid())
+
+  // Refund
+  refundedAmount  Float?
+  refundedAt      DateTime?
+  refundReason    String?
+
+  paidAt          DateTime?
+  failedAt        DateTime?
+  failureMessage  String?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("payments")
+}
+
+// ──────────────────────────────────────────────────────────────
+// REVIEW
+// ──────────────────────────────────────────────────────────────
+
+model Review {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  listingId   String
+  listing     Listing  @relation(fields: [listingId], references: [id])
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  bookingId   String   @unique
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+  rating      Int      // 1-5
+  comment     String   @db.Text
+  response    String?  @db.Text // Company reply
+  respondedAt DateTime?
+  isVerified  Boolean  @default(true) // only verified bookings can review
+  isHidden    Boolean  @default(false) // admin can hide reviews
+  helpfulCount Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("reviews")
+}
+
+// ──────────────────────────────────────────────────────────────
+// WISHLIST
+// ──────────────────────────────────────────────────────────────
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, listingId])
+  @@map("wishlist_items")
+}
+
+// ──────────────────────────────────────────────────────────────
+// NOTIFICATION
+// ──────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String           @db.Text
+  link      String?          // deep link URL
+  isRead    Boolean          @default(false)
+  metadata  Json?            // extra data (bookingId, listingId, etc.)
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+// ──────────────────────────────────────────────────────────────
+// COUPON / PROMO CODE
+// ──────────────────────────────────────────────────────────────
+
+model Coupon {
+  id              String      @id @default(cuid())
+  code            String      @unique
+  description     String
+  type            CouponType
+  value           Float       // percentage or fixed amount
+  minBookingAmount Float?
+  maxDiscount     Float?      // cap for percentage discounts
+  usageLimit      Int?        // null = unlimited
+  usageCount      Int         @default(0)
+  userLimit       Int?        // uses per user
+  isActive        Boolean     @default(true)
+  startsAt        DateTime?
+  expiresAt       DateTime?
+  applicableCategories ServiceCategory[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  bookings        Booking[]
+
+  @@map("coupons")
+}
+
+// ──────────────────────────────────────────────────────────────
+// LOYALTY TRANSACTION
+// ──────────────────────────────────────────────────────────────
+
+model LoyaltyTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  points      Int      // positive = earned, negative = redeemed
+  description String
+  bookingId   String?
+  createdAt   DateTime @default(now())
+
+  @@map("loyalty_transactions")
+}
+
+// ──────────────────────────────────────────────────────────────
+// CATEGORY (for admin management)
+// ──────────────────────────────────────────────────────────────
+
+model Category {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String?
+  icon        String?         // icon name or SVG
+  image       String?
+  category    ServiceCategory @unique
+  isActive    Boolean         @default(true)
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("categories")
+}
+
+// ──────────────────────────────────────────────────────────────
+// CONTACT MESSAGE
+// ──────────────────────────────────────────────────────────────
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  repliedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}

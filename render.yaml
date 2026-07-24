@@ -1,0 +1,33 @@
+# Render Blueprint for FleetNest (KUNAKA TECH)
+services:
+  # Express API Backend Service
+  - type: web
+    name: fleetnest-api
+    env: node
+    buildCommand: npm install && npx prisma generate --schema=prisma/schema.prisma && npm run build:api
+    startCommand: npm run start:api
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_erIZiMFDa08L@ep-dark-waterfall-a79yj0wz.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&connect_timeout=30&pool_timeout=30&connection_limit=20
+      - key: JWT_ACCESS_SECRET
+        value: fleetnest-access-secret-key-development-2026
+      - key: JWT_REFRESH_SECRET
+        value: fleetnest-refresh-secret-key-development-2026
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: STRIPE_MOCK_MODE
+        value: "true"
+
+  # Next.js Web Frontend Service
+  - type: web
+    name: fleetnest-web
+    env: node
+    buildCommand: npm install && npm run build:web
+    startCommand: npm run start:web
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_APP_NAME
+        value: FleetNest
