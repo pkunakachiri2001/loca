@@ -10,11 +10,11 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        value: postgresql://neondb_owner:npg_erIZiMFDa08L@ep-dark-waterfall-a79yj0wz.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&connect_timeout=30&pool_timeout=30&connection_limit=20
+        sync: false # Set securely in Render dashboard environment settings
       - key: JWT_ACCESS_SECRET
-        value: fleetnest-access-secret-key-development-2026
+        generateValue: true
       - key: JWT_REFRESH_SECRET
-        value: fleetnest-refresh-secret-key-development-2026
+        generateValue: true
       - key: CORS_ORIGIN
         value: "*"
       - key: STRIPE_MOCK_MODE
