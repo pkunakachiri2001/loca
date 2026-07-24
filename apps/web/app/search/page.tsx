@@ -1,7 +1,7 @@
 'use client';
 
+import { Suspense, useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
@@ -12,7 +12,7 @@ import {
   ChevronDown, X, Loader2, ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
-import { formatCurrency, getCategoryLabel, debounce } from '@/lib/utils';
+import { formatCurrency, getCategoryLabel } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 const categories = [
@@ -35,7 +35,7 @@ const sortOptions = [
   { value: 'popular', label: 'Most Popular' },
 ];
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -45,275 +45,282 @@ export default function SearchPage() {
     city: searchParams.get('city') || '',
     minPrice: searchParams.get('minPrice') || '',
     maxPrice: searchParams.get('maxPrice') || '',
-    minRating: searchParams.get('minRating') || '',
     sortBy: searchParams.get('sortBy') || 'rating',
-    sortOrder: 'desc',
     page: 1,
   });
 
-  const [searchInput, setSearchInput] = useState(filters.q);
-  const [showFilters, setShowFilters] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const queryString = new URLSearchParams({
-    ...(filters.q ? { q: filters.q } : {}),
-    ...(filters.category ? { category: filters.category } : {}),
-    ...(filters.city ? { city: filters.city } : {}),
-    ...(filters.minPrice ? { minPrice: filters.minPrice } : {}),
-    ...(filters.maxPrice ? { maxPrice: filters.maxPrice } : {}),
-    ...(filters.minRating ? { minRating: filters.minRating } : {}),
-    sortBy: filters.sortBy,
-    sortOrder: filters.sortOrder,
-    page: filters.page.toString(),
-    limit: '12',
-  }).toString();
+  // Sync state with URL params
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      q: searchParams.get('q') || '',
+      category: searchParams.get('category') || '',
+      city: searchParams.get('city') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      sortBy: searchParams.get('sortBy') || 'rating',
+    }));
+  }, [searchParams]);
+
+  const updateURL = (newFilters: typeof filters) => {
+    const params = new URLSearchParams();
+    if (newFilters.q) params.set('q', newFilters.q);
+    if (newFilters.category) params.set('category', newFilters.category);
+    if (newFilters.city) params.set('city', newFilters.city);
+    if (newFilters.minPrice) params.set('minPrice', newFilters.minPrice);
+    if (newFilters.maxPrice) params.set('maxPrice', newFilters.maxPrice);
+    if (newFilters.sortBy) params.set('sortBy', newFilters.sortBy);
+    router.push(`/search?${params.toString()}`);
+  };
 
   const { data, isLoading } = useQuery({
-    queryKey: ['search', queryString],
-    queryFn: () => apiClient.get(`/listings?${queryString}`).then((r) => r.data),
-    staleTime: 30000,
+    queryKey: ['listings', filters],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (filters.q) params.append('q', filters.q);
+      if (filters.category) params.append('category', filters.category);
+      if (filters.city) params.append('city', filters.city);
+      if (filters.minPrice) params.append('minPrice', filters.minPrice);
+      if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
+      params.append('sortBy', filters.sortBy);
+      params.append('page', String(filters.page));
+      params.append('limit', '12');
+
+      const res = await apiClient.get(`/listings?${params.toString()}`);
+      return res.data;
+    },
   });
 
-  const debouncedSearch = useCallback(
-    debounce((value: string) => setFilters((prev) => ({ ...prev, q: value, page: 1 })), 400),
-    []
-  );
-
   const listings = data?.data || [];
-  const pagination = data?.pagination;
+  const pagination = data?.pagination || { total: 0, pages: 1, page: 1 };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ background: '#0E0E10' }}>
       <Navbar />
 
-      <div className="pt-16">
-        {/* Search Header */}
-        <div className="border-b border-white/5 bg-navy-900/80 backdrop-blur-xl">
-          <div className="section-container py-4">
-            <div className="flex flex-col md:flex-row gap-3">
-              {/* Search Input */}
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                <input
-                  type="text"
-                  value={searchInput}
-                  onChange={(e) => { setSearchInput(e.target.value); debouncedSearch(e.target.value); }}
-                  placeholder="Search vehicles, services, or providers..."
-                  className="input-dark pl-10 w-full"
-                />
-              </div>
+      {/* Header */}
+      <div className="pt-28 pb-8" style={{ borderBottom: '1px solid #1E1E22' }}>
+        <div className="section-container">
+          <h1 className="font-display text-3xl font-bold mb-2" style={{ color: '#F5F0E8' }}>
+            Find Your Transport Solution
+          </h1>
+          <p className="text-sm" style={{ color: '#6B6B72' }}>
+            Browse verified rentals, drivers, mechanics & car washes across Nigeria
+          </p>
 
-              {/* City Filter */}
-              <div className="relative md:w-48">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                <input
-                  type="text"
-                  value={filters.city}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, city: e.target.value, page: 1 }))}
-                  placeholder="City"
-                  className="input-dark pl-10 w-full"
-                />
-              </div>
-
-              {/* Category */}
-              <div className="relative md:w-48">
-                <select
-                  value={filters.category}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, category: e.target.value, page: 1 }))}
-                  className="input-dark appearance-none pr-8 w-full"
-                >
-                  {categories.map((cat) => (
-                    <option key={cat.value} value={cat.value} className="bg-navy-900">{cat.label}</option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              </div>
-
-              {/* Filter Toggle */}
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={cn('btn-secondary text-sm shrink-0', showFilters && 'border-blue-500/60 text-blue-300')}
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                Filters
-              </button>
+          {/* Top Search Bar */}
+          <div className="mt-6 flex flex-col md:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search by vehicle, service name..."
+                value={filters.q}
+                onChange={(e) => {
+                  const next = { ...filters, q: e.target.value };
+                  setFilters(next);
+                  updateURL(next);
+                }}
+                className="input-dark pl-10"
+              />
             </div>
-
-            {/* Advanced Filters */}
-            {showFilters && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mt-4 flex flex-wrap gap-4"
-              >
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Min Price (₦/day)</label>
-                  <input
-                    type="number"
-                    value={filters.minPrice}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, minPrice: e.target.value }))}
-                    placeholder="0"
-                    className="input-dark w-32 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Max Price (₦/day)</label>
-                  <input
-                    type="number"
-                    value={filters.maxPrice}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, maxPrice: e.target.value }))}
-                    placeholder="500,000"
-                    className="input-dark w-32 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Min Rating</label>
-                  <select
-                    value={filters.minRating}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, minRating: e.target.value }))}
-                    className="input-dark py-2 text-sm w-28"
-                  >
-                    <option value="">Any</option>
-                    {[4, 4.5, 4.8].map((r) => (
-                      <option key={r} value={r} className="bg-navy-900">{r}★+</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Sort By</label>
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, sortBy: e.target.value }))}
-                    className="input-dark py-2 text-sm w-40"
-                  >
-                    {sortOptions.map((opt) => (
-                      <option key={opt.value} value={opt.value} className="bg-navy-900">{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  onClick={() => setFilters({ q: '', category: '', city: '', minPrice: '', maxPrice: '', minRating: '', sortBy: 'rating', sortOrder: 'desc', page: 1 })}
-                  className="mt-5 text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
-                >
-                  <X className="h-3 w-3" /> Clear all
-                </button>
-              </motion.div>
-            )}
+            <div className="relative md:w-48">
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="City / State"
+                value={filters.city}
+                onChange={(e) => {
+                  const next = { ...filters, city: e.target.value };
+                  setFilters(next);
+                  updateURL(next);
+                }}
+                className="input-dark pl-10"
+              />
+            </div>
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="btn-secondary md:hidden flex items-center justify-center gap-2"
+            >
+              <SlidersHorizontal className="h-4 w-4" /> Filters
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Results */}
-        <div className="section-container py-8">
-          {/* Result count */}
-          <div className="flex items-center justify-between mb-6">
-            <p className="text-slate-400 text-sm">
-              {isLoading ? 'Searching...' : `${pagination?.total ?? 0} results found`}
-              {filters.city && ` in ${filters.city}`}
-            </p>
+      {/* Main Content */}
+      <div className="section-container py-8">
+        <div className="flex gap-8">
+          {/* Desktop Sidebar Filters */}
+          <div className="hidden md:block w-64 shrink-0 space-y-6">
+            <div className="card p-5 space-y-6">
+              <div>
+                <h3 className="font-display text-sm font-semibold mb-3 text-white">Categories</h3>
+                <div className="space-y-1.5">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.value}
+                      onClick={() => {
+                        const next = { ...filters, category: cat.value };
+                        setFilters(next);
+                        updateURL(next);
+                      }}
+                      className={cn(
+                        'w-full text-left px-3 py-2 rounded-lg text-sm transition-all',
+                        filters.category === cat.value
+                          ? 'bg-amber-500/20 text-amber-400 font-semibold border border-amber-500/30'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      )}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-display text-sm font-semibold mb-3 text-white">Sort By</h3>
+                <select
+                  value={filters.sortBy}
+                  onChange={(e) => {
+                    const next = { ...filters, sortBy: e.target.value };
+                    setFilters(next);
+                    updateURL(next);
+                  }}
+                  className="input-dark text-sm w-full cursor-pointer"
+                >
+                  {sortOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value} className="bg-neutral-900 text-white">
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Clear filters */}
+              {(filters.q || filters.category || filters.city) && (
+                <button
+                  onClick={() => {
+                    const reset = { q: '', category: '', city: '', minPrice: '', maxPrice: '', sortBy: 'rating', page: 1 };
+                    setFilters(reset);
+                    updateURL(reset);
+                  }}
+                  className="w-full text-xs text-amber-400 hover:underline pt-2 text-center block"
+                >
+                  Clear All Filters
+                </button>
+              )}
+            </div>
           </div>
 
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-24">
-              <Loader2 className="h-10 w-10 text-blue-400 animate-spin mb-4" />
-              <p className="text-slate-400">Finding the best options for you...</p>
+          {/* Results Grid */}
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm text-slate-400">
+                {isLoading ? (
+                  'Searching...'
+                ) : (
+                  <>Showing <span className="text-white font-semibold">{listings.length}</span> results</>
+                )}
+              </p>
             </div>
-          ) : listings.length === 0 ? (
-            <div className="text-center py-24">
-              <Car className="h-16 w-16 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">No listings found</h3>
-              <p className="text-slate-400 mb-6">Try adjusting your search or clearing filters.</p>
-              <button onClick={() => setFilters((prev) => ({ ...prev, q: '', category: '', city: '' }))}
-                className="btn-primary text-sm">
-                Clear Filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {listings.map((listing: any, i: number) => (
-                <motion.div
-                  key={listing.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                >
-                  <Link href={`/listing/${listing.slug || listing.id}`}>
-                    <div className="vehicle-card group h-full">
+
+            {isLoading ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="card p-4 animate-pulse space-y-4">
+                    <div className="h-48 rounded-xl bg-white/5" />
+                    <div className="h-4 bg-white/10 rounded w-3/4" />
+                    <div className="h-4 bg-white/5 rounded w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : listings.length === 0 ? (
+              <div className="card p-12 text-center space-y-4">
+                <Car className="h-12 w-12 text-slate-500 mx-auto" />
+                <h3 className="text-lg font-semibold text-white">No listings found</h3>
+                <p className="text-sm text-slate-400 max-w-sm mx-auto">
+                  Try adjusting your search query, location or filter options.
+                </p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {listings.map((item: any) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="card-hover overflow-hidden rounded-2xl border border-white/10 flex flex-col justify-between"
+                  >
+                    <div>
                       {/* Image */}
-                      <div className="relative h-48 overflow-hidden rounded-t-2xl">
+                      <div className="relative h-48 overflow-hidden bg-neutral-900">
                         <img
-                          src={listing.primaryImage || listing.images?.[0]?.url || 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&h=300&fit=crop'}
-                          alt={listing.title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          src={item.images?.[0] || 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&h=400&fit=crop'}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                        <div className="absolute top-3 left-3">
-                          <span className="badge-info text-[10px]">{getCategoryLabel(listing.category)}</span>
-                        </div>
-                        <button
-                          onClick={(e) => e.preventDefault()}
-                          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white hover:text-red-400 transition-colors"
-                        >
-                          <Heart className={cn('h-4 w-4', listing.isWishlisted && 'fill-red-500 text-red-500')} />
-                        </button>
-                        <div className="absolute bottom-3 left-3">
-                          <span className="rounded-lg bg-black/60 px-2 py-1 text-xs font-bold text-white">
-                            {formatCurrency(listing.pricePerDay)}/day
-                          </span>
-                        </div>
+                        <span className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-medium text-amber-300 border border-amber-500/20">
+                          {getCategoryLabel(item.category)}
+                        </span>
                       </div>
 
-                      <div className="p-4">
-                        <p className="text-xs text-slate-500 mb-1">{listing.company?.name}</p>
-                        <h3 className="font-medium text-white text-sm mb-2 line-clamp-2 leading-snug">{listing.title}</h3>
+                      {/* Content */}
+                      <div className="p-5 space-y-3">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1 text-xs text-slate-400">
-                            <MapPin className="h-3 w-3" />{listing.city}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                            <span className="text-xs font-medium text-white">{listing.rating?.toFixed(1)}</span>
-                            <span className="text-xs text-slate-500">({listing.totalReviews})</span>
+                          <h3 className="font-display font-semibold text-white line-clamp-1">{item.title}</h3>
+                          <div className="flex items-center gap-1 text-xs text-amber-400 font-semibold shrink-0">
+                            <Star className="h-3.5 w-3.5 fill-amber-400" />
+                            <span>{item.rating || '4.9'}</span>
                           </div>
                         </div>
-                        {listing.features?.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-1">
-                            {listing.features.slice(0, 3).map((f: string) => (
-                              <span key={f} className="rounded-md bg-white/5 border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-400">{f}</span>
-                            ))}
-                          </div>
-                        )}
+
+                        <p className="text-xs text-slate-400 line-clamp-2">{item.description}</p>
+
+                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                          <MapPin className="h-3.5 w-3.5 text-slate-500" />
+                          <span>{item.city}, {item.state}</span>
+                        </div>
                       </div>
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          )}
 
-          {/* Pagination */}
-          {pagination && pagination.totalPages > 1 && (
-            <div className="mt-10 flex items-center justify-center gap-2">
-              <button
-                disabled={!pagination.hasPrevPage}
-                onClick={() => setFilters((prev) => ({ ...prev, page: prev.page - 1 }))}
-                className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-              >
-                Previous
-              </button>
-              <span className="text-sm text-slate-400">Page {pagination.page} of {pagination.totalPages}</span>
-              <button
-                disabled={!pagination.hasNextPage}
-                onClick={() => setFilters((prev) => ({ ...prev, page: prev.page + 1 }))}
-                className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-              >
-                Next
-              </button>
-            </div>
-          )}
+                    <div className="p-5 pt-0 border-t border-white/5 mt-4 flex items-center justify-between">
+                      <div>
+                        <span className="text-xs text-slate-400">Starting from</span>
+                        <p className="text-base font-bold text-amber-400">
+                          {formatCurrency(item.price)} <span className="text-xs font-normal text-slate-400">/{item.priceUnit || 'day'}</span>
+                        </p>
+                      </div>
+                      <Link
+                        href={`/listing/${item.slug || item.id}`}
+                        className="btn-primary py-2 px-4 text-xs"
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       <Footer />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center text-white" style={{ background: '#0E0E10' }}>
+        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }
