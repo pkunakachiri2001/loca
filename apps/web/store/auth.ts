@@ -14,6 +14,8 @@ export interface AuthUser {
   lastName: string;
   role: 'CUSTOMER' | 'COMPANY_OWNER' | 'ADMIN';
   avatar?: string;
+  phone?: string;
+  phoneNumber?: string;
   isEmailVerified: boolean;
   loyaltyPoints: number;
   company?: {

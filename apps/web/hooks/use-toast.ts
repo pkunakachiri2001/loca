@@ -10,6 +10,7 @@ interface ToastOptions {
   description?: string;
   variant?: 'default' | 'destructive';
   duration?: number;
+  action?: React.ReactNode;
 }
 
 // Global toast state (simplified implementation)
