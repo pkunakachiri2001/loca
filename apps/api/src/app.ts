@@ -108,12 +108,16 @@ app.use(morgan('combined', {
 // ──────────────────────────────────────────────
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
+// ──────────────────────────────────────────────
+// HEALTH CHECK
+// ──────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'FleetNest API Server is online',
-    health: '/api/health',
+    message: 'FleetNest API is running',
     version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
   });
 });
 

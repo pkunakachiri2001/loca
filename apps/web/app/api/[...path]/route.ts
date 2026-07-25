@@ -13,7 +13,7 @@ function getBackendBase(): string {
   const url =
     process.env.BACKEND_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    'https://project-nxl93.vercel.app/api';
+    'https://loca-api.vercel.app/api';
   return url.replace(/\/api\/?$/, '');
 }
 
