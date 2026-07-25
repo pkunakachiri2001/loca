@@ -33,29 +33,34 @@ import contactRoutes from './routes/contact';
 export const app = express();
 
 // ──────────────────────────────────────────────
-// SECURITY MIDDLEWARE
+// CORS — MUST be first, before Helmet or any other middleware
+// Helmet can override/strip CORS headers if it runs first.
 // ──────────────────────────────────────────────
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-}));
-
-// Robust CORS middleware supporting credentials and dynamic origins across Vercel
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
+  // Always reflect the requesting origin so credentials work
+  res.setHeader('Access-Control-Allow-Origin', origin || 'https://loca-webpkuna.vercel.app');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, X-CSRF-Token, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version');
+  res.setHeader('Vary', 'Origin');
 
+  // Respond to preflight immediately — do NOT pass to Helmet or routes
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.status(204).end();
+    return;
   }
   next();
 });
+
+// ──────────────────────────────────────────────
+// SECURITY MIDDLEWARE (after CORS)
+// ──────────────────────────────────────────────
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: false,
+}));
 
 // ──────────────────────────────────────────────
 // RATE LIMITING
