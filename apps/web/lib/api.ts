@@ -5,8 +5,16 @@
 
 import axios from 'axios';
 
+// In the browser, always call /api (same origin) so Next.js rewrites proxy it
+// to the Express backend — completely avoiding CORS restrictions.
+// On the server side (SSR), use the full absolute API URL directly.
+const isBrowser = typeof window !== 'undefined';
+const baseURL = isBrowser
+  ? '/api'
+  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
+
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
+  baseURL,
   withCredentials: true, // Send cookies for refresh token
   headers: {
     'Content-Type': 'application/json',
