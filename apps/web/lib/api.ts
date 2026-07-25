@@ -8,10 +8,8 @@ import axios from 'axios';
 // In the browser, always call /api (same origin) so Next.js rewrites proxy it
 // to the Express backend — completely avoiding CORS restrictions.
 // On the server side (SSR), use the full absolute API URL directly.
-const isBrowser = typeof window !== 'undefined';
-const baseURL = isBrowser
-  ? '/api'
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
+const baseURL =
+  process.env.NEXT_PUBLIC_API_URL || 'https://loca-api.vercel.app/api';
 
 export const apiClient = axios.create({
   baseURL,

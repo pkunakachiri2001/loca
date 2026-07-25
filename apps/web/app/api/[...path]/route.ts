@@ -13,7 +13,7 @@ function getBackendBase(): string {
   const url =
     process.env.BACKEND_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    'https://loca-api-git-main-pkunakachiri2001s-projects.vercel.app/api';
+    'https://loca-api.vercel.app/api';
   return url.replace(/\/api\/?$/, '');
 }
 
@@ -25,10 +25,10 @@ async function handler(req: NextRequest, { params }: { params: Params }) {
   const search = req.nextUrl.search ?? '';
   const targetUrl = `${backendBase}/api/${path}${search}`;
 
-  // Forward headers, drop hop-by-hop headers
+  // Forward headers, drop hop-by-hop headers and content-length
   const forwardHeaders: Record<string, string> = {};
   req.headers.forEach((value, key) => {
-    if (!['host', 'connection', 'transfer-encoding', 'keep-alive'].includes(key.toLowerCase())) {
+    if (!['host', 'connection', 'transfer-encoding', 'keep-alive', 'content-length'].includes(key.toLowerCase())) {
       forwardHeaders[key] = value;
     }
   });
