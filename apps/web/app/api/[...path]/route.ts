@@ -10,11 +10,11 @@ import { NextRequest, NextResponse } from 'next/server';
 // Falls back to the hardcoded Vercel backend URL so it always works even
 // if the env var is missing.
 function getBackendBase(): string {
-  const url =
-    process.env.BACKEND_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    'https://loca-api.vercel.app/api';
-  return url.replace(/\/api\/?$/, '');
+  const url = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '';
+  const activeUrl = (!url || url.includes('project-nxl93'))
+    ? 'https://loca-api.vercel.app/api'
+    : url;
+  return activeUrl.replace(/\/api\/?$/, '');
 }
 
 type Params = { path: string[] };
