@@ -12,7 +12,7 @@
     "dev:api": "npm run dev --workspace=apps/api",
     "dev:web": "npm run dev --workspace=apps/web",
     "build": "npm run build --workspaces",
-    "postinstall": "DATABASE_URL=\"${DATABASE_URL:-postgresql://placeholder:placeholder@localhost:5432/placeholder}\" prisma generate --schema=prisma/schema.prisma",
+    "postinstall": "DATABASE_URL=\"${DATABASE_URL:-postgresql://placeholder:placeholder@localhost:5432/placeholder}\" npx prisma generate --schema=prisma/schema.prisma",
     "build:api": "npm run build --workspace=apps/api",
     "build:web": "npm run build --workspace=apps/web",
     "start": "concurrently \"npm run start:api\" \"npm run start:web\"",
