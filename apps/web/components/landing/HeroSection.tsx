@@ -15,10 +15,10 @@ const CATEGORY_TABS = [
 ];
 
 const POPULAR = [
-  { label: 'Toyota Camry Lagos', q: 'Toyota Camry', city: 'Lagos' },
-  { label: 'Bus charter Abuja', q: 'Bus charter', city: 'Abuja' },
-  { label: 'Mechanic Port Harcourt', q: 'Mechanic', city: 'Port Harcourt' },
-  { label: 'Car wash Ikeja', q: 'Car wash', city: 'Ikeja' },
+  { label: '4x4 Safari Harare', q: 'Land Cruiser', city: 'Harare' },
+  { label: 'Bus charter Victoria Falls', q: 'Bus charter', city: 'Victoria Falls' },
+  { label: 'Toyota Camry Bulawayo', q: 'Toyota Camry', city: 'Bulawayo' },
+  { label: 'Mechanic Mutare', q: 'Mechanic', city: 'Mutare' },
 ];
 
 export function HeroSection() {
@@ -153,7 +153,7 @@ export function HeroSection() {
                   <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#E8A547' }} />
                   <input
                     type="text"
-                    placeholder="City or location (e.g. Lagos)"
+                    placeholder="City or location (e.g. Harare)"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="w-full rounded-xl pl-11 pr-4 py-4 text-sm focus:outline-none transition-all"

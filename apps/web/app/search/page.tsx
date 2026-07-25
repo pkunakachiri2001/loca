@@ -107,7 +107,7 @@ function SearchContent() {
             Find Your Transport Solution
           </h1>
           <p className="text-sm" style={{ color: '#6B6B72' }}>
-            Browse verified rentals, drivers, mechanics & car washes across Nigeria
+            Browse verified rentals, drivers, mechanics & car washes across Zimbabwe (USD)
           </p>
 
           {/* Top Search Bar */}

@@ -13,6 +13,7 @@ import { cn, getInitials } from '@/lib/utils';
 
 const navLinks = [
   { label: 'Find Services', href: '/search' },
+  { label: 'Live GPS Tracking', href: '/tracking' },
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'For Companies', href: '/company/register' },
   { label: 'About', href: '/about' },

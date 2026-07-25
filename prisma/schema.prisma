@@ -169,7 +169,7 @@ model Company {
   address         String
   city            String
   state           String
-  country         String        @default("NG")
+  country         String        @default("ZW")
   postalCode      String?
   latitude        Float?
   longitude       Float?
@@ -231,12 +231,12 @@ model Listing {
   pricePerKm       Float?
   minimumDays      Int             @default(1)
   deposit          Float           @default(0)
-  currency         String          @default("NGN")
+  currency         String          @default("USD")
 
   // Location
   city             String
   state            String
-  country          String          @default("NG")
+  country          String          @default("ZW")
   latitude         Float?
   longitude        Float?
   pickupAddress    String?
@@ -335,7 +335,7 @@ model Booking {
   couponCode      String?
   taxAmount       Float         @default(0)
   totalAmount     Float
-  currency        String        @default("NGN")
+  currency        String        @default("USD")
   deposit         Float         @default(0)
 
   // Pickup/Delivery
@@ -384,7 +384,7 @@ model Payment {
   userId          String
   user            User          @relation(fields: [userId], references: [id])
   amount          Float
-  currency        String        @default("NGN")
+  currency        String        @default("USD")
   method          PaymentMethod @default(MOCK)
   status          PaymentStatus @default(PENDING)
 
