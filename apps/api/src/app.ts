@@ -44,16 +44,10 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
   .map((o) => o.trim());
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
-      return callback(null, origin);
-    }
-    return callback(new Error('CORS policy violation'));
-  },
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-CSRF-Token'],
   optionsSuccessStatus: 200,
 }));
 
