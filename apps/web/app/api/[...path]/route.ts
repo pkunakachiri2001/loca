@@ -4,33 +4,36 @@ import { NextRequest, NextResponse } from 'next/server';
  * Catch-all API proxy route.
  * Forwards all /api/* requests to the Express backend server-side,
  * completely eliminating browser CORS restrictions.
- *
- * Backend URL is read at request time (not build time), so env vars
- * always resolve correctly on Vercel.
  */
 
-const BACKEND_BASE =
-  (process.env.NEXT_PUBLIC_API_URL || 'https://project-nxl93.vercel.app/api')
-    .replace(/\/api\/?$/, ''); // ensure no trailing /api
+// NOTE: Use BACKEND_URL (server-only) not NEXT_PUBLIC_API_URL (baked at build time).
+// Falls back to the hardcoded Vercel backend URL so it always works even
+// if the env var is missing.
+function getBackendBase(): string {
+  const url =
+    process.env.BACKEND_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    'https://project-nxl93.vercel.app/api';
+  return url.replace(/\/api\/?$/, '');
+}
 
-async function handler(
-  req: NextRequest,
-  { params }: { params: { path: string[] } }
-) {
-  const path = params.path?.join('/') ?? '';
+type Params = { path: string[] };
+
+async function handler(req: NextRequest, { params }: { params: Params }) {
+  const backendBase = getBackendBase();
+  const path = (params.path ?? []).join('/');
   const search = req.nextUrl.search ?? '';
-  const targetUrl = `${BACKEND_BASE}/api/${path}${search}`;
+  const targetUrl = `${backendBase}/api/${path}${search}`;
 
-  // Forward relevant headers, strip host so the backend gets its own host
-  const forwardHeaders = new Headers();
+  // Forward headers, drop hop-by-hop headers
+  const forwardHeaders: Record<string, string> = {};
   req.headers.forEach((value, key) => {
-    if (!['host', 'connection'].includes(key.toLowerCase())) {
-      forwardHeaders.set(key, value);
+    if (!['host', 'connection', 'transfer-encoding', 'keep-alive'].includes(key.toLowerCase())) {
+      forwardHeaders[key] = value;
     }
   });
 
-  // Read body for non-GET/HEAD requests
-  let body: BodyInit | undefined;
+  let body: string | ArrayBuffer | undefined;
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     body = await req.arrayBuffer();
   }
@@ -40,24 +43,26 @@ async function handler(
       method: req.method,
       headers: forwardHeaders,
       body: body ?? undefined,
-      // @ts-ignore — Node 18+ fetch supports this
-      duplex: 'half',
     });
 
-    // Forward backend response back to the browser
-    const resHeaders = new Headers(backendRes.headers);
-    // Remove transfer-encoding — Next.js handles this itself
-    resHeaders.delete('transfer-encoding');
+    const resHeaders = new Headers();
+    backendRes.headers.forEach((value, key) => {
+      if (!['transfer-encoding', 'connection'].includes(key.toLowerCase())) {
+        resHeaders.set(key, value);
+      }
+    });
 
-    return new NextResponse(backendRes.body, {
+    const resBody = await backendRes.arrayBuffer();
+
+    return new NextResponse(resBody, {
       status: backendRes.status,
       statusText: backendRes.statusText,
       headers: resHeaders,
     });
   } catch (err) {
-    console.error('[API Proxy] Error forwarding request to backend:', err);
+    console.error('[API Proxy] fetch error:', targetUrl, err);
     return NextResponse.json(
-      { success: false, message: 'Backend unreachable' },
+      { success: false, message: 'Backend unreachable', target: targetUrl },
       { status: 502 }
     );
   }
