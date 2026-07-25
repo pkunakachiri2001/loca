@@ -13,7 +13,7 @@ function getBackendBase(): string {
   const url =
     process.env.BACKEND_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    'https://loca-api.vercel.app/api';
+    'https://loca-api-git-main-pkunakachiri2001s-projects.vercel.app/api';
   return url.replace(/\/api\/?$/, '');
 }
 
