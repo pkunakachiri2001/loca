@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Search, MapPin, ChevronDown, ArrowRight, Shield, Star, Zap, Car, Bus, User, Wrench, Utensils } from 'lucide-react';
 import { BackgroundVideo } from '@/components/ui/BackgroundVideo';
+import { useAuthStore } from '@/store/auth';
+import Link from 'next/link';
 
 const CATEGORY_TABS = [
   { label: 'Car Rental', value: 'CAR_RENTAL', icon: Car },
@@ -23,6 +25,7 @@ const POPULAR = [
 
 export function HeroSection() {
   const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('CAR_RENTAL');
@@ -86,6 +89,23 @@ export function HeroSection() {
           <span style={{ color: '#F5F0E8', fontWeight: 600 }}>500+ verified businesses</span>.
         </motion.p>
 
+        {/* Call to action for unauthenticated users */}
+        {!isAuthenticated && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="flex flex-wrap justify-center gap-4 mb-10"
+          >
+            <Link href="/auth/login" className="btn-secondary px-8 py-3">
+              Sign In
+            </Link>
+            <Link href="/auth/register" className="btn-primary px-8 py-3">
+              Get Started
+            </Link>
+          </motion.div>
+        )}
+
         {/* Trust badges */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -112,8 +132,15 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mx-auto max-w-4xl"
+          className="mx-auto max-w-4xl relative"
         >
+          {!isAuthenticated && (
+            <div 
+              className="absolute inset-0 z-50 cursor-pointer" 
+              onClick={() => router.push('/auth/login')}
+              title="Please sign in to search"
+            />
+          )}
           {/* Category Tabs */}
           <div className="flex flex-wrap justify-center gap-2 mb-3">
             {CATEGORY_TABS.map((tab) => {

@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Car, Bus, User, Wrench, Utensils, Store, Package, TriangleAlert } from 'lucide-react';
+import { useAuthStore } from '@/store/auth';
+import { useRouter } from 'next/navigation';
 
 const categories = [
   {
@@ -64,6 +66,9 @@ const categories = [
 ];
 
 export function CategoriesSection() {
+  const { isAuthenticated } = useAuthStore();
+  const router = useRouter();
+
   return (
     <section id="categories" className="py-24 relative" style={{ borderTop: '1px solid #1E1E22' }}>
       <div className="section-container">
@@ -95,7 +100,16 @@ export function CategoriesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.04 }}
             >
-              <Link href={cat.href} className="block group">
+              <div 
+                className="block group cursor-pointer"
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    router.push('/auth/login');
+                  } else {
+                    router.push(cat.href);
+                  }
+                }}
+              >
                 <div
                   className="card p-6 h-full transition-all duration-300 group-hover:-translate-y-1"
                   style={{
@@ -130,7 +144,7 @@ export function CategoriesSection() {
                     <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </div>
                 </div>
-              </Link>
+              </div>
             </motion.div>
           ))}
         </div>
