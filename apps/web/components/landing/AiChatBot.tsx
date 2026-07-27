@@ -13,7 +13,7 @@ const quickReplies = [
 
 const botResponses: Record<string, string> = {
   'how do i book a car?': 'Booking a car is simple! 1️⃣ Browse vehicles in your city. 2️⃣ Select your pickup/dropoff dates. 3️⃣ Pay securely online. 4️⃣ Receive instant booking confirmation. Need help finding a vehicle?',
-  'what are your prices?': 'Prices are set by verified providers. Car rentals start from ₦25,000/day, buses from ₦65,000/day, and driver hire from ₦15,000/day. Try coupon WELCOME10 for 10% off your first booking!',
+  'what are your prices?': 'Prices are set by verified providers. Car rentals start from $25/day, buses from $65/day, and driver hire from $15/day. Try coupon WELCOME10 for 10% off your first booking!',
   'how do i list my company?': 'Welcome aboard! 🚀 Click "List Your Business" in the top bar. Registration is 100% free with no setup fees. Our team verifies applications within 48 hours.',
   'is payment secure?': '🔒 100% Secure. All payments use bank-grade 256-bit SSL encryption via Paystack & Stripe. Funds are protected until your trip begins.',
 };
@@ -40,7 +40,7 @@ export function AiChatBot() {
       id: '1',
       text: 'Welcome to FleetNest ✨ How can I assist with your transport or business today?',
       sender: 'bot',
-      time: new Date().toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' }),
+      time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
   const [input, setInput] = useState('');
@@ -58,7 +58,7 @@ export function AiChatBot() {
       id: Date.now().toString(),
       text,
       sender: 'user',
-      time: new Date().toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' }),
+      time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -71,7 +71,7 @@ export function AiChatBot() {
         id: (Date.now() + 1).toString(),
         text: responseText,
         sender: 'bot',
-        time: new Date().toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' }),
+        time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, botMsg]);
       setIsTyping(false);

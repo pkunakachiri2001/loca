@@ -167,7 +167,7 @@ export default function ProfilePage() {
                 value={form.phone}
                 onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                 className="input-dark pl-10"
-                placeholder="+234 800 000 0000"
+                placeholder="+263 77 000 0000"
               />
             </div>
           </div>

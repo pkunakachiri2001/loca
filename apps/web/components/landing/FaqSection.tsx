@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     q: 'Does FleetNest offer loyalty rewards?',
-    a: 'Yes! Every completed booking earns you FleetNest Points. 1 point is awarded per ₦100 spent. Points can be redeemed for discounts on future bookings. Refer friends and earn bonus points too.',
+    a: 'Yes! Every completed booking earns you FleetNest Points. 1 point is awarded per $1 spent. Points can be redeemed for discounts on future bookings. Refer friends and earn bonus points too.',
   },
   {
     q: 'Is GPS tracking available for all bookings?',

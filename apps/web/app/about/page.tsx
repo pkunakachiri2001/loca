@@ -23,23 +23,23 @@ const team = [
     phone: '+91 7796787966',
   },
   {
-    name: 'Adewale Okonkwo',
+    name: 'Tafadzwa Moyo',
     role: 'Co-Founder & CEO',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-    bio: 'Former logistics director with 14 years in fleet management.',
+    bio: 'Former logistics director with 14 years in Zimbabwean fleet management.',
   },
   {
-    name: 'Chioma Eze',
+    name: 'Tendai Ndlovu',
     role: 'Co-Founder & CTO',
     image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&h=300&fit=crop&crop=face',
-    bio: 'Software engineer who previously built infrastructure at Paystack.',
+    bio: 'Software engineer who previously built scalable transport infrastructure in Harare.',
   },
 ];
 
 const values = [
   { icon: Shield, title: 'Trust First', desc: 'Every provider is verified, every vehicle inspected. We stake our reputation on each booking.' },
   { icon: Zap, title: 'Speed Matters', desc: 'Book in under 60 seconds. Instant confirmation. Real-time updates, no waiting.' },
-  { icon: Globe, title: 'Local Expertise', desc: 'We are built for African cities — our pricing, logistics, and support reflect local realities.' },
+  { icon: Globe, title: 'Local Expertise', desc: 'We are built for Zimbabwean cities — our pricing, logistics, and support reflect local realities.' },
   { icon: Award, title: 'Quality Standard', desc: 'Only the top 15% of applicants become FleetNest providers. High bar, happy customers.' },
 ];
 
@@ -61,12 +61,12 @@ export default function AboutPage() {
           >
             <span className="section-badge mb-6">Our Story</span>
             <h1 className="font-display text-5xl sm:text-6xl font-bold mb-6 leading-tight" style={{ color: '#F5F0E8' }}>
-              Reinventing how Africa
+              Reinventing how Zimbabwe
               <br />
               <span className="gradient-text">moves</span>
             </h1>
             <p className="text-lg leading-relaxed mb-10" style={{ color: '#9A9A9E', maxWidth: '56ch' }}>
-              FleetNest was born from a simple frustration: booking a reliable vehicle in Lagos
+              FleetNest was born from a simple frustration: booking a reliable vehicle in Harare
               should not require three phone calls and a prayer. We built the platform we wished existed.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -93,7 +93,7 @@ export default function AboutPage() {
           >
             <img
               src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&h=600&fit=crop"
-              alt="Lagos cityscape with vehicles"
+              alt="Harare cityscape with vehicles"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0" style={{
@@ -104,7 +104,7 @@ export default function AboutPage() {
                 <p className="font-display text-4xl font-bold text-white mb-3">
                   "We move people,<br />not just vehicles."
                 </p>
-                <p style={{ color: '#9A9A9E' }}>— Adewale Okonkwo, CEO</p>
+                <p style={{ color: '#9A9A9E' }}>— Tafadzwa Moyo, CEO</p>
               </div>
             </div>
           </motion.div>

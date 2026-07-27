@@ -29,7 +29,7 @@ export default function CompanyAnalyticsPage() {
   const company = data?.company;
 
   const metrics = [
-    { label: 'Total Revenue', value: company?.totalRevenue ? formatCurrency(company.totalRevenue) : '₦0', icon: DollarSign, color: '#34D399', change: '+18.4%' },
+    { label: 'Total Revenue', value: company?.totalRevenue ? formatCurrency(company.totalRevenue) : '$0', icon: DollarSign, color: '#34D399', change: '+18.4%' },
     { label: 'Total Bookings', value: company?.totalBookings || 0, icon: BarChart3, color: '#E8A547', change: '+12.5%' },
     { label: 'Active Fleet', value: company?.listings?.length || 0, icon: Car, color: '#60A5FA', change: 'Stable' },
     { label: 'Customer Rating', value: company?.rating ? `${company.rating.toFixed(1)}★` : '4.9★', icon: Star, color: '#FBBF24', change: 'Top 5%' },

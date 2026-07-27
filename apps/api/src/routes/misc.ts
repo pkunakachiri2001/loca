@@ -46,7 +46,7 @@ couponRouter.post('/validate', authenticate, async (req: Request, res: Response,
     if (coupon.expiresAt && coupon.expiresAt < new Date()) throw new ApiError(400, 'This coupon has expired.');
     if (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) throw new ApiError(400, 'Coupon usage limit reached.');
     if (coupon.minBookingAmount && bookingAmount < coupon.minBookingAmount) {
-      throw new ApiError(400, `Minimum booking amount: ₦${coupon.minBookingAmount.toLocaleString()}`);
+      throw new ApiError(400, `Minimum booking amount: $${coupon.minBookingAmount.toLocaleString()}`);
     }
 
     let discount = 0;

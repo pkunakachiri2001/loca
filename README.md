@@ -2,7 +2,7 @@
 
 > **Every Journey Starts Here**
 
-FleetNest is Africa's premier transportation services marketplace — an Airbnb-inspired platform connecting customers with verified vehicle and service providers across Nigeria and beyond.
+FleetNest is Zimbabwe's premier transportation services marketplace — an Airbnb-inspired platform connecting customers with verified vehicle and service providers across Zimbabwe.
 
 [![Tech Stack](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js)](https://nodejs.org)
@@ -199,7 +199,7 @@ npm run dev:web   # Web on http://localhost:3000
 | Role | Email |
 |------|-------|
 | Admin | admin@fleetnest.com |
-| Company Owner | lagos.motors@fleetnest.com |
+| Company Owner | harare.motors@fleetnest.com |
 | Customer | john.doe@example.com |
 
 ---
@@ -274,9 +274,9 @@ Authorization: Bearer <access_token>
 
 | Code | Discount | Minimum |
 |------|----------|---------|
-| `WELCOME20` | 20% off | ₦10,000 |
-| `FLEET5000` | ₦5,000 off | ₦50,000 |
-| `LUXURY30` | 30% off | ₦80,000 |
+| `WELCOME20` | 20% off | $10 |
+| `FLEET5000` | $5 off | $50 |
+| `LUXURY30` | 30% off | $80 |
 
 ---
 
@@ -362,10 +362,10 @@ MIT License — see [LICENSE](LICENSE) file.
 
 ## 🏆 About FleetNest
 
-FleetNest is built as an investor-ready MVP demonstrating the complete architecture of a modern transportation marketplace. The platform is designed to scale across Africa and beyond.
+FleetNest is built as an investor-ready MVP demonstrating the complete architecture of a modern transportation marketplace. The platform is designed to scale across Zimbabwe.
 
 **Contact**: hello@fleetnest.com | **Website**: fleetnest.com
 
 ---
 
-*Built with ❤️ in Lagos, Nigeria*
+*Built with ❤️ in Harare, Zimbabwe*

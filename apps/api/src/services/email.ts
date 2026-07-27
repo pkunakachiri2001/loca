@@ -118,7 +118,7 @@ export const emailService = {
         <p><strong style="color: white;">Start Date:</strong> ${new Date(booking.startDate).toLocaleDateString()}</p>
         <p><strong style="color: white;">End Date:</strong> ${new Date(booking.endDate).toLocaleDateString()}</p>
         <p><strong style="color: white;">Duration:</strong> ${booking.durationDays} day(s)</p>
-        <p><strong style="color: white;">Total Amount:</strong> ₦${booking.totalAmount?.toLocaleString()}</p>
+        <p><strong style="color: white;">Total Amount:</strong> $${booking.totalAmount?.toLocaleString()}</p>
         <p><strong style="color: white;">Booking Ref:</strong> ${booking.id}</p>
       </div>
       <p>Track your booking status in your <a href="${process.env.APP_URL}/dashboard/bookings" style="color: #2563EB;">FleetNest Dashboard</a>.</p>

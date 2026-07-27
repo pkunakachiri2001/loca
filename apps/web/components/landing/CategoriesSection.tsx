@@ -86,7 +86,7 @@ export function CategoriesSection() {
             <span style={{ color: '#E8A547' }}>One Platform</span>
           </h2>
           <p className="max-w-xl mx-auto text-base" style={{ color: '#9A9A9E' }}>
-            From daily car rentals to emergency roadside assistance, FleetNest connects you with Nigeria's best verified service providers.
+            From daily car rentals to emergency roadside assistance, FleetNest connects you with Zimbabwe's best verified service providers.
           </p>
         </motion.div>
 

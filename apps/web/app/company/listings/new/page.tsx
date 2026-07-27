@@ -38,9 +38,9 @@ export default function NewListingPage() {
     category: 'CAR_RENTAL',
     pricePerDay: '',
     pricePerHour: '',
-    city: 'Lagos',
-    state: 'Lagos State',
-    country: 'Nigeria',
+    city: 'Harare',
+    state: 'Harare',
+    country: 'Zimbabwe',
     make: '',
     model: '',
     year: '2023',
@@ -104,12 +104,12 @@ export default function NewListingPage() {
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Price per day (₦) *</label>
+              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Price per day ($ USD) *</label>
               <input
                 type="number"
                 value={form.pricePerDay}
                 onChange={e => setForm(f => ({ ...f, pricePerDay: e.target.value }))}
-                placeholder="45000"
+                placeholder="45"
                 className="input-dark"
                 required
               />
@@ -137,7 +137,7 @@ export default function NewListingPage() {
             </div>
             <div>
               <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>City *</label>
-              <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Lagos" className="input-dark" required />
+              <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Harare" className="input-dark" required />
             </div>
           </div>
 

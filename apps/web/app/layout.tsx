@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     template: '%s | FleetNest',
   },
   description:
-    "FleetNest is Africa's premier transportation marketplace. Book car rentals, buses, drivers, mechanics, car washes, and more from verified providers near you.",
+    "FleetNest is Zimbabwe's premier transportation marketplace. Book car rentals, buses, drivers, mechanics, car washes, and more from verified providers near you.",
   keywords: [
-    'car rental Nigeria', 'bus charter', 'driver hire', 'mechanic', 'car wash', 'vehicle marketplace',
-    'transportation services', 'FleetNest', 'book driver Lagos', 'hire bus Abuja',
+    'car rental Zimbabwe', 'bus charter', 'driver hire', 'mechanic', 'car wash', 'vehicle marketplace',
+    'transportation services', 'FleetNest', 'book driver Harare', 'hire bus Bulawayo',
   ],
   authors: [{ name: 'FleetNest Technologies Ltd' }],
   creator: 'FleetNest',
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
     type: 'website',
-    locale: 'en_NG',
+    locale: 'en_ZW',
     url: process.env.NEXT_PUBLIC_APP_URL,
     siteName: 'FleetNest',
     title: 'FleetNest — Every Journey Starts Here',

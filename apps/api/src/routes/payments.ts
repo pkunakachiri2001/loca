@@ -138,7 +138,7 @@ router.post('/mock', authenticate, async (req: Request, res: Response, next: Nex
         userId: req.user!.id,
         type: 'PAYMENT_SUCCESS',
         title: 'Payment Successful!',
-        message: `Your payment of ₦${payment.amount.toLocaleString()} was successful. Your booking is confirmed!`,
+        message: `Your payment of $${payment.amount.toLocaleString()} was successful. Your booking is confirmed!`,
         link: `/dashboard/bookings/${bookingId}`,
         metadata: { paymentId, bookingId },
       },

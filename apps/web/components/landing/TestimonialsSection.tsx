@@ -36,9 +36,9 @@ const testimonials = [
     date: 'April 2026',
   },
   {
-    name: 'Chidi Nwachukwu',
-    role: 'CEO, Port Harcourt',
-    avatar: 'CN',
+    name: 'Blessing Mutasa',
+    role: 'Operations Lead, Mutare',
+    avatar: 'BM',
     avatarColor: 'from-purple-600 to-violet-600',
     rating: 5,
     text: "As a business owner, I've used FleetNest to book couriers, rent executive cars for client meetings, and even get an emergency roadside service when my car broke down at midnight. The 24/7 availability and instant booking are what set this platform apart.",
@@ -73,7 +73,7 @@ export function TestimonialsSection() {
             <span className="gradient-text">Thousands</span>
           </h2>
           <p className="text-slate-400 max-w-xl mx-auto">
-            Real reviews from real customers across Nigeria.
+            Real reviews from real customers across Zimbabwe.
           </p>
         </motion.div>
 

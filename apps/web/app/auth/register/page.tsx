@@ -198,7 +198,7 @@ export default function RegisterPage() {
               <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Phone (optional)</label>
               <div className="relative">
                 <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                <input {...register('phone')} className="input-dark pl-10" placeholder="+234 800 000 0000" />
+                <input {...register('phone')} className="input-dark pl-10" placeholder="+263 77 000 0000" />
               </div>
             </div>
 

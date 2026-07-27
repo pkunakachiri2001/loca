@@ -42,7 +42,7 @@ export default function CompanyRegisterPage() {
     address: '',
     city: '',
     state: '',
-    country: 'Nigeria',
+    country: 'Zimbabwe',
     registrationNumber: '',
     taxId: '',
   });
@@ -131,7 +131,7 @@ export default function CompanyRegisterPage() {
                       value={form.name}
                       onChange={e => update('name', e.target.value)}
                       className="input-dark pl-10"
-                      placeholder="e.g. Lagos Premier Car Hire"
+                      placeholder="e.g. Harare Premier Car Hire"
                       required
                     />
                   </div>
@@ -183,7 +183,7 @@ export default function CompanyRegisterPage() {
                     <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Phone Number *</label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                      <input value={form.phone} onChange={e => update('phone', e.target.value)} className="input-dark pl-10" placeholder="+234 ..." />
+                      <input value={form.phone} onChange={e => update('phone', e.target.value)} className="input-dark pl-10" placeholder="+263 77 ..." />
                     </div>
                   </div>
                 </div>
@@ -207,11 +207,11 @@ export default function CompanyRegisterPage() {
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div>
                     <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>City *</label>
-                    <input value={form.city} onChange={e => update('city', e.target.value)} className="input-dark" placeholder="Lagos" />
+                    <input value={form.city} onChange={e => update('city', e.target.value)} className="input-dark" placeholder="Harare" />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>State</label>
-                    <input value={form.state} onChange={e => update('state', e.target.value)} className="input-dark" placeholder="Lagos State" />
+                    <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Province / State</label>
+                    <input value={form.state} onChange={e => update('state', e.target.value)} className="input-dark" placeholder="Harare" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Country</label>

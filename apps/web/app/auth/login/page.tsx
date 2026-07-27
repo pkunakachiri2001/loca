@@ -20,7 +20,7 @@ type FormData = z.infer<typeof schema>;
 
 const DEMO_ACCOUNTS = [
   { label: 'Customer', email: 'john.doe@example.com', role: 'Customer' },
-  { label: 'Company', email: 'lagos.motors@fleetnest.com', role: 'Provider' },
+  { label: 'Company', email: 'harare.motors@fleetnest.com', role: 'Provider' },
   { label: 'Admin', email: 'admin@fleetnest.com', role: 'Admin' },
 ];
 

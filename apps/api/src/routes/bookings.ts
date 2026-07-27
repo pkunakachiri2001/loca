@@ -62,7 +62,7 @@ router.post('/', authenticate, authorize('CUSTOMER'), async (req: Request, res: 
       if (!coupon) throw new ApiError(400, 'Invalid or expired coupon code.');
       if (coupon.expiresAt && coupon.expiresAt < new Date()) throw new ApiError(400, 'This coupon has expired.');
       if (coupon.minBookingAmount && baseAmount < coupon.minBookingAmount) {
-        throw new ApiError(400, `Minimum booking amount for this coupon is ₦${coupon.minBookingAmount.toLocaleString()}.`);
+        throw new ApiError(400, `Minimum booking amount for this coupon is $${coupon.minBookingAmount.toLocaleString()}.`);
       }
 
       if (coupon.type === 'PERCENTAGE') {
@@ -220,8 +220,8 @@ router.put('/:id/status', authenticate, authorize('COMPANY_OWNER', 'ADMIN'), asy
     if (status === 'ACTIVE') updateData.startedAt = new Date();
     if (status === 'COMPLETED') {
       updateData.completedAt = new Date();
-      // Award loyalty points (1 point per ₦100 spent)
-      const pointsEarned = Math.floor(booking.totalAmount / 100);
+      // Award loyalty points (1 point per $1 spent)
+      const pointsEarned = Math.floor(booking.totalAmount);
       await prisma.user.update({
         where: { id: booking.userId },
         data: { loyaltyPoints: { increment: pointsEarned } },
