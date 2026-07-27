@@ -67,7 +67,7 @@ export function getCategoryLabel(category: string): string {
     BUS_RENTAL: 'Bus Rental',
     DRIVER: 'Professional Driver',
     MECHANIC: 'Mechanic',
-    CAR_WASH: 'Car Wash',
+    CAR_WASH: 'Restaurants',
     VEHICLE_DEALER: 'Vehicle Dealer',
     COURIER: 'Courier Vehicle',
     EMERGENCY_ROADSIDE: 'Emergency Roadside',

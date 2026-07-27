@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Car, Bookmark, BarChart3, Settings, Plus, Building2
+  LayoutDashboard, Car, Bookmark, BarChart3, Settings, Plus, Building2, MapPin
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +12,7 @@ const links = [
   { href: '/company/listings', label: 'Listings', icon: Car },
   { href: '/company/bookings', label: 'Bookings', icon: Bookmark },
   { href: '/company/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/tracking', label: 'GPS & Map', icon: MapPin },
 ];
 
 export function CompanySidebar() {

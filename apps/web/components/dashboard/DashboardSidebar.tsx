@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Bookmark, Heart, Gift, User, Settings, Bell
+  LayoutDashboard, Bookmark, Heart, Gift, User, Settings, Bell, MapPin
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +14,7 @@ const links = [
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/loyalty', label: 'Rewards', icon: Gift },
   { href: '/dashboard/profile', label: 'Profile', icon: User },
+  { href: '/tracking', label: 'GPS & Map', icon: MapPin },
 ];
 
 export function DashboardSidebar() {

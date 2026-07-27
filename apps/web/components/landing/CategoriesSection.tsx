@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Car, Bus, User, Wrench, Droplets, Store, Package, TriangleAlert } from 'lucide-react';
+import { Car, Bus, User, Wrench, Utensils, Store, Package, TriangleAlert } from 'lucide-react';
 
 const categories = [
   {
@@ -14,7 +14,7 @@ const categories = [
   },
   {
     icon: Bus,
-    label: 'Bus Charters',
+    label: 'Bus Hire',
     description: 'Buses for events, group tours & corporate travel',
     href: '/search?category=BUS_RENTAL',
     count: '80+ listings',
@@ -34,9 +34,9 @@ const categories = [
     count: '120+ workshops',
   },
   {
-    icon: Droplets,
-    label: 'Car Wash & Spa',
-    description: 'Professional cleaning, detailing & ceramic coating',
+    icon: Utensils,
+    label: 'Restaurants',
+    description: 'Find local eateries, diners & luxury restaurants',
     href: '/search?category=CAR_WASH',
     count: '200+ centers',
   },

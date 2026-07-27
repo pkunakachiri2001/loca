@@ -25,7 +25,7 @@ function TrackingContent() {
                 Zimbabwe Real-Time Fleet Tracking
               </h1>
               <p className="text-slate-400 text-sm mt-1 max-w-2xl">
-                Monitor active rentals, safari cruisers, bus charters, and emergency roadside vehicles live across all 10 provinces of Zimbabwe in US Dollars.
+                Monitor active rentals, safari cruisers, bus hire, and emergency roadside vehicles live across all 10 provinces of Zimbabwe in US Dollars.
               </p>
             </div>
 

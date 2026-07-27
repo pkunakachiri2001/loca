@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Users, Building2, Car, Bookmark, CreditCard, Star, Tag, Shield
+  LayoutDashboard, Users, Building2, Car, Bookmark, CreditCard, Star, Tag, Shield, MapPin
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -16,6 +16,7 @@ const links = [
   { href: '/admin/payments', label: 'Payments', icon: CreditCard },
   { href: '/admin/reviews', label: 'Reviews', icon: Star },
   { href: '/admin/coupons', label: 'Coupons', icon: Tag },
+  { href: '/tracking', label: 'GPS & Map', icon: MapPin },
 ];
 
 export function AdminSidebar() {

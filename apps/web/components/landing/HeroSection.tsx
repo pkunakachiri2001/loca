@@ -3,20 +3,20 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Search, MapPin, ChevronDown, ArrowRight, Shield, Star, Zap, Car, Bus, User, Wrench, Droplets } from 'lucide-react';
+import { Search, MapPin, ChevronDown, ArrowRight, Shield, Star, Zap, Car, Bus, User, Wrench, Utensils } from 'lucide-react';
 import { BackgroundVideo } from '@/components/ui/BackgroundVideo';
 
 const CATEGORY_TABS = [
   { label: 'Car Rental', value: 'CAR_RENTAL', icon: Car },
-  { label: 'Bus Charter', value: 'BUS_RENTAL', icon: Bus },
+  { label: 'Bus Hire', value: 'BUS_RENTAL', icon: Bus },
   { label: 'Pro Driver', value: 'DRIVER', icon: User },
   { label: 'Mechanic', value: 'MECHANIC', icon: Wrench },
-  { label: 'Car Wash', value: 'CAR_WASH', icon: Droplets },
+  { label: 'Restaurants', value: 'CAR_WASH', icon: Utensils },
 ];
 
 const POPULAR = [
   { label: '4x4 Safari Harare', q: 'Land Cruiser', city: 'Harare' },
-  { label: 'Bus charter Victoria Falls', q: 'Bus charter', city: 'Victoria Falls' },
+  { label: 'Bus hire Victoria Falls', q: 'Bus hire', city: 'Victoria Falls' },
   { label: 'Toyota Camry Bulawayo', q: 'Toyota Camry', city: 'Bulawayo' },
   { label: 'Mechanic Mutare', q: 'Mechanic', city: 'Mutare' },
 ];
@@ -82,7 +82,7 @@ export function HeroSection() {
           className="mx-auto max-w-xl text-lg mb-10 leading-relaxed"
           style={{ color: 'rgba(255,255,255,0.75)' }}
         >
-          Book luxury cars, group buses, verified drivers, mechanics, and car washes from{' '}
+          Book luxury cars, group buses, verified drivers, mechanics, and restaurants from{' '}
           <span style={{ color: '#F5F0E8', fontWeight: 600 }}>500+ verified businesses</span>.
         </motion.p>
 

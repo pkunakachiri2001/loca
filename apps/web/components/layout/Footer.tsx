@@ -6,10 +6,10 @@ import { Car, Twitter, Instagram, Linkedin, Facebook, Youtube, Mail, Phone, MapP
 const footerLinks = {
   services: [
     { label: 'Car Rentals', href: '/search?category=CAR_RENTAL' },
-    { label: 'Bus Charters', href: '/search?category=BUS_RENTAL' },
+    { label: 'Bus Hire', href: '/search?category=BUS_RENTAL' },
     { label: 'Professional Drivers', href: '/search?category=DRIVER' },
     { label: 'Mechanics', href: '/search?category=MECHANIC' },
-    { label: 'Car Wash', href: '/search?category=CAR_WASH' },
+    { label: 'Restaurants', href: '/search?category=CAR_WASH' },
     { label: 'Vehicle Dealers', href: '/search?category=VEHICLE_DEALER' },
     { label: 'Courier Vehicles', href: '/search?category=COURIER' },
     { label: 'Emergency Roadside', href: '/search?category=EMERGENCY_ROADSIDE' },
@@ -69,13 +69,13 @@ export function Footer() {
                 <User className="h-3.5 w-3.5" style={{ color: '#E8A547' }} />
                 <span>Locardia Munyuki (HR Manager)</span>
               </div>
-              <a href="mailto:HRmanager@kunakatech.tech" className="flex items-center gap-2 text-xs transition-colors hover:underline" style={{ color: '#9A9A9E' }}>
+              <a href="mailto:lorcadiamunyuki09@gmail.com" className="flex items-center gap-2 text-xs transition-colors hover:underline" style={{ color: '#9A9A9E' }}>
                 <Mail className="h-3.5 w-3.5" style={{ color: '#E8A547' }} />
-                HRmanager@kunakatech.tech
+                lorcadiamunyuki09@gmail.com
               </a>
-              <a href="tel:+917796787966" className="flex items-center gap-2 text-xs transition-colors hover:underline" style={{ color: '#9A9A9E' }}>
+              <a href="https://wa.me/917796787966" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs transition-colors hover:underline" style={{ color: '#9A9A9E' }}>
                 <Phone className="h-3.5 w-3.5" style={{ color: '#E8A547' }} />
-                +91 7796787966
+                WhatsApp +91 7796787966
               </a>
             </div>
           </div>

@@ -16,7 +16,7 @@ const CATEGORIES = [
   { value: 'BUS_RENTAL', label: 'Bus / Minibus Rental' },
   { value: 'DRIVER', label: 'Professional Drivers' },
   { value: 'MECHANIC', label: 'Auto Mechanics' },
-  { value: 'CAR_WASH', label: 'Car Wash' },
+  { value: 'CAR_WASH', label: 'Restaurants' },
   { value: 'VEHICLE_DEALER', label: 'Vehicle Dealership' },
   { value: 'COURIER', label: 'Courier Vehicles' },
   { value: 'EMERGENCY_ROADSIDE', label: 'Emergency / Roadside' },
