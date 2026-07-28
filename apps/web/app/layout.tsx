@@ -7,34 +7,34 @@ import { GlobalVideoBackground } from '@/components/ui/GlobalVideoBackground';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   title: {
-    default: 'FleetNest — Every Journey Starts Here',
-    template: '%s | FleetNest',
+    default: 'Famba — Move More. Live Better.',
+    template: '%s | Famba',
   },
   description:
-    "FleetNest is Zimbabwe's premier transportation marketplace. Book car rentals, buses, drivers, mechanics, car washes, and more from verified providers near you.",
+    "Famba is Zimbabwe's premier all-in-one transportation & delivery platform. Book car rentals, buses, drivers, mechanics, deliveries, and more from verified providers near you.",
   keywords: [
     'car rental Zimbabwe', 'bus charter', 'driver hire', 'mechanic', 'car wash', 'vehicle marketplace',
-    'transportation services', 'FleetNest', 'book driver Harare', 'hire bus Bulawayo',
+    'transportation services', 'Famba', 'book driver Harare', 'hire bus Bulawayo', 'deliveries Zimbabwe',
   ],
-  authors: [{ name: 'FleetNest Technologies Ltd' }],
-  creator: 'FleetNest',
-  publisher: 'FleetNest Technologies Ltd',
+  authors: [{ name: 'Famba Technologies Ltd' }],
+  creator: 'Famba',
+  publisher: 'Famba Technologies Ltd',
   formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
     type: 'website',
     locale: 'en_ZW',
     url: process.env.NEXT_PUBLIC_APP_URL,
-    siteName: 'FleetNest',
-    title: 'FleetNest — Every Journey Starts Here',
-    description: 'Book car rentals, buses, drivers, mechanics, and more from verified providers.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'FleetNest' }],
+    siteName: 'Famba',
+    title: 'Famba — Move More. Live Better.',
+    description: 'Book car rentals, buses, drivers, mechanics, deliveries, and more from verified providers.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Famba' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FleetNest — Every Journey Starts Here',
-    description: 'Book transportation services from verified providers.',
+    title: 'Famba — Move More. Live Better.',
+    description: 'Book transportation & delivery services from verified providers.',
     images: ['/og-image.png'],
-    creator: '@fleetnest',
+    creator: '@famba',
   },
   robots: { index: true, follow: true },
   icons: { icon: '/favicon.ico' },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen antialiased relative" style={{ background: '#0E0E10', color: '#F5F0E8' }}>
+      <body className="min-h-screen antialiased relative bg-[#FAFCFB] text-[#0B192C]">
         <Providers>
           <GlobalVideoBackground />
           {children}

@@ -37,7 +37,7 @@ const categories = [
   },
   {
     icon: Utensils,
-    label: 'Restaurants',
+    label: 'Restaurants & Dining',
     description: 'Find local eateries, diners & luxury restaurants',
     href: '/search?category=CAR_WASH',
     count: '200+ centers',
@@ -51,7 +51,7 @@ const categories = [
   },
   {
     icon: Package,
-    label: 'Courier Vehicles',
+    label: 'Courier & Deliveries',
     description: 'Delivery vans, trucks & cargo transport',
     href: '/search?category=COURIER',
     count: '90+ vehicles',
@@ -70,7 +70,7 @@ export function CategoriesSection() {
   const router = useRouter();
 
   return (
-    <section id="categories" className="py-24 relative" style={{ borderTop: '1px solid #1E1E22' }}>
+    <section id="categories" className="py-24 relative bg-white border-t border-slate-200">
       <div className="section-container">
         {/* Heading */}
         <motion.div
@@ -81,17 +81,17 @@ export function CategoriesSection() {
           className="text-center mb-14"
         >
           <span className="section-badge mb-4 inline-flex">8 Service Categories</span>
-          <h2 className="font-display text-4xl font-bold text-white md:text-5xl mb-4">
+          <h2 className="font-display text-4xl font-extrabold text-[#0B192C] md:text-5xl mb-4">
             Everything You Need,{' '}
-            <span style={{ color: '#E8A547' }}>One Platform</span>
+            <span className="text-[#008767]">One Platform</span>
           </h2>
-          <p className="max-w-xl mx-auto text-base" style={{ color: '#9A9A9E' }}>
-            From daily car rentals to emergency roadside assistance, FleetNest connects you with Zimbabwe's best verified service providers.
+          <p className="max-w-xl mx-auto text-base text-slate-600 font-medium">
+            From daily car rentals to emergency roadside assistance and deliveries, Famba connects you with Zimbabwe's best verified service providers.
           </p>
         </motion.div>
 
         {/* Category Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.label}
@@ -110,36 +110,18 @@ export function CategoriesSection() {
                   }
                 }}
               >
-                <div
-                  className="card p-6 h-full transition-all duration-300 group-hover:-translate-y-1"
-                  style={{
-                    background: '#1A1A1C',
-                    border: '1px solid #2E2E34',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#E8A547';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#2E2E34';
-                  }}
-                >
+                <div className="bg-white rounded-2xl p-6 h-full border border-slate-200 shadow-sm group-hover:border-[#008767] group-hover:-translate-y-1.5 group-hover:shadow-md transition-all duration-300">
                   {/* Icon */}
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105"
-                    style={{
-                      background: 'rgba(232,165,71,0.1)',
-                      border: '1px solid rgba(232,165,71,0.25)',
-                    }}
-                  >
-                    <cat.icon className="h-5 w-5" style={{ color: '#E8A547' }} />
+                  <div className="w-12 h-12 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110">
+                    <cat.icon className="h-6 w-6 text-[#008767]" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="font-display font-semibold text-lg mb-1" style={{ color: '#F5F0E8' }}>{cat.label}</h3>
-                  <p className="text-xs leading-relaxed mb-4" style={{ color: '#6B6B72' }}>{cat.description}</p>
+                  <h3 className="font-display font-bold text-lg text-[#0B192C] mb-1.5">{cat.label}</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed mb-4">{cat.description}</p>
 
                   {/* Count */}
-                  <div className="text-xs font-medium flex items-center gap-1" style={{ color: '#E8A547' }}>
+                  <div className="text-xs font-bold text-[#008767] flex items-center gap-1">
                     <span>{cat.count}</span>
                     <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </div>

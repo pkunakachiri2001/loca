@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Car, Twitter, Instagram, Linkedin, Facebook, Youtube, Mail, Phone, MapPin, Building2, User } from 'lucide-react';
+import { Twitter, Instagram, Linkedin, Facebook, Youtube, Mail, Phone, MapPin, Building2, User } from 'lucide-react';
 
 const footerLinks = {
   services: [
@@ -9,9 +9,7 @@ const footerLinks = {
     { label: 'Bus Hire', href: '/search?category=BUS_RENTAL' },
     { label: 'Professional Drivers', href: '/search?category=DRIVER' },
     { label: 'Mechanics', href: '/search?category=MECHANIC' },
-    { label: 'Restaurants', href: '/search?category=CAR_WASH' },
-    { label: 'Vehicle Dealers', href: '/search?category=VEHICLE_DEALER' },
-    { label: 'Courier Vehicles', href: '/search?category=COURIER' },
+    { label: 'Deliveries & Courier', href: '/search?category=COURIER' },
     { label: 'Emergency Roadside', href: '/search?category=EMERGENCY_ROADSIDE' },
   ],
   company: [
@@ -42,39 +40,38 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t" style={{ borderColor: '#1E1E22' }}>
-      <div className="relative section-container pt-16 pb-8">
+    <footer className="bg-white border-t border-slate-200 text-slate-700">
+      <div className="section-container pt-16 pb-8">
         {/* Top Grid */}
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5 mb-12">
           {/* Brand & Corporate info */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-2 mb-4">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold" style={{ background: '#E8A547', color: '#0E0E10' }}>
-                <Car className="h-5 w-5" />
-              </div>
-              <span className="font-display text-xl font-bold text-white">
-                Fleet<span style={{ color: '#E8A547' }}>Nest</span>
-              </span>
+            <Link href="/" className="inline-block mb-4 group">
+              <img
+                src="/logo.jpeg"
+                alt="Famba"
+                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+              />
             </Link>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: '#9A9A9E' }}>
-              Africa's premier transportation marketplace powered by <strong style={{ color: '#F5F0E8' }}>KUNAKA TECH</strong>.
+            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+              Zimbabwe's all-in-one smart travel & transport platform powered by <strong className="text-[#0B192C]">KUNAKA TECH</strong>.
             </p>
 
             {/* KUNAKA TECH Contact Info */}
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#E8A547' }}>
+            <div className="space-y-2 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008767]">
                 <Building2 className="h-3.5 w-3.5" /> KUNAKA TECH
               </div>
-              <div className="flex items-center gap-2 text-xs" style={{ color: '#C8C0B0' }}>
-                <User className="h-3.5 w-3.5" style={{ color: '#E8A547' }} />
+              <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                <User className="h-3.5 w-3.5 text-[#008767]" />
                 <span>Locardia Munyuki (HR Manager)</span>
               </div>
-              <a href="mailto:lorcadiamunyuki09@gmail.com" className="flex items-center gap-2 text-xs transition-colors hover:underline" style={{ color: '#9A9A9E' }}>
-                <Mail className="h-3.5 w-3.5" style={{ color: '#E8A547' }} />
-                lorcadiamunyuki09@gmail.com
+              <a href="mailto:HRmanager@kunakatech.tech" className="flex items-center gap-2 text-xs text-slate-500 hover:text-[#008767] transition-colors">
+                <Mail className="h-3.5 w-3.5 text-[#008767]" />
+                HRmanager@kunakatech.tech
               </a>
-              <a href="https://wa.me/917796787966" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs transition-colors hover:underline" style={{ color: '#9A9A9E' }}>
-                <Phone className="h-3.5 w-3.5" style={{ color: '#E8A547' }} />
+              <a href="https://wa.me/917796787966" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-slate-500 hover:text-[#008767] transition-colors">
+                <Phone className="h-3.5 w-3.5 text-[#008767]" />
                 WhatsApp +91 7796787966
               </a>
             </div>
@@ -82,11 +79,11 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="font-display font-semibold text-sm mb-4" style={{ color: '#F5F0E8' }}>Services</h4>
-            <ul className="space-y-2">
+            <h4 className="font-display font-bold text-sm text-[#0B192C] mb-4">Services</h4>
+            <ul className="space-y-2.5">
               {footerLinks.services.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm transition-colors" style={{ color: '#9A9A9E' }}>
+                  <Link href={link.href} className="text-sm text-slate-600 hover:text-[#008767] transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -96,11 +93,11 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-display font-semibold text-sm mb-4" style={{ color: '#F5F0E8' }}>Company</h4>
-            <ul className="space-y-2">
+            <h4 className="font-display font-bold text-sm text-[#0B192C] mb-4">Company</h4>
+            <ul className="space-y-2.5">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm transition-colors" style={{ color: '#9A9A9E' }}>
+                  <Link href={link.href} className="text-sm text-slate-600 hover:text-[#008767] transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -110,11 +107,11 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h4 className="font-display font-semibold text-sm mb-4" style={{ color: '#F5F0E8' }}>Support</h4>
-            <ul className="space-y-2">
+            <h4 className="font-display font-bold text-sm text-[#0B192C] mb-4">Support</h4>
+            <ul className="space-y-2.5">
               {footerLinks.support.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm transition-colors" style={{ color: '#9A9A9E' }}>
+                  <Link href={link.href} className="text-sm text-slate-600 hover:text-[#008767] transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -124,11 +121,11 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="font-display font-semibold text-sm mb-4" style={{ color: '#F5F0E8' }}>Legal</h4>
-            <ul className="space-y-2">
+            <h4 className="font-display font-bold text-sm text-[#0B192C] mb-4">Legal</h4>
+            <ul className="space-y-2.5">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm transition-colors" style={{ color: '#9A9A9E' }}>
+                  <Link href={link.href} className="text-sm text-slate-600 hover:text-[#008767] transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -137,48 +134,20 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Newsletter */}
-        <div className="card p-6 mb-10 md:flex items-center justify-between gap-8">
-          <div className="mb-4 md:mb-0">
-            <h4 className="font-display font-semibold mb-1" style={{ color: '#F5F0E8' }}>Stay updated with KUNAKA TECH</h4>
-            <p className="text-sm" style={{ color: '#6B6B72' }}>Get the latest fleet updates, deals, and announcements.</p>
-          </div>
-          <form className="flex gap-3 flex-1 max-w-md" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="input-dark flex-1"
-            />
-            <button type="submit" className="btn-primary px-6 py-3 text-sm shrink-0">
-              Subscribe
-            </button>
-          </form>
-        </div>
-
         {/* Bottom Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6" style={{ borderTop: '1px solid #1E1E22' }}>
-          <p className="text-xs" style={{ color: '#5A5A60' }}>
-            © {new Date().getFullYear()} KUNAKA TECH — FleetNest. All rights reserved. Managed by Locardia Munyuki.
-          </p>
-
-          {/* Social Links */}
+        <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <p>© {new Date().getFullYear()} Famba Technologies Ltd (KUNAKA TECH). All rights reserved.</p>
           <div className="flex items-center gap-3">
             {socials.map(({ Icon, href, label }) => (
               <a
                 key={label}
                 href={href}
                 aria-label={label}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border transition-all"
-                style={{ background: '#1A1A1C', borderColor: '#2E2E34', color: '#9A9A9E' }}
+                className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#E6F4F1] hover:text-[#008767] transition-colors"
               >
                 <Icon className="h-4 w-4" />
               </a>
             ))}
-          </div>
-
-          <div className="flex items-center gap-1 text-xs" style={{ color: '#5A5A60' }}>
-            <span>Made by</span>
-            <strong style={{ color: '#E8A547' }}>KUNAKA TECH</strong>
           </div>
         </div>
       </div>

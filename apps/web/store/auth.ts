@@ -99,7 +99,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'fleetnest-auth',
+      name: 'famba-auth',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,

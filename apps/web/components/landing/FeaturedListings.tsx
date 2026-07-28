@@ -2,11 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Star, Heart, MapPin, Car } from 'lucide-react';
 import { formatCurrency, getCategoryLabel } from '@/lib/utils';
 
-// Static featured data for SSR — real data would be fetched via React Query
 const featuredListings = [
   {
     id: 'feat-1',
@@ -67,7 +65,7 @@ const featuredListings = [
 
 export function FeaturedListings() {
   return (
-    <section className="py-24">
+    <section className="py-24 bg-[#FAFCFB]">
       <div className="section-container">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -76,16 +74,14 @@ export function FeaturedListings() {
           className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4"
         >
           <div>
-            <span className="section-badge mb-4 inline-flex">Top Picks</span>
-            <h2 className="font-display text-4xl font-bold text-white md:text-5xl">
-              Featured{' '}
-              <span className="gradient-text">Listings</span>
+            <span className="section-badge mb-3 inline-flex">Top Picks</span>
+            <h2 className="font-display text-4xl font-extrabold text-[#0B192C] md:text-5xl">
+              Featured <span className="text-[#008767]">Services</span>
             </h2>
           </div>
           <Link
             href="/search"
-            className="transition-colors font-medium flex items-center gap-2 shrink-0 text-sm"
-            style={{ color: '#E8A547' }}
+            className="text-[#008767] font-bold hover:underline flex items-center gap-2 shrink-0 text-sm"
           >
             View all listings →
           </Link>
@@ -101,7 +97,7 @@ export function FeaturedListings() {
               transition={{ delay: i * 0.1 }}
             >
               <Link href={`/listing/${listing.id}`}>
-                <div className="vehicle-card group">
+                <div className="vehicle-card group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#008767] transition-all duration-300">
                   {/* Image */}
                   <div className="relative h-52 overflow-hidden rounded-t-2xl">
                     <img
@@ -110,13 +106,13 @@ export function FeaturedListings() {
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800&h=600&fit=crop';
                       }}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                     {/* Category Badge */}
                     <div className="absolute top-3 left-3">
-                      <span className="badge-info">
+                      <span className="badge-info bg-white/90 text-[#008767] border-0 backdrop-blur-md shadow-sm font-bold">
                         <Car className="h-3 w-3" />
                         {getCategoryLabel(listing.category)}
                       </span>
@@ -125,46 +121,46 @@ export function FeaturedListings() {
                     {/* Wishlist Button */}
                     <button
                       onClick={(e) => { e.preventDefault(); }}
-                      className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm text-white hover:text-red-400 transition-colors"
+                      className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-slate-700 hover:text-red-500 transition-colors shadow-sm"
                     >
                       <Heart className="h-4 w-4" />
                     </button>
 
                     {/* Price overlay */}
                     <div className="absolute bottom-3 left-3">
-                      <span className="rounded-lg bg-black/60 backdrop-blur-sm px-2.5 py-1 text-sm font-bold text-white">
+                      <span className="rounded-xl bg-[#008767] px-3 py-1 text-sm font-extrabold text-white shadow-md">
                         {formatCurrency(listing.pricePerDay)} / day
                       </span>
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-4">
+                  <div className="p-5">
                     {/* Company */}
-                    <p className="text-xs text-slate-400 mb-1">{listing.company.name}</p>
+                    <p className="text-xs text-slate-500 font-semibold mb-1">{listing.company.name}</p>
 
                     {/* Title */}
-                    <h3 className="font-semibold text-white text-sm leading-tight mb-2 line-clamp-2">
+                    <h3 className="font-bold text-[#0B192C] text-base leading-snug mb-2 line-clamp-2">
                       {listing.title}
                     </h3>
 
                     {/* Location & Rating */}
                     <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-1 text-xs text-slate-400">
-                        <MapPin className="h-3 w-3" />
+                      <div className="flex items-center gap-1 text-xs text-slate-500 font-medium">
+                        <MapPin className="h-3.5 w-3.5 text-[#008767]" />
                         {listing.city}
                       </div>
                       <div className="flex items-center gap-1">
                         <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                        <span className="text-xs font-medium text-white">{listing.rating}</span>
-                        <span className="text-xs text-slate-500">({listing.totalReviews})</span>
+                        <span className="text-xs font-bold text-[#0B192C]">{listing.rating}</span>
+                        <span className="text-xs text-slate-400">({listing.totalReviews})</span>
                       </div>
                     </div>
 
                     {/* Features */}
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-100">
                       {listing.features.slice(0, 3).map((f) => (
-                        <span key={f} className="rounded-md bg-white/5 border border-white/10 px-2 py-0.5 text-[10px] text-slate-400">
+                        <span key={f} className="rounded-lg bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
                           {f}
                         </span>
                       ))}

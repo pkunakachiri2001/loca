@@ -20,8 +20,8 @@ type FormData = z.infer<typeof schema>;
 
 const DEMO_ACCOUNTS = [
   { label: 'Customer', email: 'john.doe@example.com', role: 'Customer' },
-  { label: 'Company', email: 'harare.motors@fleetnest.com', role: 'Provider' },
-  { label: 'Admin', email: 'admin@fleetnest.com', role: 'Admin' },
+  { label: 'Company', email: 'harare.motors@famba.co.zw', role: 'Provider' },
+  { label: 'Admin', email: 'admin@famba.co.zw', role: 'Admin' },
 ];
 
 function LoginContent() {
@@ -67,24 +67,19 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative" style={{ background: '#0E0E10' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 relative bg-[#FAFCFB]">
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md card p-8 z-10"
+        className="w-full max-w-md bg-white border border-slate-200 shadow-xl rounded-3xl p-8 z-10"
       >
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#E8A547', color: '#0E0E10' }}>
-              <Car className="h-6 w-6" />
-            </div>
-            <span className="font-display text-2xl font-bold text-white">
-              Fleet<span style={{ color: '#E8A547' }}>Nest</span>
-            </span>
+          <Link href="/" className="inline-block mb-4 group">
+            <img src="/logo.jpeg" alt="Famba" className="h-12 w-auto mx-auto object-contain transition-transform group-hover:scale-105" />
           </Link>
-          <h1 className="font-display text-2xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-sm text-slate-400">Sign in to manage your bookings and account</p>
+          <h1 className="font-display text-2xl font-bold text-[#0B192C] mb-2">Welcome Back</h1>
+          <p className="text-sm text-slate-500 font-medium">Sign in to manage your bookings and account</p>
         </div>
 
         {isExpired && (
@@ -178,7 +173,7 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center text-white" style={{ background: '#0E0E10' }}>
+      <div className="min-h-screen flex items-center justify-center text-slate-700 bg-[#FAFCFB]">
         <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
       </div>
     }>

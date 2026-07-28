@@ -1,8 +1,8 @@
-# FleetNest 🚗
+# FAMBA 🚗
 
-> **Every Journey Starts Here**
+> **Move More. Live Better.**
 
-FleetNest is Zimbabwe's premier transportation services marketplace — an Airbnb-inspired platform connecting customers with verified vehicle and service providers across Zimbabwe.
+FAMBA is Zimbabwe's premier all-in-one smart travel, transportation, and delivery platform — connecting customers with verified vehicle rentals, drivers, mechanics, and courier services across Zimbabwe.
 
 [![Tech Stack](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js)](https://nodejs.org)
@@ -360,11 +360,11 @@ MIT License — see [LICENSE](LICENSE) file.
 
 ---
 
-## 🏆 About FleetNest
+## 🏆 About FAMBA
 
-FleetNest is built as an investor-ready MVP demonstrating the complete architecture of a modern transportation marketplace. The platform is designed to scale across Zimbabwe.
+FAMBA is built as an investor-ready all-in-one transportation & delivery marketplace by KUNAKA TECH. The platform is designed to scale across Zimbabwe.
 
-**Contact**: hello@fleetnest.com | **Website**: fleetnest.com
+**Contact**: HRmanager@kunakatech.tech | **WhatsApp**: +91 7796787966
 
 ---
 

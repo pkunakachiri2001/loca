@@ -54,7 +54,7 @@ async function main() {
   // Admin user
   const admin = await prisma.user.create({
     data: {
-      email: 'admin@fleetnest.com',
+      email: 'admin@famba.co.zw',
       password: hashedPass,
       firstName: 'System',
       lastName: 'Admin',
@@ -67,7 +67,7 @@ async function main() {
   // Company owners
   const owner1 = await prisma.user.create({
     data: {
-      email: 'harare.motors@fleetnest.com',
+      email: 'harare.motors@famba.co.zw',
       password: hashedPass,
       firstName: 'Farai',
       lastName: 'Moyo',
@@ -79,7 +79,7 @@ async function main() {
 
   const owner2 = await prisma.user.create({
     data: {
-      email: 'speedyrides@fleetnest.com',
+      email: 'speedyrides@famba.co.zw',
       password: hashedPass,
       firstName: 'Tendai',
       lastName: 'Ndlovu',
@@ -91,7 +91,7 @@ async function main() {
 
   const owner3 = await prisma.user.create({
     data: {
-      email: 'cleanwheels@fleetnest.com',
+      email: 'cleanwheels@famba.co.zw',
       password: hashedPass,
       firstName: 'Chiedza',
       lastName: 'Mutasa',
@@ -103,7 +103,7 @@ async function main() {
 
   const owner4 = await prisma.user.create({
     data: {
-      email: 'roadmaster@fleetnest.com',
+      email: 'roadmaster@famba.co.zw',
       password: hashedPass,
       firstName: 'Tinashe',
       lastName: 'Chikwanha',
@@ -713,7 +713,7 @@ async function main() {
         userId: owner1.id,
         type: 'COMPANY_VERIFIED',
         title: 'Company Verified ✓',
-        message: 'Congratulations! Harare Executive Motors has been verified. Your listings are now live on FleetNest.',
+        message: 'Congratulations! Harare Executive Motors has been verified. Your listings are now live on Famba.',
         isRead: true,
       },
     ],
@@ -732,12 +732,12 @@ async function main() {
 
   console.log('✅ Created wishlist items, notifications, and loyalty transactions');
 
-  console.log('\n🎉 FleetNest seed completed successfully!\n');
+  console.log('\n🎉 Famba seed completed successfully!\n');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('📧 Admin login:    admin@fleetnest.com');
+  console.log('📧 Admin login:    admin@famba.co.zw');
   console.log('🔑 Password:       Password123!');
   console.log('👤 Customer login: john.doe@example.com');
-  console.log('🏢 Company login:  harare.motors@fleetnest.com');
+  console.log('🏢 Company login:  harare.motors@famba.co.zw');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 }
 

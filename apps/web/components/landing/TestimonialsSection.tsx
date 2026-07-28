@@ -9,9 +9,9 @@ const testimonials = [
     name: 'Tarisai Moyo',
     role: 'Marketing Manager, Harare',
     avatar: 'TM',
-    avatarColor: 'from-amber-600 to-amber-700',
+    avatarColor: 'from-[#008767] to-[#005E47]',
     rating: 5,
-    text: 'FleetNest completely transformed how our company handles corporate travel across Zimbabwe. We booked a Toyota Land Cruiser for a 3-day executive safari trip to Victoria Falls, and the entire process was seamless — from live tracking to transparent USD pricing.',
+    text: 'Famba completely transformed how our company handles corporate travel and deliveries across Zimbabwe. We booked a Toyota Land Cruiser for a 3-day executive safari trip to Victoria Falls, and the entire process was seamless — from live tracking to transparent USD pricing.',
     service: 'Land Cruiser V8 — Harare Executive Motors',
     date: 'June 2026',
   },
@@ -21,7 +21,7 @@ const testimonials = [
     avatar: 'FN',
     avatarColor: 'from-blue-600 to-indigo-600',
     rating: 5,
-    text: 'I organized a tour across Matabeleland and needed reliable luxury coach transportation. FleetNest connected me with Victoria Falls Safaris in minutes. The pricing in USD was clear, the buses were luxurious, and the drivers were top-class.',
+    text: 'I organized a tour across Matabeleland and needed reliable luxury coach transportation. Famba connected me with Victoria Falls Safaris in minutes. The pricing in USD was clear, the buses were luxurious, and the drivers were top-class.',
     service: 'Luxury Coach — Victoria Falls & Safari Transport',
     date: 'May 2026',
   },
@@ -31,7 +31,7 @@ const testimonials = [
     avatar: 'FS',
     avatarColor: 'from-emerald-600 to-teal-600',
     rating: 5,
-    text: "The mechanic service I found through FleetNest was outstanding. Road Master Mechanics diagnosed and fixed my BMW in a single day. They even provided a detailed report with photos. I've never trusted my car to anyone else since. FleetNest is a game-changer.",
+    text: "The mechanic service I found through Famba was outstanding. Road Master Mechanics diagnosed and fixed my BMW in a single day. They even provided a detailed report with photos. Famba is a total game-changer for Zimbabwe.",
     service: 'Full Diagnostics — Road Master Mechanics',
     date: 'April 2026',
   },
@@ -41,7 +41,7 @@ const testimonials = [
     avatar: 'BM',
     avatarColor: 'from-purple-600 to-violet-600',
     rating: 5,
-    text: "As a business owner, I've used FleetNest to book couriers, rent executive cars for client meetings, and even get an emergency roadside service when my car broke down at midnight. The 24/7 availability and instant booking are what set this platform apart.",
+    text: "As a business owner, I've used Famba to book couriers, rent executive cars for client meetings, and even get emergency roadside service. The 24/7 availability, delivery tracking, and instant booking set this platform apart.",
     service: 'Multiple Services — Various Providers',
     date: 'March 2026',
   },
@@ -59,7 +59,7 @@ export function TestimonialsSection() {
   const t = testimonials[currentIndex];
 
   return (
-    <section className="py-24">
+    <section className="py-24 bg-[#FAFCFB] border-t border-slate-200">
       <div className="section-container">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -68,19 +68,18 @@ export function TestimonialsSection() {
           className="text-center mb-16"
         >
           <span className="section-badge mb-4 inline-flex">Testimonials</span>
-          <h2 className="font-display text-4xl font-bold text-white md:text-5xl mb-4">
-            Trusted by{' '}
-            <span className="gradient-text">Thousands</span>
+          <h2 className="font-display text-4xl font-extrabold text-[#0B192C] md:text-5xl mb-4">
+            Trusted by <span className="text-[#008767]">Thousands</span>
           </h2>
-          <p className="text-slate-400 max-w-xl mx-auto">
+          <p className="text-slate-600 max-w-xl mx-auto font-medium text-base">
             Real reviews from real customers across Zimbabwe.
           </p>
         </motion.div>
 
         <div className="max-w-3xl mx-auto">
-          <div className="relative glass-card p-8 md:p-12">
+          <div className="relative bg-white rounded-3xl p-8 md:p-12 border border-slate-200 shadow-xl">
             {/* Quote icon */}
-            <Quote className="absolute top-6 left-6 h-8 w-8 text-blue-500/30" />
+            <Quote className="absolute top-6 left-6 h-10 w-10 text-[#008767]/15" />
 
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
@@ -99,52 +98,52 @@ export function TestimonialsSection() {
                 </div>
 
                 {/* Quote */}
-                <p className="text-lg text-slate-200 leading-relaxed mb-8 italic">
+                <p className="text-lg text-slate-700 leading-relaxed mb-8 font-medium italic">
                   "{t.text}"
                 </p>
 
                 {/* Author */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br ${t.avatarColor} text-sm font-bold text-white`}>
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br ${t.avatarColor} text-sm font-bold text-white shadow-md`}>
                       {t.avatar}
                     </div>
                     <div>
-                      <p className="font-semibold text-white">{t.name}</p>
-                      <p className="text-sm text-slate-400">{t.role}</p>
+                      <p className="font-bold text-[#0B192C] text-base">{t.name}</p>
+                      <p className="text-xs text-slate-500 font-medium">{t.role}</p>
                     </div>
                   </div>
                   <div className="text-right hidden sm:block">
-                    <p className="text-xs text-blue-400">{t.service}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{t.date}</p>
+                    <p className="text-xs font-bold text-[#008767]">{t.service}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{t.date}</p>
                   </div>
                 </div>
               </motion.div>
             </AnimatePresence>
 
             {/* Navigation */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5">
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
               <div className="flex gap-2">
                 {testimonials.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => { setDirection(i > currentIndex ? 1 : -1); setCurrentIndex(i); }}
-                    className={`h-2 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-6 bg-blue-500' : 'w-2 bg-white/20'}`}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-8 bg-[#008767]' : 'w-2.5 bg-slate-200'}`}
                   />
                 ))}
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => navigate(-1)}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:text-[#008767] hover:bg-[#E6F4F1] transition-all"
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <ChevronLeft className="h-5 w-5" />
                 </button>
                 <button
                   onClick={() => navigate(1)}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:text-[#008767] hover:bg-[#E6F4F1] transition-all"
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-5 w-5" />
                 </button>
               </div>
             </div>

@@ -69,25 +69,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#0E0E10' }}>
+    <div className="min-h-screen flex bg-[#FAFCFB]">
       {/* LEFT: Photo panel */}
-      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-[#008767]">
         <img
           src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=900&h=1200&fit=crop"
           alt="Transport service"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
         />
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom right, rgba(14,14,16,0.4) 0%, rgba(14,14,16,0.2) 40%, rgba(14,14,16,0.85) 100%)'
-        }} />
-        <div className="relative z-10 flex flex-col justify-between p-10 w-full">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#E8A547' }}>
-              <Car className="h-4 w-4" style={{ color: '#0E0E10' }} />
-            </div>
-            <span className="font-display text-xl font-bold text-white">
-              Fleet<span style={{ color: '#E8A547' }}>Nest</span>
-            </span>
+        <div className="relative z-10 flex flex-col justify-between p-10 w-full text-white">
+          <Link href="/" className="inline-block group">
+            <img src="/logo.jpeg" alt="Famba" className="h-10 w-auto object-contain bg-white/90 p-1.5 rounded-xl shadow-md transition-transform group-hover:scale-105" />
           </Link>
           <div>
             <div className="accent-line mb-4" />
@@ -116,17 +108,12 @@ export default function RegisterPage() {
           className="w-full max-w-lg py-8"
         >
           {/* Mobile logo */}
-          <Link href="/" className="flex items-center gap-2.5 mb-8 lg:hidden">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#E8A547' }}>
-              <Car className="h-4 w-4" style={{ color: '#0E0E10' }} />
-            </div>
-            <span className="font-display text-xl font-bold" style={{ color: '#F5F0E8' }}>
-              Fleet<span style={{ color: '#E8A547' }}>Nest</span>
-            </span>
+          <Link href="/" className="inline-block mb-8 lg:hidden">
+            <img src="/logo.jpeg" alt="Famba" className="h-10 w-auto object-contain" />
           </Link>
 
-          <h1 className="font-display text-3xl font-bold mb-1.5" style={{ color: '#F5F0E8' }}>Create account</h1>
-          <p className="text-sm mb-8" style={{ color: '#6B6B72' }}>
+          <h1 className="font-display text-3xl font-extrabold mb-1.5 text-[#0B192C]">Create account</h1>
+          <p className="text-sm mb-8 text-slate-500 font-medium">
             Already registered?{' '}
             <Link href="/auth/login" style={{ color: '#E8A547' }}>Sign in</Link>
           </p>
