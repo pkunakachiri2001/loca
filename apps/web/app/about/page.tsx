@@ -31,7 +31,7 @@ const team = [
   {
     name: 'Tendai Ndlovu',
     role: 'Co-Founder & CTO',
-    image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&h=300&fit=crop&crop=face',
+    image: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=300&h=300&fit=crop&crop=face',
     bio: 'Software engineer who previously built scalable transport infrastructure in Harare.',
   },
 ];

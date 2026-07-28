@@ -170,7 +170,7 @@ export function HeroSection() {
                   </div>
                   <div className="relative">
                     <img
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face"
+                      src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop&crop=face"
                       alt="Tapiwa"
                       className="w-10 h-10 rounded-full object-cover border-2 border-[#008767]"
                     />
@@ -248,7 +248,7 @@ export function HeroSection() {
               <div className="absolute -bottom-6 -right-6 hidden sm:block pointer-events-none">
                 <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-2xl bg-emerald-700">
                   <img
-                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face"
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
                     alt="Famba User"
                     className="w-full h-full object-cover"
                   />
