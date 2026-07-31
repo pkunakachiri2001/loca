@@ -64,7 +64,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
                 <User className="h-3.5 w-3.5 text-[#008767]" />
-                <span>Locardia Munyuki (HR Manager)</span>
+                <span>PKunaka (Developer)</span>
               </div>
               <a href="mailto:HRmanager@kunakatech.tech" className="flex items-center gap-2 text-xs text-slate-500 hover:text-[#008767] transition-colors">
                 <Mail className="h-3.5 w-3.5 text-[#008767]" />
