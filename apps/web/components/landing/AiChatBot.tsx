@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Bot, Sparkles } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react';
 
 const quickReplies = [
   'How do I book a car?',
@@ -11,26 +11,12 @@ const quickReplies = [
   'Is payment secure?',
 ];
 
-const botResponses: Record<string, string> = {
-  'how do i book a car?': 'Booking on Famba is simple! 1️⃣ Browse vehicles or services in your city. 2️⃣ Select your dates or delivery location. 3️⃣ Pay securely online in USD. 4️⃣ Receive instant confirmation. Need help finding a vehicle?',
-  'what are your prices?': 'Prices are set by verified providers. Car rentals start from $25/day, buses from $65/day, driver hire from $15/day, and package deliveries from $2.50. Try coupon WELCOME10 for 10% off your first booking!',
-  'how do i list my company?': 'Welcome aboard! 🚀 Click "List Your Business" in the top bar. Registration is 100% free with no setup fees. Our team verifies applications within 48 hours.',
-  'is payment secure?': '🔒 100% Secure. All payments use bank-grade 256-bit SSL encryption. Funds are protected until your trip or service begins.',
-};
-
-function getBotResponse(message: string): string {
-  const lower = message.toLowerCase();
-  for (const [key, response] of Object.entries(botResponses)) {
-    if (lower.includes(key.slice(0, 12))) return response;
-  }
-  return "I'm Famba Assistant! ✨ I can assist you with vehicle bookings, deliveries, provider onboarding, pricing, or account questions. How can I help you today?";
-}
-
 interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
   time: string;
+  isError?: boolean;
 }
 
 export function AiChatBot() {
@@ -38,7 +24,7 @@ export function AiChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Welcome to Famba ✨ How can I assist with your transport, delivery, or business today?',
+      text: 'Welcome to Famba ✨ I\'m your AI assistant powered by Groq. How can I assist with your transport, delivery, or business today?',
       sender: 'bot',
       time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
     },
@@ -52,7 +38,7 @@ export function AiChatBot() {
   }, [messages, isTyping]);
 
   const sendMessage = async (text: string) => {
-    if (!text.trim()) return;
+    if (!text.trim() || isTyping) return;
 
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -65,17 +51,39 @@ export function AiChatBot() {
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const responseText = getBotResponse(text);
+    // Build history excluding the welcome message for a cleaner context
+    const history = messages.map((m) => ({ sender: m.sender, text: m.text }));
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, history }),
+      });
+
+      const data = await res.json();
+
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
-        text: responseText,
+        text: res.ok ? data.reply : (data.error ?? 'Something went wrong. Please try again.'),
         sender: 'bot',
+        isError: !res.ok,
         time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
       };
+
       setMessages((prev) => [...prev, botMsg]);
+    } catch {
+      const errorMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        text: 'Unable to reach the assistant. Please check your connection and try again.',
+        sender: 'bot',
+        isError: true,
+        time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
       setIsTyping(false);
-    }, 750);
+    }
   };
 
   return (
@@ -98,7 +106,8 @@ export function AiChatBot() {
                 <div>
                   <h3 className="font-display font-bold text-sm text-white">Famba Assistant</h3>
                   <p className="text-[10px] flex items-center gap-1 text-emerald-100">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" /> Online 24/7
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                    AI · Powered by Groq
                   </p>
                 </div>
               </div>
@@ -118,8 +127,8 @@ export function AiChatBot() {
                   className={`flex items-start gap-2.5 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {m.sender === 'bot' && (
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767]">
-                      <Bot className="h-3.5 w-3.5" />
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border text-[#008767] ${m.isError ? 'bg-red-50 border-red-200 text-red-500' : 'bg-[#E6F4F1] border-[#B2E3D8]'}`}>
+                      {m.isError ? <AlertCircle className="h-3.5 w-3.5 text-red-500" /> : <Bot className="h-3.5 w-3.5" />}
                     </div>
                   )}
 
@@ -127,11 +136,15 @@ export function AiChatBot() {
                     className={`max-w-[80%] rounded-2xl p-3.5 text-xs leading-relaxed ${
                       m.sender === 'user'
                         ? 'rounded-tr-none bg-[#008767] text-white shadow-sm font-semibold'
+                        : m.isError
+                        ? 'rounded-tl-none bg-red-50 text-red-700 border border-red-200 shadow-sm'
                         : 'rounded-tl-none bg-white text-slate-800 border border-slate-200 shadow-sm'
                     }`}
                   >
                     {m.text}
-                    <p className={`text-[9px] mt-1 text-right ${m.sender === 'user' ? 'text-white/80' : 'text-slate-400'}`}>{m.time}</p>
+                    <p className={`text-[9px] mt-1 text-right ${m.sender === 'user' ? 'text-white/80' : m.isError ? 'text-red-400' : 'text-slate-400'}`}>
+                      {m.time}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -141,7 +154,11 @@ export function AiChatBot() {
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#E6F4F1] text-[#008767]">
                     <Bot className="h-3.5 w-3.5" />
                   </div>
-                  <span>Assistant is typing...</span>
+                  <div className="flex gap-1 px-3 py-2 bg-white rounded-2xl rounded-tl-none border border-slate-200 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -153,7 +170,8 @@ export function AiChatBot() {
                 <button
                   key={qr}
                   onClick={() => sendMessage(qr)}
-                  className="text-[11px] px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 hover:bg-[#E6F4F1] hover:text-[#008767] hover:border-[#B2E3D8] transition-all font-semibold"
+                  disabled={isTyping}
+                  className="text-[11px] px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 hover:bg-[#E6F4F1] hover:text-[#008767] hover:border-[#B2E3D8] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {qr}
                 </button>
@@ -173,9 +191,14 @@ export function AiChatBot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask Famba assistant anything..."
-                className="input-dark flex-1 py-2 text-xs"
+                disabled={isTyping}
+                className="input-dark flex-1 py-2 text-xs disabled:opacity-60"
               />
-              <button type="submit" className="btn-primary py-2 px-3">
+              <button
+                type="submit"
+                disabled={isTyping || !input.trim()}
+                className="btn-primary py-2 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <Send className="h-3.5 w-3.5" />
               </button>
             </form>
