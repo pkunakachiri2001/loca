@@ -1,5 +1,5 @@
 /**
- * FleetNest — Prisma Client Singleton
+ * Famba — Prisma Client Singleton
  * Optimized for Neon Serverless PostgreSQL & Vercel Functions
  */
 

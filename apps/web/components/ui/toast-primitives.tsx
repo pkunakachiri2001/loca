@@ -1,5 +1,5 @@
 /**
- * Toast Primitives — Simple implementation for FleetNest
+ * Toast Primitives — Simple implementation for Famba
  * A simplified version compatible with the toaster component
  */
 

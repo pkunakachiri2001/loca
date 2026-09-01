@@ -14,12 +14,12 @@ export default function TermsPage() {
         <div className="space-y-6 text-sm leading-relaxed" style={{ color: '#9A9A9E' }}>
           <section className="card p-6 space-y-2">
             <h2 className="font-bold text-white text-base">1. Acceptance of Terms</h2>
-            <p>By using the FleetNest platform operated by KUNAKA TECH, you agree to comply with and be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
+            <p>By using the Famba platform operated by KUNAKA TECH, you agree to comply with and be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
           </section>
           
           <section className="card p-6 space-y-2">
             <h2 className="font-bold text-white text-base">2. Service Usage & Bookings</h2>
-            <p>FleetNest provides a marketplace connecting customers with verified vehicle rental, driver, mechanic, and car wash service providers. All bookings are subject to availability and provider confirmation.</p>
+            <p>Famba provides a marketplace connecting customers with verified vehicle rental, driver, mechanic, and car wash service providers. All bookings are subject to availability and provider confirmation.</p>
           </section>
 
           <section className="card p-6 space-y-2">

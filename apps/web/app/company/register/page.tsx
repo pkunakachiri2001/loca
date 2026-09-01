@@ -78,7 +78,7 @@ export default function CompanyRegisterPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
             <span className="section-badge mb-4">For Providers</span>
             <h1 className="font-display text-4xl font-bold mb-3" style={{ color: '#F5F0E8' }}>
-              List your business on FleetNest
+              List your business on Famba
             </h1>
             <p style={{ color: '#6B6B72' }}>
               Join 2,400+ transport providers earning on the platform. Free to register, no hidden fees.
@@ -244,7 +244,7 @@ export default function CompanyRegisterPage() {
                 {/* Terms */}
                 <div className="p-4 rounded-xl" style={{ background: '#242428', border: '1px solid #2E2E34' }}>
                   <p className="text-xs leading-relaxed" style={{ color: '#6B6B72' }}>
-                    By submitting this form you agree to FleetNest's{' '}
+                    By submitting this form you agree to Famba's{' '}
                     <a href="#" style={{ color: '#E8A547' }}>Provider Terms of Service</a> and{' '}
                     <a href="#" style={{ color: '#E8A547' }}>Privacy Policy</a>.
                     Your business will be reviewed before appearing publicly on the platform.

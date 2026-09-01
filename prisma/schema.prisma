@@ -1,5 +1,5 @@
 // ============================================================
-// FleetNest — Prisma Schema
+// Famba — Prisma Schema
 // A complete, scalable PostgreSQL schema for the transportation
 // services marketplace platform.
 // ============================================================
@@ -554,4 +554,51 @@ model ContactMessage {
   createdAt DateTime @default(now())
 
   @@map("contact_messages")
+}
+
+// ──────────────────────────────────────────────────────────────
+// WHATSAPP BOT — INSURANCE SESSION
+// Tracks ongoing conversations in the WhatsApp insurance flow
+// ──────────────────────────────────────────────────────────────
+
+model InsuranceSession {
+  id        String   @id @default(cuid())
+  phone     String   @unique // WhatsApp number (e.g., 263771234567)
+  state     String   // current conversation state key
+  data      Json     @default("{}") // collected fields so far
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("insurance_sessions")
+}
+
+// ──────────────────────────────────────────────────────────────
+// WHATSAPP BOT — INSURANCE POLICY
+// Stores finalized, paid insurance policies issued via WhatsApp
+// ──────────────────────────────────────────────────────────────
+
+model InsurancePolicy {
+  id              String    @id @default(cuid())
+  policyRef       String    @unique @default(cuid())
+  phone           String    // WhatsApp number of policyholder
+  ownerName       String
+  idNumber        String
+  vehicleReg      String
+  vehicleType     String    // e.g., "Saloon", "SUV", "Truck"
+  coverageType    String    // "THIRD_PARTY" | "COMPREHENSIVE"
+  premium         Float
+  currency        String    @default("USD")
+  paymentStatus   String    @default("PENDING") // PENDING | PAID | FAILED
+  stripeSessionId String?   // Stripe Checkout session ID
+  qrCodeUrl       String?   // URL to generated QR image
+  qrCodeData      String?   // The raw data encoded in the QR
+  deliveryType    String?   // "SELF_COLLECT" | "BIKER"
+  deliveryAddress String?   // Address for biker delivery
+  nearestBranch   String?   // Nearest Zimnat branch (for self-collect)
+  issuedAt        DateTime?
+  expiresAt       DateTime? // Policy expiry (usually 1 year)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("insurance_policies")
 }

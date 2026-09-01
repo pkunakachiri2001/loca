@@ -24,7 +24,7 @@ export default function ContactPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-2xl mx-auto mb-16">
             <span className="section-badge mb-4">Contact KUNAKA TECH</span>
             <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4" style={{ color: '#F5F0E8' }}>Get in Touch</h1>
-            <p style={{ color: '#9A9A9E' }}>Have questions about FleetNest services or partnerships? Contact the KUNAKA TECH team.</p>
+            <p style={{ color: '#9A9A9E' }}>Have questions about Famba services or partnerships? Contact the KUNAKA TECH team.</p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 items-start">

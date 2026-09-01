@@ -1,8 +1,8 @@
 {
-  "name": "fleetnest",
+  "name": "famba",
   "version": "1.0.0",
   "private": true,
-  "description": "FleetNest — A modern transportation services marketplace",
+  "description": "Famba — A modern transportation services marketplace",
   "workspaces": [
     "apps/*",
     "packages/*"

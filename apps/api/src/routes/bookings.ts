@@ -1,5 +1,5 @@
 /**
- * FleetNest — Bookings Routes
+ * Famba — Bookings Routes
  * Full booking lifecycle management
  */
 

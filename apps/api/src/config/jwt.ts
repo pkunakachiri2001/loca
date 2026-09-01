@@ -1,5 +1,5 @@
 /**
- * FleetNest — JWT Utility Functions
+ * Famba — JWT Utility Functions
  */
 
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';

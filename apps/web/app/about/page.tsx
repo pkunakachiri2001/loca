@@ -40,7 +40,7 @@ const values = [
   { icon: Shield, title: 'Trust First', desc: 'Every provider is verified, every vehicle inspected. We stake our reputation on each booking.' },
   { icon: Zap, title: 'Speed Matters', desc: 'Book in under 60 seconds. Instant confirmation. Real-time updates, no waiting.' },
   { icon: Globe, title: 'Local Expertise', desc: 'We are built for Zimbabwean cities — our pricing, logistics, and support reflect local realities.' },
-  { icon: Award, title: 'Quality Standard', desc: 'Only the top 15% of applicants become FleetNest providers. High bar, happy customers.' },
+  { icon: Award, title: 'Quality Standard', desc: 'Only the top 15% of applicants become Famba providers. High bar, happy customers.' },
 ];
 
 export default function AboutPage() {
@@ -66,7 +66,7 @@ export default function AboutPage() {
               <span className="gradient-text">moves</span>
             </h1>
             <p className="text-lg leading-relaxed mb-10" style={{ color: '#9A9A9E', maxWidth: '56ch' }}>
-              FleetNest was born from a simple frustration: booking a reliable vehicle in Harare
+              Famba was born from a simple frustration: booking a reliable vehicle in Harare
               should not require three phone calls and a prayer. We built the platform we wished existed.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -210,7 +210,7 @@ export default function AboutPage() {
               Ready to get moving?
             </h2>
             <p className="mb-8 max-w-md mx-auto" style={{ color: '#6B6B72' }}>
-              Join thousands of customers who trust FleetNest for reliable transportation services.
+              Join thousands of customers who trust Famba for reliable transportation services.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link href="/auth/register" className="btn-primary px-8 py-3 text-base">

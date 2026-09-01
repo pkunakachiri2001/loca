@@ -14,7 +14,7 @@ export default function SafetyPage() {
         <div className="space-y-6 text-sm leading-relaxed" style={{ color: '#9A9A9E' }}>
           <section className="card p-6 space-y-2">
             <h2 className="font-bold text-white text-base">Verified Providers</h2>
-            <p>Every transport provider registered on FleetNest undergoes a rigorous 3-step verification process including business registration and identity checks.</p>
+            <p>Every transport provider registered on Famba undergoes a rigorous 3-step verification process including business registration and identity checks.</p>
           </section>
         </div>
       </div>

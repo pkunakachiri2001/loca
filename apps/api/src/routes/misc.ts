@@ -1,5 +1,5 @@
 /**
- * FleetNest — Categories, Coupons, Upload, and Contact Routes
+ * Famba — Categories, Coupons, Upload, and Contact Routes
  */
 
 import { Router, Request, Response, NextFunction } from 'express';
@@ -128,7 +128,7 @@ uploadRouter.post('/image', authenticate, upload.single('file'), async (req: Req
         });
 
         const result = await cloudinary.uploader.upload(req.file.path, {
-          folder: 'fleetnest',
+          folder: 'famba',
           transformation: [{ quality: 'auto', fetch_format: 'auto' }],
         });
 

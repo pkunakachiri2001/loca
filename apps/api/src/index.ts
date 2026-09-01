@@ -1,5 +1,5 @@
 /**
- * FleetNest API — Main Entry Point
+ * Famba API — Main Entry Point
  * Bootstraps the Express server and Socket.io
  */
 
@@ -25,7 +25,7 @@ async function bootstrap() {
 
     // Start server
     server.listen(PORT, () => {
-      logger.info(`🚀 FleetNest API running on port ${PORT}`);
+      logger.info(`🚀 Famba API running on port ${PORT}`);
       logger.info(`📡 Environment: ${process.env.NODE_ENV}`);
       logger.info(`🔗 API URL: http://localhost:${PORT}/api`);
       logger.info(`💳 Payment mode: ${process.env.STRIPE_MOCK_MODE === 'true' ? 'MOCK' : 'STRIPE'}`);

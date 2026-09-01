@@ -1,5 +1,5 @@
 /**
- * FleetNest — Prisma Seed Script
+ * Famba — Prisma Seed Script
  * Seeds the database with realistic demo data for development and investor demos.
  */
 
@@ -9,7 +9,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting FleetNest seed...\n');
+  console.log('🌱 Starting Famba seed...\n');
 
   // ──────────────────────────────────────────────
   // 1. CLEAR EXISTING DATA (safe reset)

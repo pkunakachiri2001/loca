@@ -111,7 +111,7 @@ export default function AdminDashboardPage() {
           </span>
         </div>
         <h1 className="font-display text-3xl font-bold mb-1" style={{ color: '#F5F0E8' }}>Admin Control Center</h1>
-        <p style={{ color: '#6B6B72' }}>FleetNest global platform metrics, user moderation, and management.</p>
+        <p style={{ color: '#6B6B72' }}>Famba global platform metrics, user moderation, and management.</p>
       </motion.div>
 
       {/* Quick Action Moderation Alerts */}

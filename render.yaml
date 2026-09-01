@@ -1,35 +1,30 @@
-# Render Blueprint for FleetNest (KUNAKA TECH) - FREE TIER
 services:
-  # Express API Backend Service
+  # The FAMBA API (Node.js/Express)
   - type: web
-    name: fleetnest-api
+    name: famba-api
     env: node
-    plan: free
-    buildCommand: npm install && npx prisma generate --schema=prisma/schema.prisma && npm run build:api
-    startCommand: npm run start:api
+    rootDir: apps/api
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: DATABASE_URL
-        sync: false # Set securely in Render dashboard environment settings
-      - key: JWT_ACCESS_SECRET
-        generateValue: true
-      - key: JWT_REFRESH_SECRET
-        generateValue: true
-      - key: CORS_ORIGIN
-        value: "*"
-      - key: STRIPE_MOCK_MODE
-        value: "true"
-
-  # Next.js Web Frontend Service
-  - type: web
-    name: fleetnest-web
-    env: node
-    plan: free
-    buildCommand: npm install && npm run build:web
-    startCommand: npm run start:web
-    envVars:
+        fromDatabase:
+          name: famba-db
+          property: connectionString
+      - key: PORT
+        value: 10000
       - key: NODE_ENV
         value: production
-      - key: NEXT_PUBLIC_APP_NAME
-        value: FleetNest
+
+      # IMPORTANT: You will need to add these manually in the Render dashboard
+      # after deployment since they are secrets:
+      # - STRIPE_SECRET_KEY
+      # - CODECHAT_API_KEY
+      # - CODECHAT_URL
+      # - CODECHAT_WEBHOOK_SECRET
+
+databases:
+  # The PostgreSQL Database
+  - name: famba-db
+    databaseName: famba
+    user: famba

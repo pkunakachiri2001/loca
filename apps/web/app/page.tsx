@@ -12,7 +12,7 @@ import { AiChatBot } from '@/components/landing/AiChatBot';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'FleetNest — Every Journey Starts Here',
+  title: 'Famba — Every Journey Starts Here',
   description: "Africa's premier transportation marketplace. Book car rentals, buses, drivers, mechanics, and more.",
 };
 

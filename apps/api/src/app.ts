@@ -1,5 +1,5 @@
 /**
- * FleetNest API — Express App Configuration
+ * Famba API — Express App Configuration
  * Sets up middleware, routes, and error handling
  */
 
@@ -29,6 +29,7 @@ import couponRoutes from './routes/coupons';
 import adminRoutes from './routes/admin';
 import uploadRoutes from './routes/upload';
 import contactRoutes from './routes/contact';
+import whatsappRoutes from './routes/whatsapp';
 
 export const app = express();
 
@@ -89,6 +90,8 @@ app.use('/api/auth/register', authLimiter);
 // ──────────────────────────────────────────────
 // Note: Stripe webhook needs raw body BEFORE JSON parser
 app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
+// WhatsApp bot Stripe webhook also needs raw body
+app.use('/api/whatsapp/stripe-webhook', express.raw({ type: 'application/json' }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -114,7 +117,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'FleetNest API is running',
+    message: 'Famba API is running',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
@@ -124,7 +127,7 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'FleetNest API is running',
+    message: 'Famba API is running',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
@@ -146,6 +149,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/whatsapp', whatsappRoutes);
 
 // ──────────────────────────────────────────────
 // ERROR HANDLING

@@ -65,7 +65,7 @@ export default function NotFound() {
         {/* Subtle decoration */}
         <div className="mt-16 flex items-center justify-center gap-2">
           <div style={{ width: 32, height: 1, background: '#2E2E34' }} />
-          <span style={{ color: '#3A3A3E', fontSize: 12 }}>FleetNest</span>
+          <span style={{ color: '#3A3A3E', fontSize: 12 }}>Famba</span>
           <div style={{ width: 32, height: 1, background: '#2E2E34' }} />
         </div>
       </motion.div>

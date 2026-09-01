@@ -1,5 +1,5 @@
 /**
- * FleetNest — Auth Store (Zustand)
+ * Famba — Auth Store (Zustand)
  * Global client-side authentication state with SSR hydration tracking
  */
 

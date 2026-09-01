@@ -1,5 +1,5 @@
 /**
- * FleetNest — Authentication Middleware
+ * Famba — Authentication Middleware
  * Verifies JWT access tokens and attaches user to request
  */
 

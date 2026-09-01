@@ -1,5 +1,5 @@
 /**
- * FleetNest — Global Error Handler
+ * Famba — Global Error Handler
  */
 
 import { Request, Response, NextFunction } from 'express';

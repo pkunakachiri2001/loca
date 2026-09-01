@@ -1,5 +1,5 @@
 /**
- * FleetNest — Users Routes (customer profile, bookings, wishlist, notifications)
+ * Famba — Users Routes (customer profile, bookings, wishlist, notifications)
  */
 
 import { Router, Request, Response, NextFunction } from 'express';

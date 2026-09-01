@@ -64,7 +64,7 @@ export default function CustomerDashboardPage() {
         <h1 className="font-display text-3xl font-bold mb-1" style={{ color: '#F5F0E8' }}>
           Welcome back, {user?.firstName}! 👋
         </h1>
-        <p style={{ color: '#6B6B72' }}>Here's an overview of your bookings and saved services on FleetNest.</p>
+        <p style={{ color: '#6B6B72' }}>Here's an overview of your bookings and saved services on Famba.</p>
       </motion.div>
 
       {/* Customer Stats */}

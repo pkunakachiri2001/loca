@@ -1,5 +1,5 @@
 /**
- * FleetNest — Utility Functions
+ * Famba — Utility Functions
  */
 
 import { type ClassValue, clsx } from 'clsx';
@@ -104,6 +104,6 @@ export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number
 /** WhatsApp link generator */
 export function getWhatsAppLink(phone: string, message?: string): string {
   const cleaned = phone.replace(/\D/g, '');
-  const encoded = encodeURIComponent(message || 'Hello, I found you on FleetNest and I am interested in your service.');
+  const encoded = encodeURIComponent(message || 'Hello, I found you on Famba and I am interested in your service.');
   return `https://wa.me/${cleaned}?text=${encoded}`;
 }

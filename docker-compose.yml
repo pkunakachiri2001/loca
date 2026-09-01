@@ -6,18 +6,18 @@ services:
   # ──────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: fleetnest_postgres
+    container_name: famba_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: fleetnest_user
-      POSTGRES_PASSWORD: fleetnest_pass
-      POSTGRES_DB: fleetnest_db
+      POSTGRES_USER: famba_user
+      POSTGRES_PASSWORD: famba_pass
+      POSTGRES_DB: famba_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fleetnest_user -d fleetnest_db"]
+      test: ["CMD-SHELL", "pg_isready -U famba_user -d famba_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,7 +27,7 @@ services:
   # ──────────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: fleetnest_redis
+    container_name: famba_redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -40,19 +40,19 @@ services:
       retries: 5
 
   # ──────────────────────────────────────────────
-  # FleetNest API (Express + Node.js)
+  # Famba API (Express + Node.js)
   # ──────────────────────────────────────────────
   api:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
-    container_name: fleetnest_api
+    container_name: famba_api
     restart: unless-stopped
     ports:
       - "5000:5000"
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://fleetnest_user:fleetnest_pass@postgres:5432/fleetnest_db?schema=public
+      DATABASE_URL: postgresql://famba_user:famba_pass@postgres:5432/famba_db?schema=public
       REDIS_URL: redis://redis:6379
     env_file:
       - .env
@@ -65,13 +65,13 @@ services:
       - ./uploads:/app/uploads
 
   # ──────────────────────────────────────────────
-  # FleetNest Web (Next.js)
+  # Famba Web (Next.js)
   # ──────────────────────────────────────────────
   web:
     build:
       context: ./apps/web
       dockerfile: Dockerfile
-    container_name: fleetnest_web
+    container_name: famba_web
     restart: unless-stopped
     ports:
       - "3000:3000"

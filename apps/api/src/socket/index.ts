@@ -1,5 +1,5 @@
 /**
- * FleetNest — Socket.io Real-time Server
+ * Famba — Socket.io Real-time Server
  * Handles live booking status, notifications, and GPS tracking architecture
  */
 

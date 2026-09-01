@@ -14,7 +14,7 @@ export default function CookiesPage() {
         <div className="space-y-6 text-sm leading-relaxed" style={{ color: '#9A9A9E' }}>
           <section className="card p-6 space-y-2">
             <h2 className="font-bold text-white text-base">How We Use Cookies</h2>
-            <p>FleetNest uses essential cookies to manage user authentication sessions and maintain user preferences across site visits.</p>
+            <p>Famba uses essential cookies to manage user authentication sessions and maintain user preferences across site visits.</p>
           </section>
         </div>
       </div>

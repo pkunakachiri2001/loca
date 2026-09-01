@@ -55,7 +55,7 @@ export default function CompanyDashboardPage() {
           <h1 className="font-display text-3xl font-bold mb-1" style={{ color: '#F5F0E8' }}>
             {data?.company?.name || 'Company Dashboard'}
           </h1>
-          <p style={{ color: '#6B6B72' }}>Manage your listings, bookings, and grow your business on FleetNest.</p>
+          <p style={{ color: '#6B6B72' }}>Manage your listings, bookings, and grow your business on Famba.</p>
         </div>
         <Link href="/company/listings/new" className="btn-primary text-sm shrink-0">
           <Plus className="h-4 w-4" /> Add Listing

@@ -354,7 +354,7 @@ export default function ListingDetailPage() {
               {/* Reassurance */}
               <div className="mt-4 space-y-3 px-2">
                 {[
-                  { icon: Shield, text: 'Protected by FleetNest guarantee' },
+                  { icon: Shield, text: 'Protected by Famba guarantee' },
                   { icon: Clock, text: 'Free cancellation up to 24h before' },
                   { icon: Phone, text: '24/7 customer support available' },
                 ].map(({ icon: Icon, text }) => (

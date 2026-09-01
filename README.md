@@ -79,7 +79,7 @@ FAMBA is Zimbabwe's premier all-in-one smart travel, transportation, and deliver
 ## 📁 Project Structure
 
 ```
-fleetnest/
+famba/
 ├── apps/
 │   ├── web/                  # Next.js 14 frontend
 │   │   ├── app/              # App Router pages
@@ -133,8 +133,8 @@ fleetnest/
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourusername/fleetnest.git
-cd fleetnest
+git clone https://github.com/yourusername/famba.git
+cd famba
 
 # Install all dependencies (monorepo)
 npm install
@@ -149,7 +149,7 @@ cp .env.example .env
 
 **Minimum required for demo** (mock payments, local images):
 ```env
-DATABASE_URL=postgresql://fleetnest_user:fleetnest_pass@localhost:5432/fleetnest_db
+DATABASE_URL=postgresql://famba_user:famba_pass@localhost:5432/famba_db
 JWT_ACCESS_SECRET=any-random-secret-string
 JWT_REFRESH_SECRET=another-random-secret
 STRIPE_MOCK_MODE=true
@@ -198,8 +198,8 @@ npm run dev:web   # Web on http://localhost:3000
 **Demo accounts** (all passwords: `Password123!`):
 | Role | Email |
 |------|-------|
-| Admin | admin@fleetnest.com |
-| Company Owner | harare.motors@fleetnest.com |
+| Admin | admin@famba.com |
+| Company Owner | harare.motors@famba.com |
 | Customer | john.doe@example.com |
 
 ---
