@@ -13,8 +13,14 @@ services:
       - key: NODE_ENV
         value: production
 
-      # IMPORTANT: Add these secrets in the Render dashboard:
-      # - DATABASE_URL (Paste your Neon DB URL here)
+      - key: DATABASE_URL
+        value: "postgresql://neondb_owner:npg_erIZiMFDa08L@ep-dark-waterfall-a79yj0wz.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&connect_timeout=30&pool_timeout=30&connection_limit=20"
+      - key: JWT_ACCESS_SECRET
+        value: famba-access-secret-key-development-2026
+      - key: JWT_REFRESH_SECRET
+        value: famba-refresh-secret-key-development-2026
+
+      # IMPORTANT: Add these secrets in the Render dashboard later:
       # - STRIPE_SECRET_KEY
       # - CODECHAT_API_KEY
       # - CODECHAT_URL
