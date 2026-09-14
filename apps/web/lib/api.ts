@@ -9,9 +9,7 @@ import axios from 'axios';
 // to the Express backend — completely avoiding CORS restrictions.
 // On the server side (SSR), use the full absolute API URL directly.
 const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-const baseURL = (!rawApiUrl || rawApiUrl.includes('project-nxl93'))
-  ? 'https://loca-api.vercel.app/api'
-  : rawApiUrl;
+const baseURL = rawApiUrl;
 
 export const apiClient = axios.create({
   baseURL,
