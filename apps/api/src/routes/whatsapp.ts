@@ -17,16 +17,12 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import rateLimit from 'express-rate-limit';
-import Stripe from 'stripe';
+import { paynow, checkPaymentStatus } from '../services/paynow';
 import { logger } from '../config/logger';
 import { prisma } from '../config/database';
 import { handleIncomingMessage, completePolicyAfterPayment } from '../services/whatsapp/bot';
 
 const router = Router();
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-04-10' as any,
-});
 
 // ──────────────────────────────────────────────────────────────
 // SECURITY: Rate limiter for webhook endpoints
@@ -165,64 +161,42 @@ router.post('/webhook', webhookRateLimiter, verifyCodeChatSignature, async (req:
 });
 
 // ──────────────────────────────────────────────────────────────
-// POST /api/whatsapp/stripe-webhook
-// Stripe calls this when payment is completed.
-// NOTE: Register this URL in your Stripe dashboard webhook settings.
-//       Event to listen for: checkout.session.completed
+// POST /api/whatsapp/paynow-webhook
+// Paynow calls this when payment is updated (e.g. Paid).
 // ──────────────────────────────────────────────────────────────
-router.post(
-  '/stripe-webhook',
-  // Raw body needed for Stripe signature verification
-  // (already handled in app.ts for /api/payments/webhook; this is a separate endpoint)
-  async (req: Request, res: Response) => {
-    const sig = req.headers['stripe-signature'] as string;
-    const webhookSecret = process.env.STRIPE_WHATSAPP_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '';
+router.post('/paynow-webhook', async (req: Request, res: Response) => {
+  res.status(200).send('OK');
 
-    let event: Stripe.Event;
+  const { reference, paynowreference, status, pollurl } = req.body;
 
-    try {
-      // req.body is raw Buffer if you add raw middleware for this route (see app.ts note)
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        webhookSecret,
-      );
-    } catch (err: any) {
-      logger.error('[StripeWebhook] Signature verification failed:', err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
+  if (status !== 'Paid') {
+    logger.info(`[PaynowWebhook] Status is ${status} for reference ${reference}. Ignored.`);
+    return;
+  }
+
+  try {
+    const existingPolicy = await prisma.insurancePolicy.findFirst({
+      where: { paynowReference: reference },
+    });
+
+    if (existingPolicy && existingPolicy.paymentStatus === 'PAID') {
+      logger.info(`[PaynowWebhook] Duplicate webhook for ${reference} — already PAID.`);
+      return;
     }
 
-    res.status(200).json({ received: true });
-
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const phone   = session.metadata?.whatsappPhone;
-
-      if (!phone) {
-        logger.warn('[StripeWebhook] No whatsappPhone in session metadata');
-        return;
-      }
-
-      // SECURITY: Idempotency check — prevent duplicate policy on Stripe retries
-      // Stripe can fire the same webhook multiple times. We check if a policy
-      // already exists for this Stripe session before processing.
-      const existingPolicy = await prisma.insurancePolicy.findFirst({
-        where: { stripeSessionId: session.id },
-      });
-
-      if (existingPolicy) {
-        logger.info(`[StripeWebhook] Duplicate webhook for session ${session.id} — already issued policy ${existingPolicy.policyRef}. Skipping.`);
-        return;
-      }
-
-      logger.info(`[StripeWebhook] Payment complete for ${phone}, session ${session.id}`);
-
-      completePolicyAfterPayment(phone, session.id).catch((err) => {
-        logger.error('[StripeWebhook] completePolicyAfterPayment error:', err);
-      });
+    if (!existingPolicy) {
+      logger.warn(`[PaynowWebhook] Policy with reference ${reference} not found.`);
+      return;
     }
-  },
-);
+
+    logger.info(`[PaynowWebhook] Payment complete for ${existingPolicy.phone}, ref: ${reference}`);
+    
+    // Complete the policy and notify user via WhatsApp
+    await completePolicyAfterPayment(existingPolicy.phone, reference);
+  } catch (err: any) {
+    logger.error('[PaynowWebhook] Error processing webhook:', err.message);
+  }
+});
 
 // ──────────────────────────────────────────────────────────────
 // GET /api/whatsapp/verify-policy/:ref

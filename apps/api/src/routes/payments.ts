@@ -9,17 +9,9 @@ import { authenticate } from '../middleware/auth';
 import { ApiError } from '../middleware/errorHandler';
 import { logger } from '../config/logger';
 
-const router = Router();
+import { createWebPayment, checkPaymentStatus } from '../services/paynow';
 
-// Lazily initialize Stripe only if not in mock mode
-let stripe: any = null;
-function getStripe() {
-  if (!stripe && process.env.STRIPE_MOCK_MODE !== 'true') {
-    const Stripe = require('stripe');
-    stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' });
-  }
-  return stripe;
-}
+const router = Router();
 
 // ──────────────────────────────────────────────
 // POST /api/payments/intent — Create payment intent
@@ -34,10 +26,11 @@ router.post('/intent', authenticate, async (req: Request, res: Response, next: N
 
     if (!booking) throw new ApiError(404, 'Booking not found or already paid.');
 
-    const isMockMode = process.env.STRIPE_MOCK_MODE === 'true';
+    const paynowReference = `web_${bookingId}_${Date.now()}`;
+    const userEmail = req.user!.email || 'customer@famba.co.zw';
 
     if (isMockMode) {
-      // Create a mock payment intent
+      // Create a mock payment
       const payment = await prisma.payment.create({
         data: {
           bookingId,
@@ -46,14 +39,14 @@ router.post('/intent', authenticate, async (req: Request, res: Response, next: N
           currency: booking.currency,
           method: 'MOCK',
           status: 'PENDING',
-          stripeClientSecret: `mock_secret_${Date.now()}`,
+          paynowReference,
         },
       });
 
       res.json({
         success: true,
         data: {
-          clientSecret: payment.stripeClientSecret,
+          redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/mock-pay?ref=${paynowReference}`,
           paymentId: payment.id,
           amount: booking.totalAmount,
           currency: booking.currency,
@@ -63,13 +56,12 @@ router.post('/intent', authenticate, async (req: Request, res: Response, next: N
       return;
     }
 
-    // Real Stripe payment intent
-    const stripeClient = getStripe();
-    const paymentIntent = await stripeClient.paymentIntents.create({
-      amount: Math.round(booking.totalAmount * 100), // Convert to kobo/cents
-      currency: booking.currency.toLowerCase(),
-      metadata: { bookingId, userId: req.user!.id },
-    });
+    // Real Paynow Web Checkout
+    const paynowRes = await createWebPayment(paynowReference, booking.totalAmount, userEmail);
+
+    if (!paynowRes.success) {
+      throw new ApiError(500, `Paynow error: ${paynowRes.error}`);
+    }
 
     const payment = await prisma.payment.create({
       data: {
@@ -77,17 +69,17 @@ router.post('/intent', authenticate, async (req: Request, res: Response, next: N
         userId: req.user!.id,
         amount: booking.totalAmount,
         currency: booking.currency,
-        method: 'STRIPE',
+        method: 'PAYNOW',
         status: 'PENDING',
-        stripePaymentIntentId: paymentIntent.id,
-        stripeClientSecret: paymentIntent.client_secret,
+        paynowReference,
+        paynowPollUrl: paynowRes.pollUrl,
       },
     });
 
     res.json({
       success: true,
       data: {
-        clientSecret: paymentIntent.client_secret,
+        redirectUrl: paynowRes.redirectUrl,
         paymentId: payment.id,
         amount: booking.totalAmount,
         currency: booking.currency,
@@ -158,56 +150,57 @@ router.post('/mock', authenticate, async (req: Request, res: Response, next: Nex
 });
 
 // ──────────────────────────────────────────────
-// POST /api/payments/webhook — Stripe webhook handler
+// POST /api/payments/paynow-webhook — Paynow webhook handler
 // ──────────────────────────────────────────────
-router.post('/webhook', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+router.post('/paynow-webhook', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (process.env.STRIPE_MOCK_MODE === 'true') {
-      res.json({ received: true });
+    res.status(200).send('OK');
+
+    const { reference, paynowreference, status, pollurl } = req.body;
+
+    if (status !== 'Paid') {
+      logger.info(`[PaynowWebHook] Status is ${status} for ${reference}.`);
       return;
     }
 
-    const sig = req.headers['stripe-signature'];
-    const stripeClient = getStripe();
+    const payment = await prisma.payment.findFirst({
+      where: { paynowReference: reference },
+    });
 
-    let event: any;
-    try {
-      event = stripeClient.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET!
-      );
-    } catch {
-      res.status(400).json({ error: 'Invalid webhook signature.' });
+    if (!payment || payment.status === 'COMPLETED') {
       return;
     }
 
-    switch (event.type) {
-      case 'payment_intent.succeeded': {
-        const intent = event.data.object;
-        await prisma.payment.updateMany({
-          where: { stripePaymentIntentId: intent.id },
-          data: { status: 'COMPLETED', paidAt: new Date(), stripeChargeId: intent.latest_charge },
-        });
-        const payment = await prisma.payment.findFirst({ where: { stripePaymentIntentId: intent.id } });
-        if (payment) {
-          await prisma.booking.update({ where: { id: payment.bookingId }, data: { status: 'CONFIRMED', confirmedAt: new Date() } });
-        }
-        break;
-      }
-      case 'payment_intent.payment_failed': {
-        const intent = event.data.object;
-        await prisma.payment.updateMany({
-          where: { stripePaymentIntentId: intent.id },
-          data: { status: 'FAILED', failedAt: new Date(), failureMessage: intent.last_payment_error?.message },
-        });
-        break;
-      }
-    }
+    await prisma.$transaction([
+      prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: 'COMPLETED',
+          paidAt: new Date(),
+          transactionRef: paynowreference,
+        },
+      }),
+      prisma.booking.update({
+        where: { id: payment.bookingId },
+        data: { status: 'CONFIRMED', confirmedAt: new Date() },
+      }),
+    ]);
 
-    res.json({ received: true });
+    // Notify customer
+    await prisma.notification.create({
+      data: {
+        userId: payment.userId,
+        type: 'PAYMENT_SUCCESS',
+        title: 'Payment Successful!',
+        message: `Your Paynow payment of $${payment.amount.toLocaleString()} was successful.`,
+        link: `/dashboard/bookings/${payment.bookingId}`,
+        metadata: { paymentId: payment.id, bookingId: payment.bookingId },
+      },
+    });
+
+    logger.info(`[PaynowWebHook] Successfully processed payment for booking ${payment.bookingId}`);
   } catch (err) {
-    next(err);
+    logger.error('[PaynowWebHook] Error:', err);
   }
 });
 

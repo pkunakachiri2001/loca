@@ -17,7 +17,7 @@ const team = [
   {
     name: 'Locardia Munyuki',
     role: 'HR Manager & Executive Leadership',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&crop=face',
+    image: '/avatars/locardia.jpg',
     bio: 'HR Manager at KUNAKA TECH leading global team recruitment and culture.',
     email: 'HRmanager@kunakatech.tech',
     phone: '+91 7796787966',
@@ -25,13 +25,13 @@ const team = [
   {
     name: 'Tafadzwa Moyo',
     role: 'Co-Founder & CEO',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
+    image: '/avatars/tafadzwa.jpg',
     bio: 'Former logistics director with 14 years in Zimbabwean fleet management.',
   },
   {
     name: 'Tendai Ndlovu',
     role: 'Co-Founder & CTO',
-    image: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=300&h=300&fit=crop&crop=face',
+    image: '/avatars/tendai.jpg',
     bio: 'Software engineer who previously built scalable transport infrastructure in Harare.',
   },
 ];

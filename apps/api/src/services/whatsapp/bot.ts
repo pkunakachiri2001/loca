@@ -15,16 +15,18 @@
  * │ INS_OWNER_NAME      │ Ask owner full name                   │
  * │ INS_ID_NUMBER       │ Ask national ID number                │
  * │ INS_COVERAGE_TYPE   │ Ask coverage tier                     │
- * │ INS_CONFIRM_QUOTE   │ Show quote, ask to proceed            │
- * │ INS_PAYMENT_SENT    │ Waiting for Stripe webhook            │
- * │ INS_DELIVERY_CHOICE │ Ask self-collect or biker             │
+ * │ INS_CONFIRM_QUOTE   │ Waiting for YES/NO                    │
+ * │ INS_PAYMENT_SENT    │ Waiting for Paynow webhook            │
+ * │ INS_DELIVERY_CHOICE │ Waiting for delivery option           │
  * │ INS_BIKER_ADDRESS   │ Ask address for biker delivery        │
  * │ DONE                │ Policy issued, session complete       │
  * └─────────────────────┴───────────────────────────────────────┘
  */
 
-import Stripe from 'stripe';
+import { ZIMNAT_BRANCHES } from './pricing';
 import { prisma } from '../../config/database';
+import { generatePolicyQR } from './qrcode';
+import { createExpressPayment } from '../paynow';
 import { logger } from '../../config/logger';
 import { sendText, sendImage, sendMenu } from './sender';
 import { getSession, saveSession, clearSession, SessionData } from './session';
@@ -36,16 +38,9 @@ import {
   VehicleType,
   CoverageType,
 } from './pricing';
-import { generatePolicyQR } from './qrcode';
 
 // ─── Stripe setup ─────────────────────────────────────────────────────────
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-04-10' as any,
-});
-
-const MOCK_MODE = process.env.STRIPE_MOCK_MODE === 'true';
-const APP_URL   = process.env.APP_URL || 'http://localhost:3000';
-const API_URL   = process.env.API_URL || 'http://localhost:5000';
+const MOCK_MODE = process.env.STRIPE_MOCK_MODE === 'true'; // Keep for mock flag if needed
 
 // ─── Zimnat branch list ──────────────────────────────────────────────────
 const ZIMNAT_BRANCHES = [
@@ -337,61 +332,44 @@ async function handleConfirmQuote(
     return;
   }
 
-  // Create Stripe Checkout session (or mock it)
-  let paymentUrl: string;
-  let stripeSessionId: string;
+  // Create Paynow Express Checkout session
+  let paynowReference = `ins_${Date.now()}`;
+  let paymentUrl: string = '';
+  
+  const paymentAmount = data.quotedPremium || 0;
 
   if (MOCK_MODE) {
     // ── MOCK MODE ── generate a fake payment link for testing
-    stripeSessionId = `mock_${Date.now()}`;
-    paymentUrl = `${APP_URL}/insurance/mock-pay?ref=${stripeSessionId}&amount=${data.quotedPremium}`;
+    paymentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/insurance/mock-pay?ref=${paynowReference}&amount=${paymentAmount}`;
     logger.info(`[Bot] MOCK payment for ${phone}: ${paymentUrl}`);
   } else {
-    // ── REAL STRIPE ──
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Zimnat Motor Insurance — ${data.coverageType?.replace('_', ' ')}`,
-              description: `Vehicle: ${data.vehicleReg} | Owner: ${data.ownerName}`,
-            },
-            unit_amount: Math.round((data.quotedPremium || 0) * 100), // cents
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${APP_URL}/insurance/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url:  `${APP_URL}/insurance/cancel`,
-      metadata: {
-        whatsappPhone: phone,
-        vehicleReg:    data.vehicleReg || '',
-        ownerName:     data.ownerName  || '',
-        idNumber:      data.idNumber   || '',
-        vehicleType:   data.vehicleType || '',
-        coverageType:  data.coverageType || '',
-      },
-    });
-    stripeSessionId = session.id;
-    paymentUrl = session.url!;
+    // ── REAL PAYNOW EXPRESS CHECKOUT ──
+    const res = await createExpressPayment(paynowReference, paymentAmount, phone);
+    
+    if (res.success) {
+      await sendText(phone, `📱 *Paynow Express Checkout*\n\nPlease check your phone for an EcoCash/OneMoney prompt to enter your PIN and complete the payment of *$${paymentAmount} USD*.\n\nOnce you approve it on your phone, we will instantly generate your QR code! ✅\n\n_(If you didn't get the prompt, wait 30 seconds or reply NO to cancel)_`);
+      
+      const newData: SessionData = { ...data, paynowReference };
+      await saveSession(phone, 'INS_PAYMENT_SENT', newData);
+      return;
+    } else {
+      await sendText(phone, `❌ Sorry, we couldn't initiate the mobile payment. Please check if your number is registered for EcoCash/OneMoney and try again.\n\nReply *YES* to retry.`);
+      return;
+    }
   }
 
-  const newData: SessionData = { ...data, stripeSessionId };
-
-  await sendText(
-    phone,
-    `💳 *Payment Link*\n\nPlease complete your payment of *$${data.quotedPremium} USD* using the secure link below:\n\n👉 ${paymentUrl}\n\n_The link is valid for 30 minutes._\n\nOnce paid, we'll send your QR code instantly! ✅`,
-  );
-
-  await saveSession(phone, 'INS_PAYMENT_SENT', newData);
+  const newData: SessionData = { ...data, paynowReference };
 
   if (MOCK_MODE) {
+    await sendText(
+      phone,
+      `💳 *Payment Link (MOCK)*\n\nPlease complete your payment of *$${paymentAmount} USD* using the secure link below:\n\n👉 ${paymentUrl}\n\nOnce paid, we'll send your QR code instantly! ✅`,
+    );
+    await saveSession(phone, 'INS_PAYMENT_SENT', newData);
+
     // Auto-complete in mock mode after 3 seconds for testing
     setTimeout(() => {
-      completePolicyAfterPayment(phone, stripeSessionId).catch((e) =>
+      completePolicyAfterPayment(phone, paynowReference).catch((e) =>
         logger.error('[Bot] Mock auto-complete failed:', e),
       );
     }, 3_000);
@@ -458,14 +436,14 @@ async function handleBikerAddress(
   await saveSession(phone, 'DONE', newData);
 }
 
-// ─── CALLED BY STRIPE WEBHOOK (or mock) ──────────────────────────────────
+// ─── CALLED BY PAYNOW WEBHOOK (or mock) ──────────────────────────────────
 /**
- * Called when Stripe confirms payment (via webhook in whatsapp.ts route).
+ * Called when Paynow confirms payment (via webhook in whatsapp.ts route).
  * Generates the QR code, saves the policy, and sends QR to user's WhatsApp.
  */
 export async function completePolicyAfterPayment(
   phone: string,
-  stripeSessionId: string,
+  paynowReference: string,
 ): Promise<void> {
   const session = await getSession(phone);
   const data    = session.data;
@@ -484,14 +462,14 @@ export async function completePolicyAfterPayment(
       coverageType:   data.coverageType  || '',
       premium:        data.quotedPremium || 0,
       paymentStatus:  'PAID',
-      stripeSessionId,
+      paynowReference,
       issuedAt:       new Date(),
       expiresAt,
     },
   });
 
   // Generate QR code
-  const verifyUrl = `${API_URL}/api/whatsapp/verify-policy/${policy.policyRef}`;
+  const verifyUrl = `${process.env.API_URL || 'http://localhost:3001'}/api/whatsapp/verify-policy/${policy.policyRef}`;
   const { publicUrl, qrData } = await generatePolicyQR({
     policyRef:    policy.policyRef,
     ownerName:    policy.ownerName,

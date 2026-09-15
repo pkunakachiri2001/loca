@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # -----------------------------------------------------
+  # 1) CodeChat API Wrapper
+  # -----------------------------------------------------
+  codechat:
+    image: codechat/api:latest
+    container_name: codechat_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      # Use PostgreSQL for session storage
+      - DB_PROVIDER=postgresql
+      - POSTGRES_DB=codechat
+      - POSTGRES_USER=codechat
+      - POSTGRES_PASSWORD=codechat_pass
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      # Redis connection for queuing and caching
+      - REDIS_URI=redis://redis:6379
+      # Security (Global API Key to access CodeChat API)
+      - AUTH_SECRET=${CODECHAT_API_KEY:-my_super_secret_key}
+      # The URL of your Render backend that will receive Webhooks
+      - WEBHOOK_GLOBAL_URL=${FAMBA_BACKEND_URL:-https://famba-api.onrender.com}/api/whatsapp/webhook
+      - WEBHOOK_GLOBAL_ENABLED=true
+      - WEBHOOK_GLOBAL_EVENTS=messages.upsert
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - codechat_net
+
+  # -----------------------------------------------------
+  # 2) PostgreSQL Database
+  # -----------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: codechat_postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=codechat
+      - POSTGRES_USER=codechat
+      - POSTGRES_PASSWORD=codechat_pass
+    volumes:
+      - codechat_pgdata:/var/lib/postgresql/data
+    networks:
+      - codechat_net
+
+  # -----------------------------------------------------
+  # 3) Redis Cache
+  # -----------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: codechat_redis
+    restart: always
+    volumes:
+      - codechat_redisdata:/data
+    networks:
+      - codechat_net
+
+volumes:
+  codechat_pgdata:
+  codechat_redisdata:
+
+networks:
+  codechat_net:

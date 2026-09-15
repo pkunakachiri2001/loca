@@ -73,9 +73,9 @@ export default function RegisterPage() {
       {/* LEFT: Photo panel */}
       <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-[#008767]">
         <img
-          src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=900&h=1200&fit=crop"
-          alt="Transport service"
-          className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
+          src="/avatars/register-panel.jpg"
+          alt="Famba transport service in Harare"
+          className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay"
         />
         <div className="relative z-10 flex flex-col justify-between p-10 w-full text-white">
           <Link href="/" className="inline-block group">

@@ -63,7 +63,7 @@ enum PaymentStatus {
 }
 
 enum PaymentMethod {
-  STRIPE
+  PAYNOW
   MOCK
   CASH
 }
@@ -388,10 +388,10 @@ model Payment {
   method          PaymentMethod @default(MOCK)
   status          PaymentStatus @default(PENDING)
 
-  // Stripe fields
-  stripePaymentIntentId String?
-  stripeClientSecret    String?
-  stripeChargeId        String?
+  // Paynow fields
+  paynowReference       String?
+  paynowPollUrl         String?
+  paynowStatus          String?
 
   // Receipt
   receiptUrl      String?
@@ -589,7 +589,8 @@ model InsurancePolicy {
   premium         Float
   currency        String    @default("USD")
   paymentStatus   String    @default("PENDING") // PENDING | PAID | FAILED
-  stripeSessionId String?   // Stripe Checkout session ID
+  paynowReference String?   // Paynow internal reference
+  paynowPollUrl   String?   // Paynow poll URL for status
   qrCodeUrl       String?   // URL to generated QR image
   qrCodeData      String?   // The raw data encoded in the QR
   deliveryType    String?   // "SELF_COLLECT" | "BIKER"
