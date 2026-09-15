@@ -13,8 +13,8 @@
 import axios from 'axios';
 import { logger } from '../../config/logger';
 
-const BASE_URL = process.env.CODECHAT_URL || 'http://localhost:8083';
-const API_KEY  = process.env.CODECHAT_API_KEY || '';
+const BASE_URL = process.env.CODECHAT_URL || 'http://104.211.88.103:8080';
+const API_KEY  = process.env.CODECHAT_API_KEY || 'famba_super_secret_whatsapp_key_2026';
 const INSTANCE = process.env.CODECHAT_INSTANCE || 'famba';
 
 const client = axios.create({
@@ -27,7 +27,7 @@ const client = axios.create({
 });
 
 // ─── Normalise phone number ────────────────────────────────────────────────
-// CodeChat expects the number without +, e.g. 263771234567
+// CodeChat/Evolution API expects the number without +, e.g. 263771234567
 export function normalisePhone(raw: string): string {
   return raw.replace(/\D/g, '');
 }
@@ -36,13 +36,13 @@ export function normalisePhone(raw: string): string {
 export async function sendText(to: string, text: string): Promise<void> {
   const phone = normalisePhone(to);
   try {
+    // Evolution API payload format
     await client.post(`/message/sendText/${INSTANCE}`, {
       number: phone,
-      textMessage: { text },
+      text: text,
     });
   } catch (err: any) {
     logger.error(`[WhatsApp] sendText failed to ${phone}:`, err?.response?.data || err.message);
-    throw err;
   }
 }
 
