@@ -93,12 +93,15 @@ function verifyCodeChatSignature(req: Request, res: Response, next: NextFunction
 // Zimbabwe numbers: 263 + 7X XXX XXXX (10 digits after country code)
 // ──────────────────────────────────────────────────────────────
 function isValidZimbabwePhone(phone: string): boolean {
-  // Accepts any Zimbabwean number: 263 + 7x/8x XXXXXXXX
-  // Networks: Econet (077x), NetOne (071x), Telecel (073x)
-  const zw12 = /^263[0-9]{9}$/;      // e.g. 263786228988
-  const zw10 = /^0[0-9]{9}$/;        // e.g. 0786228988
-  const intl  = /^\+263[0-9]{9}$/;   // e.g. +263786228988
-  return zw12.test(phone) || zw10.test(phone) || intl.test(phone);
+  // Zimbabwe numbers: 263 + 9 digits
+  const zw12 = /^263[0-9]{9}$/;
+  const zw10 = /^0[0-9]{9}$/;
+  const zwIntl = /^\+263[0-9]{9}$/;
+  // India numbers: 91 + 10 digits (for testing from India)
+  const in12 = /^91[0-9]{10}$/;
+  const inIntl = /^\+91[0-9]{10}$/;
+  return zw12.test(phone) || zw10.test(phone) || zwIntl.test(phone)
+      || in12.test(phone) || inIntl.test(phone);
 }
 
 // ──────────────────────────────────────────────────────────────
