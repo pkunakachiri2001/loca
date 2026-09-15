@@ -12,6 +12,7 @@ import { logger } from '../config/logger';
 import { createWebPayment, checkPaymentStatus } from '../services/paynow';
 
 const router = Router();
+const isMockMode = process.env.PAYNOW_MOCK_MODE === 'true' || !process.env.PAYNOW_INTEGRATION_ID;
 
 // ──────────────────────────────────────────────
 // POST /api/payments/intent — Create payment intent

@@ -22,6 +22,8 @@ export interface SessionData {
   // Quote & payment
   quotedPremium?: number;
   stripeSessionId?: string;
+  paynowReference?: string;
+  pollUrl?: string;
   policyId?: string;
   // Delivery preference
   deliveryType?: 'SELF_COLLECT' | 'BIKER';

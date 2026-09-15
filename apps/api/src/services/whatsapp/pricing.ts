@@ -127,3 +127,11 @@ export const COVERAGE_TYPES: { key: CoverageType; label: string }[] = [
   { key: 'THIRD_PARTY_FF', label: 'Third Party, Fire & Theft' },
   { key: 'COMPREHENSIVE', label: 'Comprehensive (full cover)' },
 ];
+
+export const ZIMNAT_BRANCHES: { city: string; address: string }[] = [
+  { city: 'Harare', address: 'Zimnat House, Cnr Kwame Nkrumah & First St, Harare' },
+  { city: 'Bulawayo', address: '9th Ave & Fort St, Bulawayo' },
+  { city: 'Mutare', address: '88 Herbert Chitepo St, Mutare' },
+  { city: 'Gweru', address: '69 Robert Mugabe Way, Gweru' },
+  { city: 'Masvingo', address: '5 Robertson St, Masvingo' },
+];

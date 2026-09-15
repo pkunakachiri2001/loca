@@ -1,5 +1,5 @@
 import { Paynow } from 'paynow';
-import logger from '../utils/logger';
+import { logger } from '../config/logger';
 
 const INTEGRATION_ID = process.env.PAYNOW_INTEGRATION_ID || '';
 const INTEGRATION_KEY = process.env.PAYNOW_INTEGRATION_KEY || '';
