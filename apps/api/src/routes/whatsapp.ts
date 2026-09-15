@@ -93,10 +93,11 @@ function verifyCodeChatSignature(req: Request, res: Response, next: NextFunction
 // Zimbabwe numbers: 263 + 7X XXX XXXX (10 digits after country code)
 // ──────────────────────────────────────────────────────────────
 function isValidZimbabwePhone(phone: string): boolean {
-  // Accepts: 2637XXXXXXXX (12 digits) or 07XXXXXXXX (10 digits)
-  const zw12 = /^2637[0-9]{8}$/;   // e.g. 263771234567
-  const zw10 = /^07[0-9]{8}$/;     // e.g. 0771234567
-  const intl  = /^\+?2637[0-9]{8}$/;
+  // Accepts any Zimbabwean number: 263 + 7x/8x XXXXXXXX
+  // Networks: Econet (077x), NetOne (071x), Telecel (073x)
+  const zw12 = /^263[0-9]{9}$/;      // e.g. 263786228988
+  const zw10 = /^0[0-9]{9}$/;        // e.g. 0786228988
+  const intl  = /^\+263[0-9]{9}$/;   // e.g. +263786228988
   return zw12.test(phone) || zw10.test(phone) || intl.test(phone);
 }
 
@@ -112,13 +113,17 @@ router.post('/webhook', webhookRateLimiter, verifyCodeChatSignature, async (req:
   const body = req.body;
 
   // Only handle new incoming messages
-  if (body?.event !== 'messages.upsert' && body?.event !== 'new.message') {
+  // Evolution API sends 'MESSAGES_UPSERT'; CodeChat sends 'messages.upsert'
+  const eventName: string = (body?.event || '').toLowerCase().replace(/_/g, '.');
+  if (eventName !== 'messages.upsert' && body?.event !== 'new.message') {
+    logger.info(`[Webhook] Ignoring event type: ${body?.event}`);
     return;
   }
 
   try {
-    // Extract message text and sender phone from CodeChat payload
-    // CodeChat wraps Evolution API / WhiskeySockets format
+    // Extract message text and sender phone
+    // Evolution API: body.data is the single message object
+    // CodeChat: body.data.messages is an array
     const messages = body?.data?.messages || (body?.data ? [body.data] : []);
 
     for (const msg of messages) {
