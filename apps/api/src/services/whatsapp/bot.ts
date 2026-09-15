@@ -23,7 +23,6 @@
  * └─────────────────────┴───────────────────────────────────────┘
  */
 
-import { ZIMNAT_BRANCHES } from './pricing';
 import { prisma } from '../../config/database';
 import { generatePolicyQR } from './qrcode';
 import { createExpressPayment } from '../paynow';
