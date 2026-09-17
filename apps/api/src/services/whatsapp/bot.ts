@@ -227,8 +227,12 @@ async function handleVehicleReg(
   input: string,
   data: SessionData,
 ): Promise<void> {
-  if (input.length < 3) {
-    await sendText(phone, `That doesn't look right. Please enter the vehicle registration plate (e.g. *ABC 1234*).`);
+  // Basic Zimbabwe plate format: 3 letters + optional space/dash + 4 digits (e.g. ABC 1234)
+  // Also accept personalized plates with 4-8 alphanumeric chars
+  const plateRegex = /^([A-Z]{3}[\s-]?[0-9]{3,4}|[A-Z0-9\s-]{4,8})$/i;
+  
+  if (!plateRegex.test(input.trim())) {
+    await sendText(phone, `That doesn't look like a valid registration plate. Please enter a valid Zimbabwe plate (e.g. *ABC 1234*).`);
     return;
   }
 
@@ -263,8 +267,12 @@ async function handleIdNumber(
   input: string,
   data: SessionData,
 ): Promise<void> {
-  if (input.length < 5) {
-    await sendText(phone, `Please enter a valid national ID number.`);
+  // Zimbabwe National ID format: 2 digits + 6 or 7 digits + 1 letter + 2 digits
+  // e.g. 63-1234567-A-89 or 631234567A89
+  const idRegex = /^[0-9]{2}[\s-]?[0-9]{6,7}[\s-]?[A-Za-z][\s-]?[0-9]{2}$/;
+
+  if (!idRegex.test(input.trim())) {
+    await sendText(phone, `That doesn't look like a valid national ID. Please enter a valid Zimbabwe National ID (e.g. *63-1234567-A-89*).`);
     return;
   }
 
