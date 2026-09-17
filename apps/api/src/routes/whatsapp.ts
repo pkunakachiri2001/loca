@@ -24,6 +24,9 @@ import { handleIncomingMessage, completePolicyAfterPayment } from '../services/w
 
 const router = Router();
 
+// In-memory cache to prevent processing the same webhook event twice
+const processedMessageIds = new Set<string>();
+
 // ──────────────────────────────────────────────────────────────
 // SECURITY: Rate limiter for webhook endpoints
 // Prevents flooding/abuse of the webhook endpoints.
@@ -125,8 +128,6 @@ router.post('/webhook', webhookRateLimiter, verifyCodeChatSignature, async (req:
 
   try {
     // Extract message text and sender phone
-    // Evolution API: body.data is the single message object
-    // CodeChat: body.data.messages is an array
     const messages = body?.data?.messages || (body?.data ? [body.data] : []);
 
     for (const msg of messages) {
@@ -135,6 +136,20 @@ router.post('/webhook', webhookRateLimiter, verifyCodeChatSignature, async (req:
 
       const senderJid: string = msg?.key?.remoteJid || '';
       if (!senderJid) continue;
+
+      const messageId: string = msg?.key?.id || '';
+      if (messageId) {
+        if (processedMessageIds.has(messageId)) {
+          logger.info(`[Webhook] Duplicate message ID ${messageId} detected, skipping.`);
+          continue;
+        }
+        processedMessageIds.add(messageId);
+        // Keep cache size manageable
+        if (processedMessageIds.size > 1000) {
+          const firstItem = processedMessageIds.values().next().value;
+          processedMessageIds.delete(firstItem);
+        }
+      }
 
       // Extract phone number — JID looks like "263771234567@s.whatsapp.net"
       const phone = senderJid.split('@')[0];
