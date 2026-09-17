@@ -147,7 +147,7 @@ router.post('/webhook', webhookRateLimiter, verifyCodeChatSignature, async (req:
         // Keep cache size manageable
         if (processedMessageIds.size > 1000) {
           const firstItem = processedMessageIds.values().next().value;
-          processedMessageIds.delete(firstItem);
+          if (firstItem) processedMessageIds.delete(firstItem);
         }
       }
 
