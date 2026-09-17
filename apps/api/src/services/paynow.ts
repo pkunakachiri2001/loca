@@ -25,11 +25,17 @@ export async function createExpressPayment(
     const payment = paynow.createPayment(reference, email);
     payment.add('Famba Payment', amount);
 
-    // method can be 'ecocash' or 'onemoney'
-    const method = phone.startsWith('071') || phone.startsWith('26371') ? 'onemoney' : 'ecocash';
+    // Paynow prefers local format (077...) over international (26377...)
+    let localPhone = phone;
+    if (localPhone.startsWith('263')) {
+      localPhone = '0' + localPhone.substring(3);
+    }
 
-    logger.info(`[Paynow] Initiating express checkout to ${phone} for ${amount} via ${method}`);
-    const response = await paynow.sendMobile(payment, phone, method);
+    // method can be 'ecocash' or 'onemoney'
+    const method = localPhone.startsWith('071') ? 'onemoney' : 'ecocash';
+
+    logger.info(`[Paynow] Initiating express checkout to ${localPhone} for ${amount} via ${method}`);
+    const response = await paynow.sendMobile(payment, localPhone, method);
 
     if (response.success) {
       return {
