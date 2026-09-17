@@ -173,6 +173,19 @@ router.post('/webhook', webhookRateLimiter, verifyCodeChatSignature, async (req:
         continue;
       }
 
+      // ─── Forward to Discord (Free Inbox) ──────────────────────────────────
+      const discordWebhook = process.env.DISCORD_WEBHOOK_URL || 'https://discord.com/api/webhooks/1550204746495823933/k9tWC-KjdfjdjiidPUfsKQa9cyxMXIFGvgSd_y376kdCWFkPv4eA8a-ZACT9pgB0d0uv';
+      if (discordWebhook) {
+        fetch(discordWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: `Customer: ${phone}`,
+            content: `**Message:**\n${text}`
+          })
+        }).catch(err => logger.error('[Discord] Webhook error:', err.message));
+      }
+
       // Process asynchronously — don't block the 200 response
       handleIncomingMessage(phone, text).catch((err) => {
         logger.error(`[Webhook] handleIncomingMessage error for ${phone}:`, err);
