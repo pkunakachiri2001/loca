@@ -1,38 +1,41 @@
-# Build context MUST be the root of the monorepo
-# In Render, leave "Root Directory" completely BLANK.
-# Set "Dockerfile Path" to "apps/api/Dockerfile".
-
+# Stage 1: Builder
+# ──────────────────────────────────────────────
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy the entire monorepo to get access to prisma folder
-COPY . .
-
-# Install all dependencies (required for monorepo workspaces)
+# Install dependencies
+COPY package*.json ./
 RUN npm install
+
+# Copy source
+COPY . .
 
 # Generate Prisma client
 RUN npx prisma generate
 
-# Build the API
-WORKDIR /app/apps/api
+# Build TypeScript
 RUN npm run build
 
 # Stage 2: Runner
+# ──────────────────────────────────────────────
 FROM node:20-alpine
+
 WORKDIR /app
 
-# Copy root node_modules and prisma
-COPY --from=builder /app/node_modules ./node_modules
+# Copy package and install ONLY production dependencies
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# Copy built code from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Ensure we have the generated Prisma client for runtime
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/package*.json ./
 
-# Copy API files
-COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/package*.json ./apps/api/
-
-# Start the API
-WORKDIR /app/apps/api
+# Expose port (Render defaults to 10000, but Express config uses 8080 or PORT env)
 EXPOSE 8080
+
 CMD ["npm", "start"]
