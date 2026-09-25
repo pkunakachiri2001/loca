@@ -21,7 +21,9 @@ interface Task {
 
 export default function Home() {
   const [name, setName] = useState('');
+  const [pin, setPin] = useState('');
   const [hasName, setHasName] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const [updates, setUpdates] = useState<Update[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newUpdate, setNewUpdate] = useState('');
@@ -53,12 +55,29 @@ export default function Home() {
     }
   };
 
-  const handleSaveName = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim()) {
-      localStorage.setItem('tracker_name', name.trim());
-      setHasName(true);
-      fetchData();
+    setLoginError('');
+    if (!pin.trim()) return;
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pin.trim() })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem('tracker_name', data.name);
+        setName(data.name);
+        setHasName(true);
+        fetchData();
+      } else {
+        setLoginError('Invalid PIN code. Please try again.');
+      }
+    } catch (e) {
+      setLoginError('Server error connecting to login.');
     }
   };
 
@@ -108,21 +127,22 @@ export default function Home() {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-white text-center mb-2">Welcome to Famba Tracker</h1>
-          <p className="text-gray-400 text-center mb-8">Enter your name to start logging achievements and tasks.</p>
-          <form onSubmit={handleSaveName} className="space-y-4">
+          <p className="text-gray-400 text-center mb-8">Enter your secret PIN to access the dashboard.</p>
+          <form onSubmit={handleLogin} className="space-y-4">
             <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="E.g. Pkunaka, Loca..."
-              className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              type="password"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              placeholder="Enter your 4-digit PIN"
+              className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-center tracking-widest text-lg"
               required
             />
+            {loginError && <p className="text-red-400 text-sm text-center">{loginError}</p>}
             <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
             >
-              Continue
+              Unlock Dashboard
             </button>
           </form>
         </div>
