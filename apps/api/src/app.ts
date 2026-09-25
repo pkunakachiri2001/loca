@@ -34,6 +34,9 @@ import insuranceRoutes from './routes/insurance';
 
 export const app = express();
 
+// Trust reverse proxies like Render/Vercel (required for rate-limiting)
+app.set('trust proxy', 1);
+
 // ──────────────────────────────────────────────
 // CORS — MUST be first, before Helmet or any other middleware
 // Helmet can override/strip CORS headers if it runs first.

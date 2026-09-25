@@ -32,7 +32,7 @@ const registerValidation = [
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   body('firstName').trim().notEmpty().withMessage('First name is required'),
   body('lastName').trim().notEmpty().withMessage('Last name is required'),
-  body('role').optional().isIn(['CUSTOMER', 'COMPANY_OWNER']).withMessage('Invalid role'),
+  body('role').optional().isIn(['CUSTOMER', 'COMPANY_OWNER', 'INSURANCE_AGENT']).withMessage('Invalid role'),
 ];
 
 const loginValidation = [
