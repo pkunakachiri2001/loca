@@ -12,7 +12,7 @@ export interface AuthUser {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'CUSTOMER' | 'COMPANY_OWNER' | 'ADMIN';
+  role: 'CUSTOMER' | 'COMPANY_OWNER' | 'ADMIN' | 'INSURANCE_AGENT';
   avatar?: string;
   phone?: string;
   phoneNumber?: string;
