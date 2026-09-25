@@ -2,6 +2,9 @@
 # ──────────────────────────────────────────────
 FROM node:20-alpine AS builder
 
+# Install OpenSSL 1.1 compatibility (required by Prisma engine)
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+
 WORKDIR /app
 
 # Install dependencies
@@ -21,6 +24,9 @@ RUN npm run build
 # ──────────────────────────────────────────────
 FROM node:20-alpine
 
+# Install OpenSSL 1.1 compatibility (required by Prisma engine at RUNTIME)
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+
 WORKDIR /app
 
 # Copy package and install ONLY production dependencies
@@ -35,7 +41,6 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/prisma ./prisma
 
-# Expose port (Render defaults to 10000, but Express config uses 8080 or PORT env)
 EXPOSE 8080
 
 CMD ["npm", "start"]
