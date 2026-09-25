@@ -174,7 +174,7 @@ router.post('/webhook', webhookRateLimiter, verifyCodeChatSignature, async (req:
       }
 
       // ─── Forward to Discord (Free Inbox) ──────────────────────────────────
-      const discordWebhook = process.env.DISCORD_WEBHOOK_URL || 'https://discord.com/api/webhooks/1550204746495823933/k9tWC-KjdfjdjiidPUfsKQa9cyxMXIFGvgSd_y376kdCWFkPv4eA8a-ZACT9pgB0d0uv';
+      const discordWebhook = process.env.DISCORD_WEBHOOK_URL;
       if (discordWebhook) {
         fetch(discordWebhook, {
           method: 'POST',
