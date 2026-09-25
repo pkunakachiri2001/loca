@@ -1,43 +1,38 @@
-# ──────────────────────────────────────────────
-# Stage 1: Builder
-# ──────────────────────────────────────────────
+# Build context MUST be the root of the monorepo
+# In Render, leave "Root Directory" completely BLANK.
+# Set "Dockerfile Path" to "apps/api/Dockerfile".
+
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm install --omit=dev
-
-# Copy source
+# Copy the entire monorepo to get access to prisma folder
 COPY . .
+
+# Install all dependencies (required for monorepo workspaces)
+RUN npm install
 
 # Generate Prisma client
 RUN npx prisma generate
 
-# Build TypeScript
+# Build the API
+WORKDIR /app/apps/api
 RUN npm run build
 
-# ──────────────────────────────────────────────
-# Stage 2: Production
-# ──────────────────────────────────────────────
-FROM node:20-alpine AS production
-
+# Stage 2: Runner
+FROM node:20-alpine
 WORKDIR /app
 
-ENV NODE_ENV=production
-
-# Copy built app and dependencies
-COPY --from=builder /app/dist ./dist
+# Copy root node_modules and prisma
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package*.json ./
 
-# Create uploads directory
-RUN mkdir -p /app/uploads
+# Copy API files
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+COPY --from=builder /app/apps/api/package*.json ./apps/api/
 
-# Expose API port
-EXPOSE 5000
-
-# Run migrations then start
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]
+# Start the API
+WORKDIR /app/apps/api
+EXPOSE 8080
+CMD ["npm", "start"]
