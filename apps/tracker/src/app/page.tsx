@@ -43,8 +43,11 @@ export default function Home() {
         fetch('/api/updates'),
         fetch('/api/tasks')
       ]);
-      setUpdates(await updatesRes.json());
-      setTasks(await tasksRes.json());
+      const updatesData = await updatesRes.json();
+      const tasksData = await tasksRes.json();
+      
+      setUpdates(Array.isArray(updatesData) ? updatesData : []);
+      setTasks(Array.isArray(tasksData) ? tasksData : []);
     } catch (e) {
       console.error('Failed to fetch data');
     }
