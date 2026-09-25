@@ -603,3 +603,28 @@ model InsurancePolicy {
 
   @@map("insurance_policies")
 }
+
+// ──────────────────────────────────────────────────────────────
+// PROJECT TRACKER
+// ──────────────────────────────────────────────────────────────
+
+model TrackerUpdate {
+  id        String   @id @default(cuid())
+  author    String
+  content   String   @db.Text
+  type      String   // "UPDATE", "ACHIEVEMENT"
+  createdAt DateTime @default(now())
+
+  @@map("tracker_updates")
+}
+
+model TrackerTask {
+  id        String   @id @default(cuid())
+  title     String
+  status    String   @default("TODO") // "TODO", "IN_PROGRESS", "DONE"
+  author    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tracker_tasks")
+}
