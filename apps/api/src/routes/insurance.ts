@@ -32,6 +32,74 @@ router.get(
 );
 
 // ──────────────────────────────────────────────
+// POST /api/insurance/quote
+// Calculate insurance premium
+// ──────────────────────────────────────────────
+router.post('/quote', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { vehicleType, coverageType } = req.body;
+    
+    // Simple pricing logic mirroring the WhatsApp bot
+    let basePrice = 30; // 1 term (4 months) base
+    if (vehicleType === 'Truck' || vehicleType === 'Bus') basePrice += 40;
+    if (coverageType === 'COMPREHENSIVE') basePrice += 150;
+
+    res.json({
+      success: true,
+      data: { premium: basePrice, currency: 'USD' }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ──────────────────────────────────────────────
+// POST /api/insurance/buy
+// Submit insurance details and get Paynow payment link
+// ──────────────────────────────────────────────
+router.post('/buy', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { phone, ownerName, idNumber, vehicleReg, vehicleType, coverageType, premium } = req.body;
+
+    if (!phone || !ownerName || !vehicleReg || !idNumber) {
+      throw new ApiError(400, 'Missing required fields');
+    }
+
+    // Generate Paynow reference
+    const paynowReference = `INS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+    const policy = await prisma.insurancePolicy.create({
+      data: {
+        phone,
+        ownerName,
+        idNumber,
+        vehicleReg,
+        vehicleType,
+        coverageType,
+        premium: Number(premium),
+        paynowReference,
+        paymentStatus: 'PENDING'
+      }
+    });
+
+    // In a real scenario, integrate Paynow here. 
+    // For MOCK mode, we return a mock redirect URL:
+    const paymentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/mock-pay?ref=${paynowReference}&type=insurance`;
+
+    res.json({
+      success: true,
+      message: 'Policy created. Proceed to payment.',
+      data: {
+        policyId: policy.id,
+        paymentUrl
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ──────────────────────────────────────────────
 // POST /api/insurance/:id/issue
 // Generate and send policy copy via WhatsApp
 // ──────────────────────────────────────────────
