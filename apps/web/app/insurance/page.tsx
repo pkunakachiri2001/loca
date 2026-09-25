@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { ShieldCheck, Car, FileText, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 import { z } from 'zod';
 
