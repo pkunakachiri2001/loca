@@ -628,3 +628,12 @@ model TrackerTask {
 
   @@map("tracker_tasks")
 }
+
+model TrackerUser {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  pin       String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("tracker_users")
+}

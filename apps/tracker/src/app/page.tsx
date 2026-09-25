@@ -55,29 +55,37 @@ export default function Home() {
     }
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
-    if (!pin.trim()) return;
+    if (!pin.trim() || (isRegistering && !name.trim())) return;
 
     try {
-      const res = await fetch('/api/login', {
+      const url = isRegistering ? '/api/register' : '/api/login';
+      const body = isRegistering 
+        ? { name: name.trim(), pin: pin.trim() }
+        : { pin: pin.trim() };
+
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin: pin.trim() })
+        body: JSON.stringify(body)
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
         localStorage.setItem('tracker_name', data.name);
         setName(data.name);
         setHasName(true);
         fetchData();
       } else {
-        setLoginError('Invalid PIN code. Please try again.');
+        setLoginError(data.error || 'Authentication failed.');
       }
     } catch (e) {
-      setLoginError('Server error connecting to login.');
+      setLoginError('Server error connecting to authentication.');
     }
   };
 
@@ -126,14 +134,26 @@ export default function Home() {
               <Trophy size={32} />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-white text-center mb-2">Welcome to Famba Tracker</h1>
-          <p className="text-gray-400 text-center mb-8">Enter your secret PIN to access the dashboard.</p>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <h1 className="text-2xl font-bold text-white text-center mb-2">Famba Tracker</h1>
+          <p className="text-gray-400 text-center mb-8">
+            {isRegistering ? "Create your profile with a secret PIN." : "Enter your secret PIN to access the dashboard."}
+          </p>
+          <form onSubmit={handleAuth} className="space-y-4">
+            {isRegistering && (
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your Name (e.g. Pkunaka)"
+                className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-center text-lg"
+                required
+              />
+            )}
             <input
               type="password"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
-              placeholder="Enter your 4-digit PIN"
+              placeholder="Enter a 4-digit PIN"
               className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-center tracking-widest text-lg"
               required
             />
@@ -142,9 +162,15 @@ export default function Home() {
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
             >
-              Unlock Dashboard
+              {isRegistering ? "Register Profile" : "Unlock Dashboard"}
             </button>
           </form>
+          <button 
+            onClick={() => { setIsRegistering(!isRegistering); setLoginError(''); setPin(''); }}
+            className="w-full text-center text-sm text-gray-500 hover:text-gray-300 mt-6 transition-colors"
+          >
+            {isRegistering ? "Already registered? Login instead" : "First time? Register your PIN"}
+          </button>
         </div>
       </div>
     );
