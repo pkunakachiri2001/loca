@@ -18,14 +18,14 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { author, title } = body;
+    const { author, title, description } = body;
     
     if (!author || !title) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const task = await db.trackerTask.create({
-      data: { author, title, status: 'TODO' }
+      data: { author, title, description: description || null, status: 'TODO' }
     });
 
     return NextResponse.json(task);

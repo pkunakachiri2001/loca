@@ -14,6 +14,7 @@ interface Update {
 interface Task {
   id: string;
   title: string;
+  description?: string;
   status: string;
   author: string;
   createdAt: string;
@@ -29,6 +30,7 @@ export default function Home() {
   const [newUpdate, setNewUpdate] = useState('');
   const [updateType, setUpdateType] = useState('UPDATE');
   const [newTask, setNewTask] = useState('');
+  const [newTaskDescription, setNewTaskDescription] = useState('');
 
   useEffect(() => {
     const savedName = localStorage.getItem('tracker_name');
@@ -109,9 +111,10 @@ export default function Home() {
     await fetch('/api/tasks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ author: name, title: newTask })
+      body: JSON.stringify({ author: name, title: newTask, description: newTaskDescription })
     });
     setNewTask('');
+    setNewTaskDescription('');
     fetchData();
   };
 
@@ -272,17 +275,23 @@ export default function Home() {
                 <CheckCircle2 className="text-green-400" size={20} />
                 Tasks & Goals
               </h2>
-              <form onSubmit={handleAddTask} className="mb-6 flex gap-2">
+              <form onSubmit={handleAddTask} className="mb-6 flex flex-col gap-2">
                 <input
                   type="text"
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
-                  placeholder="Add a new task..."
-                  className="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Task heading (e.g. Call Client)"
+                  className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                 />
-                <button type="submit" className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg transition-all">
-                  <Plus size={20} />
+                <textarea
+                  value={newTaskDescription}
+                  onChange={(e) => setNewTaskDescription(e.target.value)}
+                  placeholder="Notes (optional, one-liners are fine!)"
+                  className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500 resize-none h-16"
+                />
+                <button type="submit" className="bg-red-900/50 hover:bg-red-800/60 border border-red-800/50 text-red-100 p-2 rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-semibold">
+                  <Plus size={16} /> Add Task
                 </button>
               </form>
 
@@ -294,20 +303,25 @@ export default function Home() {
                     <div
                       key={task.id}
                       onClick={() => handleToggleTask(task.id, task.status)}
-                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${task.status === 'DONE' ? 'bg-gray-950 border-gray-900 opacity-60' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-gray-600'}`}
+                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${task.status === 'DONE' ? 'bg-gray-950 border-gray-900 opacity-60' : 'bg-red-950/30 border-red-900/40 hover:bg-red-900/40 hover:border-red-800/50'}`}
                     >
                       <button className="mt-0.5 shrink-0">
                         {task.status === 'DONE' ? (
-                          <CheckCircle2 className="text-green-500" size={18} />
+                          <CheckCircle2 className="text-red-500/50" size={18} />
                         ) : (
-                          <Circle className="text-gray-500" size={18} />
+                          <Circle className="text-red-400" size={18} />
                         )}
                       </button>
-                      <div>
-                        <p className={`text-sm ${task.status === 'DONE' ? 'text-gray-500 line-through' : 'text-gray-200'}`}>
+                      <div className="w-full">
+                        <p className={`text-sm font-medium ${task.status === 'DONE' ? 'text-gray-500 line-through' : 'text-red-100'}`}>
                           {task.title}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">Added by {task.author}</p>
+                        {task.description && (
+                          <p className={`text-xs mt-1 whitespace-pre-wrap ${task.status === 'DONE' ? 'text-gray-600' : 'text-red-200/70'}`}>
+                            {task.description}
+                          </p>
+                        )}
+                        <p className={`text-xs mt-2 ${task.status === 'DONE' ? 'text-gray-700' : 'text-red-400/50'}`}>Added by {task.author}</p>
                       </div>
                     </div>
                   ))
