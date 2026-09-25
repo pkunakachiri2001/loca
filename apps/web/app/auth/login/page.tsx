@@ -51,6 +51,8 @@ function LoginContent() {
         router.push('/admin');
       } else if (user.role === 'COMPANY_OWNER') {
         router.push('/company/dashboard');
+      } else if (user.role === 'INSURANCE_AGENT') {
+        router.push('/insurance/dashboard');
       } else {
         router.push('/dashboard');
       }

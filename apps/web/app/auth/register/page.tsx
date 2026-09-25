@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Car, Mail, Lock, User, Phone, ArrowRight, Loader2, Building2 } from 'lucide-react';
+import { Eye, EyeOff, Car, Mail, Lock, User, Phone, ArrowRight, Loader2, Building2, Briefcase } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,7 +19,7 @@ const schema = z.object({
   phone: z.string().optional(),
   password: z.string().min(8, 'At least 8 characters'),
   confirmPassword: z.string(),
-  role: z.enum(['CUSTOMER', 'COMPANY_OWNER']),
+  role: z.enum(['CUSTOMER', 'COMPANY_OWNER', 'INSURANCE_AGENT']),
   agreeToTerms: z.boolean().refine((v) => v, 'You must agree to the terms'),
 }).refine((d) => d.password === d.confirmPassword, {
   message: 'Passwords do not match',
@@ -119,15 +119,16 @@ export default function RegisterPage() {
           </p>
 
           {/* Role selector */}
-          <div className="grid grid-cols-2 gap-3 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
             {[
-              { value: 'CUSTOMER', label: 'I need transport', icon: User, desc: 'Book vehicles & services' },
-              { value: 'COMPANY_OWNER', label: 'I offer transport', icon: Building2, desc: 'List & manage services' },
+              { value: 'CUSTOMER', label: 'Customer', icon: User, desc: 'Book vehicles' },
+              { value: 'COMPANY_OWNER', label: 'Company', icon: Building2, desc: 'List services' },
+              { value: 'INSURANCE_AGENT', label: 'Agent', icon: Briefcase, desc: 'Sell insurance' },
             ].map(opt => (
               <button
                 key={opt.value}
                 type="button"
-                onClick={() => setValue('role', opt.value as 'CUSTOMER' | 'COMPANY_OWNER')}
+                onClick={() => setValue('role', opt.value as 'CUSTOMER' | 'COMPANY_OWNER' | 'INSURANCE_AGENT')}
                 className="text-left p-4 rounded-xl transition-all"
                 style={{
                   background: selectedRole === opt.value ? 'rgba(232,165,71,0.08)' : '#1A1A1C',

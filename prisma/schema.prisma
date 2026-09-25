@@ -22,6 +22,7 @@ enum UserRole {
   CUSTOMER
   COMPANY_OWNER
   ADMIN
+  INSURANCE_AGENT
 }
 
 enum UserStatus {
