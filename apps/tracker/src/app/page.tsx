@@ -111,7 +111,7 @@ export default function Home() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="E.g. Alex, Sarah..."
+              placeholder="E.g. Pkunaka, Loca..."
               className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               required
             />
@@ -130,7 +130,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 p-6 md:p-10 font-sans">
       <div className="max-w-6xl mx-auto">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
               <Trophy className="text-yellow-500" />
@@ -138,6 +138,12 @@ export default function Home() {
             </h1>
             <p className="text-gray-400 mt-1">Logged in as <span className="text-blue-400 font-semibold">{name}</span></p>
           </div>
+          <button 
+            onClick={() => { localStorage.removeItem('tracker_name'); setHasName(false); setName(''); }}
+            className="text-sm px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-all w-full md:w-auto text-left md:text-center"
+          >
+            Change Name
+          </button>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -156,25 +162,25 @@ export default function Home() {
                   className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none mb-4 min-h-[100px]"
                   required
                 />
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 w-full">
+                  <div className="flex flex-1 gap-2 w-full">
                     <button
                       type="button"
                       onClick={() => setUpdateType('UPDATE')}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${updateType === 'UPDATE' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                      className={`flex-1 px-3 py-3 sm:py-2 rounded-xl text-sm font-medium transition-all ${updateType === 'UPDATE' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
                     >
                       General Update
                     </button>
                     <button
                       type="button"
                       onClick={() => setUpdateType('ACHIEVEMENT')}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${updateType === 'ACHIEVEMENT' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                      className={`flex-1 px-3 py-3 sm:py-2 rounded-xl text-sm font-medium transition-all ${updateType === 'ACHIEVEMENT' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
                     >
                       Achievement
                     </button>
                   </div>
-                  <button type="submit" className="bg-white text-black px-6 py-2 rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-200 transition-all w-full sm:w-auto justify-center">
-                    <Send size={16} /> Post
+                  <button type="submit" className="bg-white text-black px-6 py-3 sm:py-2 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-all w-full sm:w-auto shadow-lg">
+                    <Send size={18} /> Post
                   </button>
                 </div>
               </form>
