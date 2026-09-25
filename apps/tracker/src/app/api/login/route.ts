@@ -20,7 +20,8 @@ export async function POST(req: Request) {
     } else {
       return NextResponse.json({ error: "Invalid PIN" }, { status: 401 });
     }
-  } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Login Error:", error);
+    return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }
