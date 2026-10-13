@@ -147,6 +147,7 @@ model User {
   notifications     Notification[]
   loyaltyTransactions LoyaltyTransaction[]
   payments          Payment[]
+  valuations        VehicleValuation[]
 
   @@map("users")
 }
@@ -639,3 +640,70 @@ model TrackerUser {
 
   @@map("tracker_users")
 }
+
+// ──────────────────────────────────────────────────────────────
+// ZIMBABWE MOTOR VEHICLE VALUATION PLATFORM
+// ──────────────────────────────────────────────────────────────
+
+model VehicleValuation {
+  id                    String    @id @default(cuid())
+  valuationRef          String    @unique // e.g., "ZIM-VAL-2026-XXXX"
+  registrationNumber    String?
+  vin                   String?
+  make                  String
+  model                 String
+  variant               String?
+  yearOfManufacture     Int
+  mileage               Int       // in km
+  condition             String    @default("GOOD") // "EXCELLENT", "GOOD", "FAIR", "POOR", "ACCIDENT_DAMAGED"
+  fuelType              String?   // "PETROL", "DIESEL", "HYBRID", "ELECTRIC"
+  transmission          String?   // "AUTOMATIC", "MANUAL"
+  engineCapacity        String?   // e.g. "2.8L", "1.5L", "1490cc"
+  importStatus          String?   // "LOCAL_ZIMBABWE", "JAPAN_IMPORT", "SA_IMPORT", "UK_IMPORT"
+  countryOfOrigin       String?   // "Japan", "South Africa", "United Kingdom", "Zimbabwe"
+  optionalExtras        Json?     // Bullbar, Canopy, Leather, Sunroof, etc.
+  accidentHistory       String?   // "NONE", "MINOR", "MAJOR_REPAIRED"
+  purpose               String?   // "INSURANCE", "BANK_FINANCE", "BUYING", "SELLING", "FLEET_AUDIT"
+  requesterName         String?
+  requesterEmail        String?
+  requesterPhone        String?
+  indicativeMarketValue Float     // Fair Market Value (USD)
+  lowValue              Float     // Trade-in / Liquidation Value (USD)
+  highValue             Float     // Dealer Showroom / Retail Value (USD)
+  currency              String    @default("USD")
+  confidenceScore       String    @default("MEDIUM") // "HIGH", "MEDIUM", "LOW"
+  confidencePercentage  Int       @default(85)
+  confidenceReason      String?   @db.Text
+  comparableCount       Int       @default(0)
+  methodologyNotes      String?   @db.Text
+  comparablesData       Json?
+  qrCodeData            String?   @db.Text
+  qrCodeUrl             String?   @db.Text
+  userId                String?
+  user                  User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("vehicle_valuations")
+}
+
+model VehicleBenchmark {
+  id                    String    @id @default(cuid())
+  make                  String
+  model                 String
+  variant               String?
+  bodyType              String    // "SUV", "PICKUP_DOUBLE_CAB", "SEDAN", "HATCHBACK", "TRUCK"
+  baseYear              Int
+  baseLandedPriceUsd    Float     // Landed & cleared in Zimbabwe (USD)
+  annualDepreciationPct Float     @default(8.5) // Brand-specific depreciation rate
+  durabilityRating      Float     @default(1.0) // 1.2 for rugged Toyota, 0.8 for fragile luxury
+  partsAvailability     String    @default("HIGH") // "HIGH", "MEDIUM", "LOW"
+  popularityRank        Int       @default(1)
+  zimraDutyTariffCode   String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([make, model, variant, baseYear])
+  @@map("vehicle_benchmarks")
+}
+

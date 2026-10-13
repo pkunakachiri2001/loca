@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { apiClient } from '@/lib/api';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { ShieldCheck, Car, FileText, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Car, FileText, ArrowRight, Loader2, CheckCircle2, Scale } from 'lucide-react';
 import { z } from 'zod';
 
 const VEHICLE_TYPES = ['Saloon / Light Vehicle', 'SUV / Double Cab', 'Minibus (up to 15 seats)', 'Bus', 'Light Truck (up to 3T)', 'Heavy Truck'];
@@ -16,6 +17,8 @@ export default function InsuranceCustomerPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [premium, setPremium] = useState<number | null>(null);
+  const [valuationRef, setValuationRef] = useState<string | null>(null);
+  const [verifiedSumInsured, setVerifiedSumInsured] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     vehicleType: 'Saloon / Light Vehicle',
@@ -25,6 +28,16 @@ export default function InsuranceCustomerPage() {
     phone: '',
     coverageType: 'THIRD_PARTY'
   });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const vRef = searchParams.get('valRef');
+      const sum = searchParams.get('sumInsured');
+      if (vRef) setValuationRef(vRef);
+      if (sum) setVerifiedSumInsured(sum);
+    }
+  }, []);
 
   const handleNext = async () => {
     if (step === 1 && (!formData.vehicleReg || !formData.vehicleType)) return alert('Please complete all fields');
@@ -127,6 +140,38 @@ export default function InsuranceCustomerPage() {
                       value={formData.vehicleReg}
                       onChange={(e) => setFormData({...formData, vehicleReg: e.target.value.toUpperCase()})}
                     />
+                  </div>
+
+                  {/* Valuation Integration Box */}
+                  <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-start gap-3">
+                    <Scale className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs">
+                      {valuationRef ? (
+                        <>
+                          <div className="font-bold text-emerald-900">
+                            Verified Valuation Linked: {valuationRef}
+                          </div>
+                          <div className="text-emerald-700 mt-0.5">
+                            Insured Sum Benchmark: ${Number(verifiedSumInsured).toLocaleString()} USD
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="font-bold text-emerald-900">
+                            Need a defensible vehicle market valuation?
+                          </div>
+                          <div className="text-slate-600 mt-0.5">
+                            Get an official valuation certificate first to ensure accurate comprehensive coverage.
+                          </div>
+                          <Link
+                            href="/valuation"
+                            className="inline-flex items-center gap-1 font-bold text-emerald-700 hover:text-emerald-800 underline mt-1.5"
+                          >
+                            <span>Value My Car on Zimbabwe Registry &rarr;</span>
+                          </Link>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </motion.div>

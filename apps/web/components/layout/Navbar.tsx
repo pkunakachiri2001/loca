@@ -13,9 +13,9 @@ import { cn, getInitials } from '@/lib/utils';
 
 const navLinks = [
   { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
+  { label: 'Vehicle Valuation', href: '/valuation' },
+  { label: 'Insurance', href: '/insurance' },
   { label: 'Services', href: '/search' },
-  { label: 'How It Works', href: '/#how-it-works' },
   { label: 'Live GPS', href: '/tracking' },
   { label: 'For Providers', href: '/company/register' },
 ];
