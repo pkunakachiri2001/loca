@@ -36,6 +36,7 @@ router.get('/', optionalAuth, async (req: Request, res: Response, next: NextFunc
     // Build dynamic where clause
     const where: any = {
       status: 'ACTIVE',
+      country: 'ZW',
       ...(category && { category }),
       ...(city && { city: { contains: city, mode: 'insensitive' } }),
       ...(state && { state: { contains: state, mode: 'insensitive' } }),

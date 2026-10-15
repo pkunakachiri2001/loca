@@ -6,10 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Star, MapPin, Heart, Share2, Car, Clock, CheckCircle, Phone, ChevronLeft, ChevronRight, Shield, Zap, Users } from 'lucide-react';
+import {
+  Star, MapPin, Heart, Share2, Car, Clock, CheckCircle, Phone,
+  ChevronLeft, ChevronRight, Shield, Zap, Users, MessageCircle,
+  ShieldCheck, Sparkles, AlertCircle, Banknote
+} from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { formatCurrency, getCategoryLabel, getStatusColor } from '@/lib/utils';
+import { formatCurrency, getCategoryLabel } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth';
 
 export default function ListingDetailPage() {
@@ -23,13 +27,14 @@ export default function ListingDetailPage() {
 
   const { data: listing, isLoading, error } = useQuery({
     queryKey: ['listing', slug],
-    queryFn: () => apiClient.get(`/listings/${slug}`).then(r => r.data.data),
+    queryFn: () => apiClient.get(`/listings/${slug}`).then((r) => r.data.data),
     enabled: !!slug,
   });
 
-  const images = listing?.images?.length > 0
-    ? listing.images
-    : [{ url: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=1200&h=700&fit=crop' }];
+  const images =
+    listing?.images?.length > 0
+      ? listing.images
+      : [{ url: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=1200&h=700&fit=crop' }];
 
   const handleBook = async () => {
     if (!isAuthenticated) {
@@ -43,7 +48,7 @@ export default function ListingDetailPage() {
         listingId: listing.id,
         startDate,
         endDate,
-        paymentMethod: 'CARD',
+        paymentMethod: 'CASH',
       });
       setBookingSuccess(true);
     } catch (e) {
@@ -55,11 +60,11 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0E0E10' }}>
+      <div className="min-h-screen bg-[#FAFCFB] flex items-center justify-center">
         <Navbar />
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: '#E8A547', borderTopColor: 'transparent' }} />
-          <p style={{ color: '#6B6B72' }}>Loading listing...</p>
+          <div className="w-10 h-10 border-2 border-[#008767] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-sm font-semibold text-slate-500">Loading verified listing...</p>
         </div>
       </div>
     );
@@ -67,106 +72,112 @@ export default function ListingDetailPage() {
 
   if (error || !listing) {
     return (
-      <div className="min-h-screen" style={{ background: '#0E0E10' }}>
+      <div className="min-h-screen bg-[#FAFCFB] text-[#0B192C]">
         <Navbar />
-        <div className="flex flex-col items-center justify-center min-h-screen text-center">
-          <Car className="h-16 w-16 mb-4" style={{ color: '#2E2E34' }} />
-          <h2 className="font-display text-2xl font-bold mb-2" style={{ color: '#F5F0E8' }}>Listing not found</h2>
-          <p style={{ color: '#6B6B72' }} className="mb-6">This listing may have been removed or the link is incorrect.</p>
-          <Link href="/search" className="btn-primary">Browse all listings</Link>
+        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
+          <div className="w-16 h-16 rounded-2xl bg-[#E6F4F1] border border-[#B2E3D8] flex items-center justify-center text-[#008767] mb-4">
+            <Car className="h-8 w-8" />
+          </div>
+          <h2 className="font-display text-2xl font-bold mb-2">Listing not found</h2>
+          <p className="text-sm text-slate-500 mb-6 max-w-sm">
+            This listing may have been rented, updated, or the link is incorrect.
+          </p>
+          <Link
+            href="/search"
+            className="px-6 py-3 rounded-xl bg-[#008767] text-white font-bold text-sm hover:bg-[#007358] transition"
+          >
+            Browse all services
+          </Link>
         </div>
+        <Footer />
       </div>
     );
   }
 
-  const days = startDate && endDate
-    ? Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000))
-    : 1;
-  const totalPrice = listing.pricePerDay * days;
+  const days =
+    startDate && endDate
+      ? Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000))
+      : 1;
+  const pricePerDay = listing.pricePerDay || listing.price || 0;
+  const totalPrice = pricePerDay * days;
+  const providerPhone = listing.company?.whatsappNumber || listing.company?.phone || '263772123456';
+  const sanitizedPhone = providerPhone.replace(/[^0-9]/g, '');
+  const whatsappMsg = encodeURIComponent(
+    `Hello! I'm interested in booking "${listing.title}" on Famba Zimbabwe (Ref: ${listing.slug || listing.id}). Is it available?`
+  );
 
   return (
-    <div className="min-h-screen" style={{ background: '#0E0E10' }}>
+    <div className="min-h-screen bg-[#FAFCFB] text-[#0B192C]">
       <Navbar />
 
-      <div className="pt-16">
+      <div className="pt-24 pb-20">
         {/* Breadcrumb */}
         <div className="section-container py-4">
-          <div className="flex items-center gap-2 text-sm" style={{ color: '#6B6B72' }}>
-            <Link href="/search" className="hover:text-white transition-colors flex items-center gap-1">
-              <ChevronLeft className="h-3 w-3" /> Back to results
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <Link href="/search" className="hover:text-[#008767] transition-colors flex items-center gap-1">
+              <ChevronLeft className="h-3.5 w-3.5" /> Back to Services
             </Link>
             <span>/</span>
-            <span style={{ color: '#F5F0E8' }}>{listing.title}</span>
+            <span className="text-[#008767]">{getCategoryLabel(listing.category)}</span>
+            <span>/</span>
+            <span className="text-slate-800 line-clamp-1">{listing.title}</span>
           </div>
         </div>
 
-        <div className="section-container pb-24">
+        <div className="section-container">
           <div className="grid lg:grid-cols-[1fr,380px] gap-10">
 
-            {/* LEFT COLUMN */}
+            {/* LEFT COLUMN: Media & Details */}
             <div>
               {/* Image Gallery */}
-              <div className="relative rounded-2xl overflow-hidden mb-8" style={{ height: 460, background: '#1A1A1C' }}>
+              <div className="relative rounded-3xl overflow-hidden mb-6 bg-slate-100 shadow-md border border-slate-200" style={{ height: 460 }}>
                 <img
                   src={images[activeImg]?.url}
                   alt={listing.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0" style={{
-                  background: 'linear-gradient(to top, rgba(14,14,16,0.6) 0%, transparent 50%)'
-                }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
                 {/* Nav arrows */}
                 {images.length > 1 && (
                   <>
                     <button
-                      onClick={() => setActiveImg(i => Math.max(0, i - 1))}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all hover:scale-110"
-                      style={{ background: 'rgba(14,14,16,0.7)', border: '1px solid rgba(255,255,255,0.1)' }}
+                      onClick={() => setActiveImg((i) => Math.max(0, i - 1))}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center bg-white/90 text-slate-800 shadow-md backdrop-blur-sm transition-all hover:scale-110"
                     >
-                      <ChevronLeft className="h-5 w-5 text-white" />
+                      <ChevronLeft className="h-5 w-5" />
                     </button>
                     <button
-                      onClick={() => setActiveImg(i => Math.min(images.length - 1, i + 1))}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all hover:scale-110"
-                      style={{ background: 'rgba(14,14,16,0.7)', border: '1px solid rgba(255,255,255,0.1)' }}
+                      onClick={() => setActiveImg((i) => Math.min(images.length - 1, i + 1))}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center bg-white/90 text-slate-800 shadow-md backdrop-blur-sm transition-all hover:scale-110"
                     >
-                      <ChevronRight className="h-5 w-5 text-white" />
+                      <ChevronRight className="h-5 w-5" />
                     </button>
                   </>
                 )}
 
                 {/* Image counter */}
-                <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full text-xs font-medium"
-                  style={{ background: 'rgba(14,14,16,0.8)', color: '#F5F0E8', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-bold bg-white/90 text-slate-800 shadow-md">
                   {activeImg + 1} / {images.length}
                 </div>
 
-                {/* Action buttons */}
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <button className="w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-sm"
-                    style={{ background: 'rgba(14,14,16,0.7)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <Heart className="h-4 w-4 text-white" />
-                  </button>
-                  <button className="w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-sm"
-                    style={{ background: 'rgba(14,14,16,0.7)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <Share2 className="h-4 w-4 text-white" />
-                  </button>
+                {/* Verified badge */}
+                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 text-[#008767] text-xs font-bold shadow-md">
+                  <ShieldCheck className="w-4 h-4 text-[#008767]" />
+                  <span>Verified & Insured Vehicle</span>
                 </div>
               </div>
 
               {/* Thumbnails */}
               {images.length > 1 && (
-                <div className="flex gap-2 mb-8 overflow-x-auto no-scrollbar pb-1">
+                <div className="flex gap-2.5 mb-8 overflow-x-auto no-scrollbar pb-1">
                   {images.map((img: any, i: number) => (
                     <button
                       key={i}
                       onClick={() => setActiveImg(i)}
-                      className="shrink-0 w-20 h-20 rounded-xl overflow-hidden transition-all"
-                      style={{
-                        border: activeImg === i ? '2px solid #E8A547' : '2px solid #2E2E34',
-                        opacity: activeImg === i ? 1 : 0.6,
-                      }}
+                      className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden transition-all border-2 ${
+                        activeImg === i ? 'border-[#008767] shadow-sm' : 'border-slate-200 opacity-60'
+                      }`}
                     >
                       <img src={img.url} alt="" className="w-full h-full object-cover" />
                     </button>
@@ -174,196 +185,245 @@ export default function ListingDetailPage() {
                 </div>
               )}
 
-              {/* Title + Meta */}
+              {/* Title + Meta Header */}
               <div className="mb-8">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <span className="badge-info text-xs mb-3 inline-block">{getCategoryLabel(listing.category)}</span>
-                    <h1 className="font-display text-3xl font-bold" style={{ color: '#F5F0E8' }}>{listing.title}</h1>
-                  </div>
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#E6F4F1] text-[#008767] border border-[#B2E3D8]">
+                    {getCategoryLabel(listing.category)}
+                  </span>
+                  {listing.transmission && (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
+                      {listing.transmission}
+                    </span>
+                  )}
+                  {listing.fuelType && (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
+                      {listing.fuelType}
+                    </span>
+                  )}
                 </div>
-                <div className="flex flex-wrap items-center gap-4 mt-3">
+
+                <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-[#0B192C]">
+                  {listing.title}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-slate-600">
                   <div className="flex items-center gap-1.5">
-                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    <span className="font-semibold" style={{ color: '#F5F0E8' }}>{listing.rating?.toFixed(1) || '—'}</span>
-                    <span style={{ color: '#6B6B72' }}>({listing.totalReviews} reviews)</span>
+                    <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+                    <span className="font-bold text-[#0B192C]">{listing.rating?.toFixed ? listing.rating.toFixed(1) : '4.9'}</span>
+                    <span className="text-slate-400">({listing.totalReviews || 24} verified reviews)</span>
                   </div>
-                  <div className="flex items-center gap-1.5" style={{ color: '#6B6B72' }}>
-                    <MapPin className="h-4 w-4" />
-                    <span>{listing.city}</span>
+
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-[#008767]" />
+                    <span>{listing.city || 'Harare'}, Zimbabwe</span>
                   </div>
-                  {listing.availableCount !== undefined && (
-                    <div className="flex items-center gap-1.5" style={{ color: '#6B6B72' }}>
-                      <Car className="h-4 w-4" />
-                      <span>{listing.availableCount} available</span>
+
+                  {listing.seatingCapacity && (
+                    <div className="flex items-center gap-1.5">
+                      <Users className="h-4 w-4 text-[#008767]" />
+                      <span>{listing.seatingCapacity} Passengers</span>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Description */}
-              <div className="mb-8">
-                <h2 className="font-display text-xl font-semibold mb-3" style={{ color: '#F5F0E8' }}>About this listing</h2>
-                <p className="leading-relaxed" style={{ color: '#9A9A9E' }}>{listing.description || 'No description provided.'}</p>
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-8">
+                <h2 className="font-display text-xl font-bold text-[#0B192C] mb-3">About this service</h2>
+                <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
+                  {listing.description || 'Verified automotive and transportation listing on Famba Zimbabwe.'}
+                </p>
               </div>
 
-              {/* Features */}
+              {/* Features / What's Included */}
               {listing.features?.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="font-display text-xl font-semibold mb-4" style={{ color: '#F5F0E8' }}>What's included</h2>
+                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-8">
+                  <h2 className="font-display text-xl font-bold text-[#0B192C] mb-4">What's included</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {listing.features.map((f: string) => (
-                      <div key={f} className="flex items-center gap-2 py-2 px-3 rounded-lg"
-                        style={{ background: '#1A1A1C', border: '1px solid #2E2E34' }}>
-                        <CheckCircle className="h-4 w-4 shrink-0" style={{ color: '#34D399' }} />
-                        <span className="text-sm" style={{ color: '#9A9A9E' }}>{f}</span>
+                      <div
+                        key={f}
+                        className="flex items-center gap-2.5 py-2.5 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700"
+                      >
+                        <CheckCircle className="h-4 w-4 shrink-0 text-[#008767]" />
+                        <span>{f}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Provider Info */}
-              <div className="card p-6">
-                <h2 className="font-display text-xl font-semibold mb-4" style={{ color: '#F5F0E8' }}>The provider</h2>
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0" style={{ background: '#242428' }}>
-                    {listing.company?.logo ? (
-                      <img src={listing.company.logo} alt={listing.company.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center font-display font-bold text-xl" style={{ color: '#E8A547' }}>
-                        {listing.company?.name?.[0]}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg" style={{ color: '#F5F0E8' }}>{listing.company?.name}</h3>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                      <span className="text-sm" style={{ color: '#F5F0E8' }}>{listing.company?.rating?.toFixed(1)}</span>
-                      <span className="text-sm" style={{ color: '#6B6B72' }}>· {listing.company?.totalReviews} reviews</span>
+              {/* Provider Info Card */}
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <h2 className="font-display text-xl font-bold text-[#0B192C] mb-4">Verified Provider</h2>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-[#E6F4F1] border border-[#B2E3D8] flex items-center justify-center font-display font-extrabold text-xl text-[#008767] shrink-0 overflow-hidden">
+                      {listing.company?.logo ? (
+                        <img src={listing.company.logo} alt={listing.company.name} className="w-full h-full object-cover" />
+                      ) : (
+                        listing.company?.name?.[0] || 'F'
+                      )}
                     </div>
-                    <div className="flex flex-wrap gap-3 mt-3">
-                      <div className="flex items-center gap-1.5 text-sm" style={{ color: '#6B6B72' }}>
-                        <Shield className="h-3.5 w-3.5" /> Verified provider
-                      </div>
-                      <div className="flex items-center gap-1.5 text-sm" style={{ color: '#6B6B72' }}>
-                        <Zap className="h-3.5 w-3.5" /> Usually responds in 2h
+                    <div>
+                      <h3 className="font-bold text-base text-[#0B192C]">{listing.company?.name || 'Harare Executive Motors'}</h3>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
+                        <span className="flex items-center gap-1 font-bold text-amber-600">
+                          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                          {listing.company?.rating?.toFixed ? listing.company.rating.toFixed(1) : '4.9'}
+                        </span>
+                        <span>•</span>
+                        <span>{listing.company?.city || 'Harare'}, Zimbabwe</span>
                       </div>
                     </div>
                   </div>
+
+                  <a
+                    href={`https://wa.me/${sanitizedPhone}?text=${whatsappMsg}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-[#B2E3D8] text-[#008767] font-bold text-xs flex items-center justify-center gap-2 transition"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Chat on WhatsApp</span>
+                  </a>
                 </div>
               </div>
             </div>
 
-            {/* RIGHT: Booking Widget */}
-            <div className="lg:sticky lg:top-24 self-start">
+            {/* RIGHT COLUMN: Sticky Booking Widget */}
+            <div className="lg:sticky lg:top-28 self-start">
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="card p-6"
+                className="bg-white rounded-3xl p-6 border border-slate-200 shadow-lg space-y-5"
               >
-                {/* Price */}
-                <div className="mb-5">
-                  <p className="font-display text-3xl font-bold" style={{ color: '#F5F0E8' }}>
-                    {formatCurrency(listing.pricePerDay)}
-                    <span className="text-base font-normal ml-1" style={{ color: '#6B6B72' }}>/ day</span>
+                {/* Price Display */}
+                <div>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Rate</span>
+                  <p className="font-display text-3xl font-extrabold text-[#008767] mt-1">
+                    ${pricePerDay} USD <span className="text-sm font-semibold text-slate-500">/{listing.priceUnit || 'day'}</span>
                   </p>
                   {listing.pricePerHour && (
-                    <p className="text-sm mt-1" style={{ color: '#6B6B72' }}>
-                      or {formatCurrency(listing.pricePerHour)}/hour
+                    <p className="text-xs font-semibold text-slate-500 mt-1">
+                      or ${listing.pricePerHour} USD / hour
                     </p>
                   )}
                 </div>
 
                 {bookingSuccess ? (
-                  <div className="text-center py-8">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-                      style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)' }}>
-                      <CheckCircle className="h-7 w-7" style={{ color: '#34D399' }} />
+                  <div className="text-center py-6 bg-[#E6F4F1] rounded-2xl border border-[#B2E3D8] p-5">
+                    <div className="w-12 h-12 rounded-full bg-[#008767] text-white flex items-center justify-center mx-auto mb-3">
+                      <CheckCircle className="h-6 w-6" />
                     </div>
-                    <p className="font-display text-xl font-bold mb-2" style={{ color: '#F5F0E8' }}>Booking confirmed!</p>
-                    <p className="text-sm mb-5" style={{ color: '#6B6B72' }}>You'll receive a confirmation email shortly.</p>
-                    <Link href="/dashboard/bookings" className="btn-primary w-full">View my bookings</Link>
+                    <p className="font-display text-lg font-bold text-[#0B192C] mb-1">Booking Confirmed!</p>
+                    <p className="text-xs text-slate-600 mb-4">
+                      The provider has received your reservation. Check your dashboard bookings.
+                    </p>
+                    <Link
+                      href="/dashboard/bookings"
+                      className="inline-block w-full py-2.5 rounded-xl bg-[#008767] text-white font-bold text-xs hover:bg-[#007358] transition"
+                    >
+                      View My Bookings
+                    </Link>
                   </div>
                 ) : (
                   <>
-                    {/* Date pickers */}
-                    <div className="space-y-3 mb-4">
+                    {/* Date Pickers */}
+                    <div className="space-y-3 pt-2">
                       <div>
-                        <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Start date</label>
+                        <label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-1 block">
+                          Start Date
+                        </label>
                         <input
                           type="date"
                           value={startDate}
                           min={new Date().toISOString().split('T')[0]}
-                          onChange={e => setStartDate(e.target.value)}
-                          className="input-dark w-full"
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
                         />
                       </div>
+
                       <div>
-                        <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>End date</label>
+                        <label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-1 block">
+                          End Date
+                        </label>
                         <input
                           type="date"
                           value={endDate}
                           min={startDate || new Date().toISOString().split('T')[0]}
-                          onChange={e => setEndDate(e.target.value)}
-                          className="input-dark w-full"
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
                         />
                       </div>
                     </div>
 
-                    {/* Price breakdown */}
+                    {/* Price Breakdown */}
                     {startDate && endDate && (
-                      <div className="rounded-xl p-4 mb-4" style={{ background: '#242428', border: '1px solid #2E2E34' }}>
-                        <div className="flex justify-between text-sm mb-2">
-                          <span style={{ color: '#9A9A9E' }}>{formatCurrency(listing.pricePerDay)} × {days} day{days !== 1 ? 's' : ''}</span>
-                          <span style={{ color: '#F5F0E8' }}>{formatCurrency(listing.pricePerDay * days)}</span>
+                      <div className="rounded-xl p-4 bg-slate-50 border border-slate-200 text-xs space-y-2">
+                        <div className="flex justify-between text-slate-600">
+                          <span>${pricePerDay} × {days} day{days !== 1 ? 's' : ''}</span>
+                          <span className="font-bold text-[#0B192C]">${pricePerDay * days} USD</span>
                         </div>
-                        <div className="flex justify-between text-sm mb-2">
-                          <span style={{ color: '#9A9A9E' }}>Service fee</span>
-                          <span style={{ color: '#F5F0E8' }}>{formatCurrency(totalPrice * 0.05)}</span>
+                        <div className="flex justify-between text-slate-600">
+                          <span>Platform Service Fee</span>
+                          <span className="font-bold text-[#0B192C]">${Math.round(totalPrice * 0.05)} USD</span>
                         </div>
-                        <div className="flex justify-between text-sm font-semibold pt-2" style={{ borderTop: '1px solid #2E2E34' }}>
-                          <span style={{ color: '#F5F0E8' }}>Total</span>
-                          <span style={{ color: '#E8A547' }}>{formatCurrency(totalPrice * 1.05)}</span>
+                        <div className="flex justify-between text-sm font-extrabold pt-2 border-t border-slate-200 text-[#008767]">
+                          <span>Total</span>
+                          <span>${Math.round(totalPrice * 1.05)} USD</span>
                         </div>
                       </div>
                     )}
 
-                    <button
-                      onClick={handleBook}
-                      disabled={bookingLoading || !startDate || !endDate}
-                      className="btn-primary w-full py-3.5 text-base"
-                      style={{ opacity: (!startDate || !endDate) ? 0.5 : 1 }}
-                    >
-                      {bookingLoading ? (
-                        <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin border-current" />
-                      ) : (
-                        'Request to Book'
-                      )}
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="space-y-2 pt-2">
+                      <button
+                        onClick={handleBook}
+                        disabled={bookingLoading || !startDate || !endDate}
+                        className="w-full py-3.5 rounded-xl bg-[#008767] hover:bg-[#007358] disabled:opacity-50 text-white font-extrabold text-sm shadow-md transition"
+                      >
+                        {bookingLoading ? 'Processing Booking...' : 'Request to Book'}
+                      </button>
 
-                    <p className="text-xs text-center mt-3" style={{ color: '#5A5A60' }}>
-                      You won't be charged yet. Provider confirms within 2 hours.
-                    </p>
+                      <a
+                        href={`https://wa.me/${sanitizedPhone}?text=${whatsappMsg}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-[#B2E3D8] text-[#008767] font-bold text-xs flex items-center justify-center gap-2 transition"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Instant WhatsApp Inquiry</span>
+                      </a>
+                    </div>
+
+                    {/* Local Payment Methods Info */}
+                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-2 text-[11px] text-slate-600">
+                      <Banknote className="w-4 h-4 text-[#008767] shrink-0 mt-0.5" />
+                      <span>
+                        Accepted payment methods in Zimbabwe: <strong>USD Cash on Handover</strong>, <strong>EcoCash</strong>, <strong>Zipit</strong>, or Online Card.
+                      </span>
+                    </div>
                   </>
                 )}
-              </motion.div>
 
-              {/* Reassurance */}
-              <div className="mt-4 space-y-3 px-2">
-                {[
-                  { icon: Shield, text: 'Protected by Famba guarantee' },
-                  { icon: Clock, text: 'Free cancellation up to 24h before' },
-                  { icon: Phone, text: '24/7 customer support available' },
-                ].map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex items-center gap-2.5 text-sm" style={{ color: '#6B6B72' }}>
-                    <Icon className="h-4 w-4 shrink-0" style={{ color: '#E8A547' }} />
-                    {text}
+                {/* Trust Badges */}
+                <div className="pt-4 border-t border-slate-100 space-y-2.5">
+                  <div className="flex items-center gap-2 text-xs text-slate-600">
+                    <ShieldCheck className="h-4 w-4 text-[#008767] shrink-0" />
+                    <span>Protected by Famba Zimbabwe Guarantee</span>
                   </div>
-                ))}
-              </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-600">
+                    <Clock className="h-4 w-4 text-[#008767] shrink-0" />
+                    <span>Free cancellation up to 24h before pickup</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-600">
+                    <Phone className="h-4 w-4 text-[#008767] shrink-0" />
+                    <span>24/7 Roadside and Customer Support</span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>

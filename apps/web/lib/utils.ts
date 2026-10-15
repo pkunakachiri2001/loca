@@ -65,12 +65,13 @@ export function getCategoryLabel(category: string): string {
   const map: Record<string, string> = {
     CAR_RENTAL: 'Car Rental',
     BUS_RENTAL: 'Bus Rental',
-    DRIVER: 'Professional Driver',
-    MECHANIC: 'Mechanic',
-    CAR_WASH: 'Restaurants',
+    DRIVER: 'Spare Parts',
+    MECHANIC: 'Workshops',
+    CAR_WASH: 'Car Wash & Detailing',
     VEHICLE_DEALER: 'Vehicle Dealer',
-    COURIER: 'Courier Vehicle',
+    COURIER: 'Courier & Deliveries',
     EMERGENCY_ROADSIDE: 'Emergency Roadside',
+    SCHOOL_RUN: 'School Run',
   };
   return map[category] || category;
 }
