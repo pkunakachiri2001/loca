@@ -6,20 +6,20 @@ import { useAuthStore } from '@/store/auth';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
 import { motion } from 'framer-motion';
-import { Gift, Star, TrendingUp, Award, ArrowRight, Zap } from 'lucide-react';
+import { Gift, Star, TrendingUp, Award, ArrowRight, Zap, Sparkles } from 'lucide-react';
 
 const TIERS = [
-  { name: 'Bronze', min: 0, max: 999, color: '#CD7F32', bg: 'rgba(205,127,50,0.1)', border: 'rgba(205,127,50,0.25)' },
-  { name: 'Silver', min: 1000, max: 4999, color: '#A8A9AD', bg: 'rgba(168,169,173,0.1)', border: 'rgba(168,169,173,0.25)' },
-  { name: 'Gold', min: 5000, max: 9999, color: '#E8A547', bg: 'rgba(232,165,71,0.1)', border: 'rgba(232,165,71,0.25)' },
-  { name: 'Platinum', min: 10000, max: Infinity, color: '#60A5FA', bg: 'rgba(96,165,250,0.1)', border: 'rgba(96,165,250,0.25)' },
+  { name: 'Bronze', min: 0, max: 999, color: '#008767', bg: '#E6F4F1', border: '#B2E3D8' },
+  { name: 'Silver', min: 1000, max: 4999, color: '#0284C7', bg: '#E0F2FE', border: '#BAE6FD' },
+  { name: 'Gold', min: 5000, max: 9999, color: '#D97706', bg: '#FEF3C7', border: '#FDE68A' },
+  { name: 'Platinum', min: 10000, max: Infinity, color: '#7C3AED', bg: '#EDE9FE', border: '#DDD6FE' },
 ];
 
 const HOW_TO_EARN = [
-  { icon: Star, action: 'Complete a booking', points: '+50 pts' },
-  { icon: Gift, action: 'Leave a review', points: '+25 pts' },
-  { icon: TrendingUp, action: 'Refer a friend', points: '+200 pts' },
-  { icon: Zap, action: 'First booking of month', points: '+100 pts' },
+  { icon: Star, action: 'Complete a transport booking', points: '+50 pts' },
+  { icon: Gift, action: 'Leave a verified review', points: '+25 pts' },
+  { icon: TrendingUp, action: 'Refer a motorist or company', points: '+200 pts' },
+  { icon: Zap, action: 'First valuation or booking of month', points: '+100 pts' },
 ];
 
 export default function LoyaltyPage() {
@@ -32,22 +32,42 @@ export default function LoyaltyPage() {
 
   const { data } = useQuery({
     queryKey: ['loyalty-transactions'],
-    queryFn: () => apiClient.get('/users/me/loyalty').then(r => r.data.data).catch(() => []),
+    queryFn: async () => {
+      try {
+        const res = await apiClient.get('/users/me/loyalty');
+        const payload = res.data?.data;
+        if (Array.isArray(payload)) {
+          return { points: user?.loyaltyPoints ?? 0, transactions: payload };
+        }
+        return {
+          points: payload?.points ?? user?.loyaltyPoints ?? 0,
+          transactions: Array.isArray(payload?.transactions) ? payload.transactions : [],
+        };
+      } catch (e) {
+        return { points: user?.loyaltyPoints ?? 0, transactions: [] };
+      }
+    },
     enabled: !!isAuthenticated,
   });
 
-  const points = user?.loyaltyPoints ?? 0;
-  const tier = TIERS.find(t => points >= t.min && points <= t.max) || TIERS[0];
+  const points = data?.points ?? user?.loyaltyPoints ?? 0;
+  const tier = TIERS.find((t) => points >= t.min && points <= t.max) || TIERS[0];
   const nextTier = TIERS[TIERS.indexOf(tier) + 1];
   const progress = nextTier ? ((points - tier.min) / (nextTier.min - tier.min)) * 100 : 100;
-
-  const transactions: any[] = data || [];
+  const transactions: any[] = data?.transactions || [];
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto text-[#0B192C]">
+      {/* Header */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="font-display text-3xl font-bold mb-1" style={{ color: '#F5F0E8' }}>Loyalty Rewards</h1>
-        <p style={{ color: '#6B6B72' }}>Earn points with every booking and unlock exclusive benefits.</p>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] text-[11px] font-bold uppercase tracking-wider mb-2">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Famba Rewards</span>
+        </div>
+        <h1 className="font-display text-3xl font-extrabold text-[#0B192C] mb-1">Loyalty Points</h1>
+        <p className="text-xs sm:text-sm font-semibold text-slate-500">
+          Earn points with every booking and unlock discounts across Zimbabwe.
+        </p>
       </motion.div>
 
       {/* Points Card */}
@@ -55,46 +75,35 @@ export default function LoyaltyPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="relative rounded-2xl overflow-hidden p-8 mb-6"
-        style={{
-          background: `linear-gradient(135deg, #1A1A1C 0%, #242428 100%)`,
-          border: `1px solid ${tier.border}`,
-        }}
+        className="relative rounded-3xl overflow-hidden p-8 mb-6 bg-gradient-to-br from-[#008767] to-[#0B192C] text-white shadow-xl"
       >
-        {/* Decorative glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none" style={{
-          background: `radial-gradient(circle at center, ${tier.bg} 0%, transparent 70%)`,
-          transform: 'translate(30%, -30%)'
-        }} />
-
         <div className="relative z-10">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-widest mb-1" style={{ color: tier.color }}>
-                {tier.name} Member
-              </p>
-              <p className="font-display text-5xl font-bold" style={{ color: '#F5F0E8' }}>
+              <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest bg-white/20 text-emerald-200 border border-white/20">
+                {tier.name} Status
+              </span>
+              <p className="font-display text-5xl font-extrabold text-white mt-3">
                 {points.toLocaleString()}
               </p>
-              <p className="text-sm mt-1" style={{ color: '#6B6B72' }}>loyalty points</p>
+              <p className="text-xs font-semibold text-emerald-200 mt-1">Available Loyalty Points</p>
             </div>
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-              style={{ background: tier.bg, border: `1px solid ${tier.border}` }}>
-              <Award className="h-7 w-7" style={{ color: tier.color }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/10 border border-white/20 text-white">
+              <Award className="h-7 w-7" />
             </div>
           </div>
 
           {/* Progress to next tier */}
           {nextTier && (
             <div>
-              <div className="flex justify-between text-xs mb-2" style={{ color: '#6B6B72' }}>
+              <div className="flex justify-between text-xs font-bold mb-2 text-emerald-100">
                 <span>{tier.name}</span>
                 <span>{nextTier.min - points} pts to {nextTier.name}</span>
               </div>
-              <div className="h-2 rounded-full" style={{ background: '#2E2E34' }}>
+              <div className="h-2.5 rounded-full bg-white/20 overflow-hidden">
                 <div
-                  className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${Math.min(100, progress)}%`, background: tier.color }}
+                  className="h-full rounded-full transition-all duration-700 bg-white"
+                  style={{ width: `${Math.min(100, progress)}%` }}
                 />
               </div>
             </div>
@@ -107,25 +116,22 @@ export default function LoyaltyPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="card p-6 mb-6"
+        className="bg-white rounded-3xl p-6 mb-6 border border-slate-200 shadow-sm"
       >
-        <h2 className="font-display text-lg font-semibold mb-4" style={{ color: '#F5F0E8' }}>Membership Tiers</h2>
-        <div className="grid grid-cols-4 gap-3">
-          {TIERS.map(t => (
+        <h2 className="font-display text-base font-bold text-[#0B192C] mb-4">Membership Tiers</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {TIERS.map((t) => (
             <div
               key={t.name}
-              className="text-center p-3 rounded-xl"
-              style={{
-                background: tier.name === t.name ? t.bg : 'transparent',
-                border: `1px solid ${tier.name === t.name ? t.border : '#1E1E22'}`,
-              }}
+              className={`text-center p-3.5 rounded-2xl border transition-all ${
+                tier.name === t.name
+                  ? 'bg-[#E6F4F1] border-[#B2E3D8] shadow-sm'
+                  : 'bg-slate-50 border-slate-200'
+              }`}
             >
-              <Award className="h-5 w-5 mx-auto mb-1.5" style={{ color: t.color }} />
-              <p className="text-xs font-semibold mb-0.5" style={{ color: tier.name === t.name ? t.color : '#6B6B72' }}>
-                {t.name}
-              </p>
-              <p className="text-xs" style={{ color: '#5A5A60' }}>
-                {t.min === 0 ? '0' : `${(t.min / 1000).toFixed(0)}k`}+ pts
+              <p className="font-bold text-xs" style={{ color: t.color }}>{t.name}</p>
+              <p className="text-[11px] text-slate-500 font-semibold mt-1">
+                {t.min.toLocaleString()} {t.max !== Infinity ? `- ${t.max.toLocaleString()}` : '+'} pts
               </p>
             </div>
           ))}
@@ -137,52 +143,23 @@ export default function LoyaltyPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="card p-6 mb-6"
+        className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm"
       >
-        <h2 className="font-display text-lg font-semibold mb-4" style={{ color: '#F5F0E8' }}>How to earn points</h2>
-        <div className="space-y-3">
-          {HOW_TO_EARN.map(({ icon: Icon, action, points }) => (
-            <div key={action} className="flex items-center justify-between py-2">
+        <h2 className="font-display text-base font-bold text-[#0B192C] mb-4">How to Earn Points</h2>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {HOW_TO_EARN.map((item) => (
+            <div key={item.action} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center"
-                  style={{ background: 'rgba(232,165,71,0.1)', border: '1px solid rgba(232,165,71,0.2)' }}>
-                  <Icon className="h-4 w-4" style={{ color: '#E8A547' }} />
+                <div className="w-8 h-8 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] flex items-center justify-center">
+                  <item.icon className="h-4 w-4" />
                 </div>
-                <span className="text-sm" style={{ color: '#9A9A9E' }}>{action}</span>
+                <span className="text-xs font-semibold text-[#0B192C]">{item.action}</span>
               </div>
-              <span className="text-sm font-semibold font-display" style={{ color: '#E8A547' }}>{points}</span>
+              <span className="text-xs font-extrabold text-[#008767]">{item.points}</span>
             </div>
           ))}
         </div>
       </motion.div>
-
-      {/* Transaction history */}
-      {transactions.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="card p-6"
-        >
-          <h2 className="font-display text-lg font-semibold mb-4" style={{ color: '#F5F0E8' }}>Transaction History</h2>
-          <div className="space-y-3">
-            {transactions.slice(0, 10).map((tx: any) => (
-              <div key={tx.id} className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid #1E1E22' }}>
-                <div>
-                  <p className="text-sm" style={{ color: '#F5F0E8' }}>{tx.description}</p>
-                  <p className="text-xs" style={{ color: '#6B6B72' }}>{new Date(tx.createdAt).toLocaleDateString()}</p>
-                </div>
-                <span
-                  className="text-sm font-semibold font-display"
-                  style={{ color: tx.type === 'EARNED' ? '#34D399' : '#F87171' }}
-                >
-                  {tx.type === 'EARNED' ? '+' : '-'}{tx.points} pts
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 }
