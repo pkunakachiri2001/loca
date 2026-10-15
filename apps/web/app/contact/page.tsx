@@ -41,9 +41,9 @@ export default function ContactPage() {
                     <User className="h-5 w-5" style={{ color: '#E8A547' }} />
                   </div>
                   <div>
-                    <p className="text-xs" style={{ color: '#6B6B72' }}>Contact Person</p>
-                    <p className="font-semibold text-sm" style={{ color: '#F5F0E8' }}>Locardia Munyuki</p>
-                    <p className="text-xs" style={{ color: '#E8A547' }}>HR Manager</p>
+                    <p className="text-xs" style={{ color: '#6B6B72' }}>Department</p>
+                    <p className="font-semibold text-sm" style={{ color: '#F5F0E8' }}>KUNAKA TECH</p>
+                    <p className="text-xs" style={{ color: '#E8A547' }}>Support & Operations Team</p>
                   </div>
                 </div>
 
@@ -79,7 +79,7 @@ export default function ContactPage() {
                 <div className="text-center py-12">
                   <CheckCircle className="h-12 w-12 mx-auto mb-3" style={{ color: '#34D399' }} />
                   <h3 className="font-display text-2xl font-bold mb-2" style={{ color: '#F5F0E8' }}>Message Received!</h3>
-                  <p style={{ color: '#9A9A9E' }}>Thank you for contacting KUNAKA TECH. Locardia Munyuki will reach out to you shortly.</p>
+                  <p style={{ color: '#9A9A9E' }}>Thank you for contacting KUNAKA TECH. Our team will reach out to you shortly.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">

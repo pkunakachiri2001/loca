@@ -53,9 +53,13 @@ export function Footer() {
                 className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
               />
             </Link>
-            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">
               Zimbabwe&apos;s all-in-one smart travel, transportation, and vehicle services marketplace. Move more, live better.
             </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
+              <span>Powered by</span>
+              <span className="font-bold text-[#008767]">KUNAKA TECH</span>
+            </div>
           </div>
 
           {/* Services */}
@@ -117,7 +121,11 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} Famba Technologies Ltd (KUNAKA TECH). All rights reserved.</p>
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <p>© {new Date().getFullYear()} Famba Technologies Ltd. All rights reserved.</p>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <p className="font-semibold text-slate-700">Powered by <span className="text-[#008767] font-bold">KUNAKA TECH</span></p>
+          </div>
           <div className="flex items-center gap-3">
             {socials.map(({ Icon, href, label }) => (
               <a

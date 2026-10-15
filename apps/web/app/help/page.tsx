@@ -19,7 +19,7 @@ export default function HelpPage() {
           </div>
           <div className="card p-6 space-y-3">
             <h3 className="font-bold text-white">Need Support?</h3>
-            <p className="text-xs leading-relaxed" style={{ color: '#9A9A9E' }}>Contact Locardia Munyuki at <a href="mailto:HRmanager@kunakatech.tech" className="underline text-amber-400">HRmanager@kunakatech.tech</a> or call +91 7796787966.</p>
+            <p className="text-xs leading-relaxed" style={{ color: '#9A9A9E' }}>Contact KUNAKA TECH Support at <a href="mailto:HRmanager@kunakatech.tech" className="underline text-amber-400">HRmanager@kunakatech.tech</a> or call +91 7796787966.</p>
           </div>
         </div>
       </div>
