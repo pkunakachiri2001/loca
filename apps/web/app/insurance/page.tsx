@@ -118,7 +118,7 @@ export default function InsuranceCustomerPage() {
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h2 className="text-2xl font-bold text-[#0B192C] mb-6 flex items-center gap-2">
-                  <Car className="w-6 h-6 text-[#E8A547]" /> Vehicle Details
+                  <Car className="w-6 h-6 text-[#008767]" /> Vehicle Details
                 </h2>
                 <div className="space-y-5">
                   <div>
@@ -180,7 +180,7 @@ export default function InsuranceCustomerPage() {
             {step === 2 && (
               <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h2 className="text-2xl font-bold text-[#0B192C] mb-6 flex items-center gap-2">
-                  <FileText className="w-6 h-6 text-[#E8A547]" /> Owner Details
+                  <FileText className="w-6 h-6 text-[#008767]" /> Owner Details
                 </h2>
                 <div className="space-y-5">
                   <div>
@@ -220,7 +220,7 @@ export default function InsuranceCustomerPage() {
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h2 className="text-2xl font-bold text-[#0B192C] mb-6 flex items-center gap-2">
-                  <ShieldCheck className="w-6 h-6 text-[#E8A547]" /> Select Coverage
+                  <ShieldCheck className="w-6 h-6 text-[#008767]" /> Select Coverage
                 </h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -245,7 +245,7 @@ export default function InsuranceCustomerPage() {
                       setPremium(res.data.data.premium);
                       setLoading(false);
                     }}
-                    className={`cursor-pointer p-6 rounded-2xl border-2 transition-all ${formData.coverageType === 'COMPREHENSIVE' ? 'border-[#E8A547] bg-[#fcf5eb]' : 'border-[#E2E8F0] hover:border-[#E8A547]'}`}
+                    className={`cursor-pointer p-6 rounded-2xl border-2 transition-all ${formData.coverageType === 'COMPREHENSIVE' ? 'border-[#008767] bg-[#E6F4F1]' : 'border-[#E2E8F0] hover:border-[#008767]'}`}
                   >
                     <h3 className="font-bold text-lg text-[#0B192C] mb-2">Comprehensive</h3>
                     <p className="text-sm text-slate-500 mb-4">Full coverage including your own vehicle damage and theft.</p>

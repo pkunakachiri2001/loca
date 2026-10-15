@@ -2,71 +2,50 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Home, Search, ArrowLeft } from 'lucide-react';
+import { Home, Search, ArrowLeft, Car } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#0E0E10' }}>
-      {/* Background texture */}
-      <div className="fixed inset-0 bg-grid opacity-40 pointer-events-none" />
-      <div className="fixed inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(232,165,71,0.06) 0%, transparent 70%)'
-      }} />
-
+    <div className="min-h-screen flex items-center justify-center px-4 bg-[#FAFCFB] text-[#0B192C]">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center max-w-lg mx-auto relative z-10"
+        className="text-center max-w-lg mx-auto relative z-10 py-12"
       >
-        {/* 404 big number */}
-        <div className="mb-8 relative">
-          <span
-            className="block font-display font-bold leading-none select-none"
-            style={{
-              fontSize: 'clamp(120px, 20vw, 180px)',
-              color: 'transparent',
-              WebkitTextStroke: '1px rgba(232,165,71,0.2)',
-            }}
-          >
-            404
-          </span>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3"
-                style={{ background: 'rgba(232,165,71,0.1)', border: '1px solid rgba(232,165,71,0.25)' }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8A547" strokeWidth="1.5">
-                  <path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
+        {/* 404 big badge */}
+        <div className="mb-6 relative">
+          <div className="w-20 h-20 rounded-3xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] flex items-center justify-center mx-auto shadow-sm">
+            <Car className="w-10 h-10" />
           </div>
         </div>
 
-        <h1 className="font-display text-3xl font-bold mb-3" style={{ color: '#F5F0E8' }}>
+        <span className="text-sm font-extrabold text-[#008767] uppercase tracking-widest bg-[#E6F4F1] px-4 py-1.5 rounded-full border border-[#B2E3D8]">
+          Error 404
+        </span>
+
+        <h1 className="font-display text-3xl sm:text-4xl font-extrabold mt-4 mb-3 text-[#0B192C]">
           Page Not Found
         </h1>
-        <p className="text-base mb-10" style={{ color: '#6B6B72', lineHeight: 1.7 }}>
-          The page you're looking for doesn't exist or may have been moved.
-          Let's get you back on the road.
+        <p className="text-sm sm:text-base text-slate-600 mb-8 leading-relaxed max-w-md mx-auto">
+          The page you are looking for does not exist or may have been relocated. Let&apos;s get you back on the road.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/" className="btn-primary px-8 py-3">
+          <Link
+            href="/"
+            className="px-6 py-3 rounded-xl bg-[#008767] hover:bg-[#007358] text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+          >
             <Home className="h-4 w-4" />
             Go Home
           </Link>
-          <Link href="/search" className="btn-secondary px-8 py-3">
+          <Link
+            href="/search"
+            className="px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm border border-slate-300 shadow-sm transition flex items-center justify-center gap-2"
+          >
             <Search className="h-4 w-4" />
             Browse Services
           </Link>
-        </div>
-
-        {/* Subtle decoration */}
-        <div className="mt-16 flex items-center justify-center gap-2">
-          <div style={{ width: 32, height: 1, background: '#2E2E34' }} />
-          <span style={{ color: '#3A3A3E', fontSize: 12 }}>Famba</span>
-          <div style={{ width: 32, height: 1, background: '#2E2E34' }} />
         </div>
       </motion.div>
     </div>

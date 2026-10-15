@@ -84,8 +84,7 @@ export default function ProfilePage() {
       >
         <div className="flex items-center gap-5">
           <div className="relative">
-            <div className="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center font-display font-bold text-2xl"
-              style={{ background: '#E8A547', color: '#0E0E10' }}>
+            <div className="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center font-display font-bold text-2xl bg-[#008767] text-white shadow-sm">
               {user?.avatar ? (
                 <img src={user.avatar} alt={user.firstName} className="w-full h-full object-cover" />
               ) : (
@@ -93,10 +92,9 @@ export default function ProfilePage() {
               )}
             </div>
             <button
-              className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: '#1A1A1C', border: '1px solid #2E2E34' }}
+              className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg flex items-center justify-center bg-white border border-slate-200 shadow-sm text-slate-600 hover:text-[#008767] transition"
             >
-              <Camera className="h-3.5 w-3.5" style={{ color: '#9A9A9E' }} />
+              <Camera className="h-3.5 w-3.5" />
             </button>
           </div>
           <div>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { Building2, User, Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import { Building2, Mail, Phone, MapPin, Send, CheckCircle, Sparkles } from 'lucide-react';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -16,56 +16,74 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: '#0E0E10' }}>
+    <div className="min-h-screen bg-[#FAFCFB] text-[#0B192C]">
       <Navbar />
 
-      <section className="relative pt-32 pb-24">
+      <section className="relative pt-36 pb-24">
         <div className="section-container">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-2xl mx-auto mb-16">
-            <span className="section-badge mb-4">Contact KUNAKA TECH</span>
-            <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4" style={{ color: '#F5F0E8' }}>Get in Touch</h1>
-            <p style={{ color: '#9A9A9E' }}>Have questions about Famba services or partnerships? Contact the KUNAKA TECH team.</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-2xl mx-auto mb-16"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] text-xs font-bold uppercase tracking-wider mb-4">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Contact KUNAKA TECH</span>
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl font-extrabold mb-4 text-[#0B192C]">
+              Get in Touch
+            </h1>
+            <p className="text-sm sm:text-base text-slate-600">
+              Have questions regarding Famba transport bookings, fleet partnerships, or vehicle valuations? Reach out to the KUNAKA TECH team.
+            </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 items-start">
             {/* Contact Details Card */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="card p-8 space-y-6">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6"
+            >
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider block mb-1" style={{ color: '#E8A547' }}>Parent Organization</span>
-                <h3 className="font-display text-2xl font-bold" style={{ color: '#F5F0E8' }}>KUNAKA TECH</h3>
+                <span className="text-xs font-bold uppercase tracking-wider block mb-1 text-[#008767]">
+                  Parent Organization
+                </span>
+                <h3 className="font-display text-2xl font-extrabold text-[#0B192C]">KUNAKA TECH</h3>
               </div>
 
               <div className="space-y-4 pt-2">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(232,165,71,0.12)', border: '1px solid rgba(232,165,71,0.25)' }}>
-                    <User className="h-5 w-5" style={{ color: '#E8A547' }} />
+                  <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] flex items-center justify-center shrink-0">
+                    <Building2 className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs" style={{ color: '#6B6B72' }}>Department</p>
-                    <p className="font-semibold text-sm" style={{ color: '#F5F0E8' }}>KUNAKA TECH</p>
-                    <p className="text-xs" style={{ color: '#E8A547' }}>Support & Operations Team</p>
+                    <p className="text-xs font-bold text-slate-400">Department</p>
+                    <p className="font-bold text-sm text-[#0B192C]">KUNAKA TECH</p>
+                    <p className="text-xs text-[#008767]">Support & Operations Desk</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(232,165,71,0.12)', border: '1px solid rgba(232,165,71,0.25)' }}>
-                    <Mail className="h-5 w-5" style={{ color: '#E8A547' }} />
+                  <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] flex items-center justify-center shrink-0">
+                    <Mail className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs" style={{ color: '#6B6B72' }}>Email Address</p>
-                    <a href="mailto:HRmanager@kunakatech.tech" className="font-semibold text-sm hover:underline" style={{ color: '#F5F0E8' }}>
+                    <p className="text-xs font-bold text-slate-400">Email Address</p>
+                    <a href="mailto:HRmanager@kunakatech.tech" className="font-bold text-sm text-[#0B192C] hover:text-[#008767] transition-colors">
                       HRmanager@kunakatech.tech
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(232,165,71,0.12)', border: '1px solid rgba(232,165,71,0.25)' }}>
-                    <Phone className="h-5 w-5" style={{ color: '#E8A547' }} />
+                  <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] flex items-center justify-center shrink-0">
+                    <Phone className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs" style={{ color: '#6B6B72' }}>Direct Phone</p>
-                    <a href="tel:+917796787966" className="font-semibold text-sm hover:underline" style={{ color: '#F5F0E8' }}>
+                    <p className="text-xs font-bold text-slate-400">Direct Phone</p>
+                    <a href="tel:+917796787966" className="font-bold text-sm text-[#0B192C] hover:text-[#008767] transition-colors">
                       +91 7796787966
                     </a>
                   </div>
@@ -74,38 +92,74 @@ export default function ContactPage() {
             </motion.div>
 
             {/* Message Form */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="md:col-span-2 card p-8">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="md:col-span-2 bg-white rounded-3xl p-8 border border-slate-200 shadow-sm"
+            >
               {submitted ? (
                 <div className="text-center py-12">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-3" style={{ color: '#34D399' }} />
-                  <h3 className="font-display text-2xl font-bold mb-2" style={{ color: '#F5F0E8' }}>Message Received!</h3>
-                  <p style={{ color: '#9A9A9E' }}>Thank you for contacting KUNAKA TECH. Our team will reach out to you shortly.</p>
+                  <CheckCircle className="h-12 w-12 mx-auto mb-3 text-[#008767]" />
+                  <h3 className="font-display text-2xl font-bold mb-2 text-[#0B192C]">Message Received!</h3>
+                  <p className="text-sm text-slate-600">
+                    Thank you for contacting KUNAKA TECH. Our team will reach out to you shortly.
+                  </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Your Name</label>
-                      <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="input-dark" placeholder="John Doe" required />
+                      <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Your Name</label>
+                      <input
+                        value={form.name}
+                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                        placeholder="e.g. John Doe"
+                        required
+                      />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Your Email</label>
-                      <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="input-dark" placeholder="john@example.com" required />
+                      <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Email Address</label>
+                      <input
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                        placeholder="john@example.com"
+                        required
+                      />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Subject</label>
-                    <input value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} className="input-dark" placeholder="Inquiry regarding transport partnership" required />
+                    <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Subject</label>
+                    <input
+                      value={form.subject}
+                      onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                      placeholder="e.g. Corporate fleet partnership inquiry"
+                      required
+                    />
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Message</label>
-                    <textarea value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} className="input-dark resize-none h-32" placeholder="Write your message here..." required />
+                    <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Message</label>
+                    <textarea
+                      rows={5}
+                      value={form.message}
+                      onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                      placeholder="How can KUNAKA TECH assist you?"
+                      required
+                    />
                   </div>
 
-                  <button type="submit" className="btn-primary py-3.5 px-8 text-sm">
-                    <Send className="h-4 w-4" /> Send Message to KUNAKA TECH
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#008767] hover:bg-[#007358] text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+                  >
+                    <Send className="h-4 w-4" /> Send Message
                   </button>
                 </form>
               )}

@@ -26,21 +26,20 @@ export function AdminSidebar() {
     exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <aside
-      className="hidden lg:flex flex-col w-56 shrink-0 min-h-screen border-r pt-8 pb-6 px-3"
-      style={{ background: '#0E0E10', borderColor: '#1E1E22' }}
-    >
+    <aside className="hidden lg:flex flex-col w-60 shrink-0 min-h-screen bg-white border-r border-slate-200 pt-6 pb-6 px-3">
       {/* Admin badge */}
       <div className="flex items-center gap-2.5 px-3 mb-6">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)' }}>
-          <Shield className="h-4 w-4" style={{ color: '#F87171' }} />
+        <div className="w-8 h-8 rounded-xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center">
+          <Shield className="h-4 w-4" />
         </div>
-        <span className="font-display font-semibold text-sm" style={{ color: '#F5F0E8' }}>Admin Panel</span>
+        <div>
+          <span className="font-display font-bold text-sm text-[#0B192C]">Super Admin</span>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Famba Zimbabwe</p>
+        </div>
       </div>
 
-      <p className="text-xs font-semibold uppercase tracking-widest px-3 mb-3" style={{ color: '#3A3A3E' }}>
-        Platform
+      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">
+        Platform Operations
       </p>
 
       <nav className="space-y-1">
@@ -50,7 +49,12 @@ export function AdminSidebar() {
             <Link
               key={href}
               href={href}
-              className={cn('sidebar-link', active && 'active')}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all',
+                active
+                  ? 'bg-[#E6F4F1] text-[#008767] border border-[#B2E3D8] shadow-sm'
+                  : 'text-slate-600 hover:text-[#008767] hover:bg-slate-50'
+              )}
             >
               <Icon className="h-4 w-4 shrink-0" />
               {label}

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Car, Mail, Lock, User, Phone, ArrowRight, Loader2, Building2, Briefcase } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Loader2, Building2, Briefcase, CheckCircle2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -69,38 +69,47 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#FAFCFB]">
-      {/* LEFT: Photo panel */}
-      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-[#008767]">
+    <div className="min-h-screen flex bg-[#FAFCFB] text-[#0B192C]">
+      {/* LEFT: Branding panel */}
+      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-gradient-to-br from-[#008767] to-[#0B192C]">
         <img
-          src="/avatars/register-panel.jpg"
-          alt="Famba transport service in Harare"
-          className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay"
+          src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=1000&h=1200&fit=crop"
+          alt="Famba Zimbabwe mobility"
+          className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
         />
-        <div className="relative z-10 flex flex-col justify-between p-10 w-full text-white">
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full text-white">
           <Link href="/" className="inline-block group">
-            <img src="/logo.jpeg" alt="Famba" className="h-10 w-auto object-contain bg-white/90 p-1.5 rounded-xl shadow-md transition-transform group-hover:scale-105" />
+            <img src="/logo.jpeg" alt="Famba" className="h-11 w-auto object-contain bg-white/95 p-1.5 rounded-2xl shadow-md transition-transform group-hover:scale-105" />
           </Link>
+
           <div>
-            <div className="accent-line mb-4" />
-            <p className="font-display text-2xl font-bold text-white mb-3 leading-tight">
-              Join the leading transport
-              <br />
-              marketplace in Africa
-            </p>
-            <div className="space-y-2">
-              {['Free to join · No hidden fees', 'Verified providers only', '24/7 customer support'].map(txt => (
-                <p key={txt} className="text-sm flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                  <span style={{ color: '#E8A547' }}>✓</span> {txt}
+            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-300 bg-white/10 px-3 py-1 rounded-full border border-white/20 mb-4 inline-block">
+              Famba Zimbabwe Network
+            </span>
+            <h2 className="font-display text-3xl font-extrabold text-white mb-4 leading-tight">
+              Join Zimbabwe&apos;s Smartest Mobility Ecosystem
+            </h2>
+            <div className="space-y-3">
+              {[
+                'Verified vehicles, buses & workshops',
+                'ZIMRA-benchmarked digital valuations',
+                '24/7 Roadside and WhatsApp assistance',
+              ].map((txt) => (
+                <p key={txt} className="text-sm flex items-center gap-2 text-emerald-100 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {txt}
                 </p>
               ))}
             </div>
           </div>
+
+          <p className="text-xs text-emerald-200/70">
+            © {new Date().getFullYear()} Famba Technologies Ltd. Powered by KUNAKA TECH.
+          </p>
         </div>
       </div>
 
       {/* RIGHT: Form */}
-      <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-12 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -108,44 +117,50 @@ export default function RegisterPage() {
           className="w-full max-w-lg py-8"
         >
           {/* Mobile logo */}
-          <Link href="/" className="inline-block mb-8 lg:hidden">
+          <Link href="/" className="inline-block mb-6 lg:hidden">
             <img src="/logo.jpeg" alt="Famba" className="h-10 w-auto object-contain" />
           </Link>
 
-          <h1 className="font-display text-3xl font-extrabold mb-1.5 text-[#0B192C]">Create account</h1>
-          <p className="text-sm mb-8 text-slate-500 font-medium">
+          <h1 className="font-display text-3xl font-extrabold mb-1.5 text-[#0B192C]">Create Account</h1>
+          <p className="text-xs sm:text-sm mb-8 text-slate-500 font-semibold">
             Already registered?{' '}
-            <Link href="/auth/login" style={{ color: '#E8A547' }}>Sign in</Link>
+            <Link href="/auth/login" className="text-[#008767] font-bold hover:underline">
+              Sign in
+            </Link>
           </p>
 
           {/* Role selector */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
             {[
-              { value: 'CUSTOMER', label: 'Customer', icon: User, desc: 'Book vehicles' },
-              { value: 'COMPANY_OWNER', label: 'Company', icon: Building2, desc: 'List services' },
-              { value: 'INSURANCE_AGENT', label: 'Agent', icon: Briefcase, desc: 'Sell insurance' },
-            ].map(opt => (
+              { value: 'CUSTOMER', label: 'Customer', icon: User, desc: 'Book & Value' },
+              { value: 'COMPANY_OWNER', label: 'Company', icon: Building2, desc: 'List Services' },
+              { value: 'INSURANCE_AGENT', label: 'Agent', icon: Briefcase, desc: 'Underwrite' },
+            ].map((opt) => (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => setValue('role', opt.value as 'CUSTOMER' | 'COMPANY_OWNER' | 'INSURANCE_AGENT')}
-                className="text-left p-4 rounded-xl transition-all"
-                style={{
-                  background: selectedRole === opt.value ? 'rgba(232,165,71,0.08)' : '#1A1A1C',
-                  border: selectedRole === opt.value ? '1px solid rgba(232,165,71,0.4)' : '1px solid #2E2E34',
-                }}
+                className={cn(
+                  'text-left p-3.5 rounded-2xl border transition-all',
+                  selectedRole === opt.value
+                    ? 'bg-[#E6F4F1] border-[#B2E3D8] shadow-sm'
+                    : 'bg-white border-slate-200 hover:border-slate-300'
+                )}
               >
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
-                  style={{
-                    background: selectedRole === opt.value ? 'rgba(232,165,71,0.15)' : '#242428',
-                    border: selectedRole === opt.value ? '1px solid rgba(232,165,71,0.3)' : '1px solid #2E2E34',
-                  }}>
-                  <opt.icon className="h-4 w-4" style={{ color: selectedRole === opt.value ? '#E8A547' : '#6B6B72' }} />
+                <div
+                  className={cn(
+                    'w-8 h-8 rounded-xl flex items-center justify-center mb-2.5',
+                    selectedRole === opt.value
+                      ? 'bg-[#008767] text-white'
+                      : 'bg-slate-100 text-slate-500'
+                  )}
+                >
+                  <opt.icon className="h-4 w-4" />
                 </div>
-                <p className="font-semibold text-sm mb-0.5" style={{ color: selectedRole === opt.value ? '#E8A547' : '#F5F0E8' }}>
+                <p className={cn('font-bold text-xs mb-0.5', selectedRole === opt.value ? 'text-[#008767]' : 'text-[#0B192C]')}>
                   {opt.label}
                 </p>
-                <p className="text-xs" style={{ color: '#6B6B72' }}>{opt.desc}</p>
+                <p className="text-[11px] text-slate-500">{opt.desc}</p>
               </button>
             ))}
           </div>
@@ -154,97 +169,122 @@ export default function RegisterPage() {
             {/* Name row */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>First name</label>
+                <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">First name</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                  <input {...register('firstName')} className="input-dark pl-10" placeholder="John" />
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    {...register('firstName')}
+                    className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767] focus:bg-white transition"
+                    placeholder="John"
+                  />
                 </div>
-                {errors.firstName && <p className="text-xs mt-1" style={{ color: '#F87171' }}>{errors.firstName.message}</p>}
+                {errors.firstName && <p className="text-xs mt-1 text-red-500 font-semibold">{errors.firstName.message}</p>}
               </div>
+
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Last name</label>
+                <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Last name</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                  <input {...register('lastName')} className="input-dark pl-10" placeholder="Doe" />
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    {...register('lastName')}
+                    className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767] focus:bg-white transition"
+                    placeholder="Moyo"
+                  />
                 </div>
-                {errors.lastName && <p className="text-xs mt-1" style={{ color: '#F87171' }}>{errors.lastName.message}</p>}
+                {errors.lastName && <p className="text-xs mt-1 text-red-500 font-semibold">{errors.lastName.message}</p>}
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Email address</label>
+              <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Email address</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                <input {...register('email')} type="email" className="input-dark pl-10" placeholder="you@example.com" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  {...register('email')}
+                  type="email"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767] focus:bg-white transition"
+                  placeholder="you@example.com"
+                />
               </div>
-              {errors.email && <p className="text-xs mt-1" style={{ color: '#F87171' }}>{errors.email.message}</p>}
+              {errors.email && <p className="text-xs mt-1 text-red-500 font-semibold">{errors.email.message}</p>}
             </div>
 
             {/* Phone */}
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Phone (optional)</label>
+              <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Phone (optional)</label>
               <div className="relative">
-                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                <input {...register('phone')} className="input-dark pl-10" placeholder="+263 77 000 0000" />
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  {...register('phone')}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767] focus:bg-white transition"
+                  placeholder="+263 77 000 0000"
+                />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Password</label>
+              <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
-                  className="input-dark pl-10 pr-11"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767] focus:bg-white transition"
                   placeholder="At least 8 characters"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: '#5A5A60' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              {errors.password && <p className="text-xs mt-1" style={{ color: '#F87171' }}>{errors.password.message}</p>}
+              {errors.password && <p className="text-xs mt-1 text-red-500 font-semibold">{errors.password.message}</p>}
             </div>
 
             {/* Confirm password */}
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Confirm password</label>
+              <label className="text-xs font-bold uppercase tracking-wide mb-1.5 block text-slate-600">Confirm password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                <input {...register('confirmPassword')} type="password" className="input-dark pl-10" placeholder="Repeat password" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  {...register('confirmPassword')}
+                  type="password"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767] focus:bg-white transition"
+                  placeholder="Repeat password"
+                />
               </div>
-              {errors.confirmPassword && <p className="text-xs mt-1" style={{ color: '#F87171' }}>{errors.confirmPassword.message}</p>}
+              {errors.confirmPassword && <p className="text-xs mt-1 text-red-500 font-semibold">{errors.confirmPassword.message}</p>}
             </div>
 
-            {/* Terms */}
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <div className="relative mt-0.5">
-                <input {...register('agreeToTerms')} type="checkbox" className="sr-only" />
-                <div className="w-5 h-5 rounded flex items-center justify-center transition-all"
-                  style={{ background: watch('agreeToTerms') ? '#E8A547' : '#1A1A1C', border: '1px solid #2E2E34' }}>
-                  {watch('agreeToTerms') && <span style={{ color: '#0E0E10', fontSize: 12, fontWeight: 700 }}>✓</span>}
-                </div>
-              </div>
-              <span className="text-sm leading-relaxed" style={{ color: '#9A9A9E' }}>
-                I agree to the{' '}
-                <a href="#" style={{ color: '#E8A547' }}>Terms of Service</a>
+            {/* Terms checkbox */}
+            <label className="flex items-start gap-3 cursor-pointer pt-1">
+              <input {...register('agreeToTerms')} type="checkbox" className="mt-1 h-4 w-4 rounded text-[#008767] focus:ring-[#008767] border-slate-300" />
+              <span className="text-xs text-slate-600 leading-relaxed">
+                I agree to Famba Zimbabwe&apos;s{' '}
+                <Link href="/terms" className="text-[#008767] font-bold hover:underline">Terms of Service</Link>
                 {' '}and{' '}
-                <a href="#" style={{ color: '#E8A547' }}>Privacy Policy</a>
+                <Link href="/privacy" className="text-[#008767] font-bold hover:underline">Privacy Policy</Link>.
               </span>
             </label>
-            {errors.agreeToTerms && <p className="text-xs" style={{ color: '#F87171' }}>{errors.agreeToTerms.message}</p>}
+            {errors.agreeToTerms && <p className="text-xs text-red-500 font-semibold">{errors.agreeToTerms.message}</p>}
 
             {/* Error */}
             {error && (
-              <div className="p-3 rounded-xl text-sm" style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.25)', color: '#F87171' }}>
+              <div className="p-3.5 rounded-xl text-xs font-semibold bg-red-50 border border-red-200 text-red-600">
                 {error}
               </div>
             )}
 
             {/* Submit */}
-            <button type="submit" disabled={isLoading} className="btn-primary w-full py-3.5 text-base">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 rounded-xl bg-[#008767] hover:bg-[#007358] text-white font-extrabold text-sm shadow-md transition flex items-center justify-center gap-2 mt-4"
+            >
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Create Account <ArrowRight className="h-4 w-4" /></>}
             </button>
           </form>

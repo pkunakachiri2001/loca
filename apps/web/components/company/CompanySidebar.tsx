@@ -22,21 +22,20 @@ export function CompanySidebar() {
     exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <aside
-      className="hidden lg:flex flex-col w-56 shrink-0 min-h-screen border-r pt-8 pb-6 px-3"
-      style={{ background: '#0E0E10', borderColor: '#1E1E22' }}
-    >
-      {/* Logo area */}
+    <aside className="hidden lg:flex flex-col w-60 shrink-0 min-h-screen bg-white border-r border-slate-200 pt-6 pb-6 px-3">
+      {/* Portal badge */}
       <div className="flex items-center gap-2.5 px-3 mb-6">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: 'rgba(232,165,71,0.15)', border: '1px solid rgba(232,165,71,0.3)' }}>
-          <Building2 className="h-4 w-4" style={{ color: '#E8A547' }} />
+        <div className="w-8 h-8 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] flex items-center justify-center">
+          <Building2 className="h-4 w-4" />
         </div>
-        <span className="font-display font-semibold text-sm" style={{ color: '#F5F0E8' }}>Company Portal</span>
+        <div>
+          <span className="font-display font-bold text-sm text-[#0B192C]">Provider Portal</span>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Zimbabwe Hub</p>
+        </div>
       </div>
 
-      <p className="text-xs font-semibold uppercase tracking-widest px-3 mb-3" style={{ color: '#3A3A3E' }}>
-        Manage
+      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">
+        Manage Fleet
       </p>
 
       <nav className="space-y-1 mb-6">
@@ -46,7 +45,12 @@ export function CompanySidebar() {
             <Link
               key={href}
               href={href}
-              className={cn('sidebar-link', active && 'active')}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all',
+                active
+                  ? 'bg-[#E6F4F1] text-[#008767] border border-[#B2E3D8] shadow-sm'
+                  : 'text-slate-600 hover:text-[#008767] hover:bg-slate-50'
+              )}
             >
               <Icon className="h-4 w-4 shrink-0" />
               {label}
@@ -56,13 +60,19 @@ export function CompanySidebar() {
       </nav>
 
       {/* Quick action */}
-      <Link href="/company/listings/new" className="btn-primary mx-3 justify-center text-sm py-2.5">
+      <Link
+        href="/company/listings/new"
+        className="mx-2 py-2.5 rounded-xl bg-[#008767] hover:bg-[#007358] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition"
+      >
         <Plus className="h-4 w-4" /> New Listing
       </Link>
 
       {/* Bottom */}
-      <div className="mt-auto pt-6" style={{ borderTop: '1px solid #1E1E22' }}>
-        <Link href="/company/settings" className="sidebar-link">
+      <div className="mt-auto pt-4 border-t border-slate-200">
+        <Link
+          href="/company/settings"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-[#008767] hover:bg-slate-50 transition"
+        >
           <Settings className="h-4 w-4 shrink-0" />
           Settings
         </Link>
