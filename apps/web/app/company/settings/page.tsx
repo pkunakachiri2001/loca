@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/auth';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
 import { motion } from 'framer-motion';
-import { Building2, Mail, Phone, MapPin, Globe, CheckCircle, Loader2 } from 'lucide-react';
+import { Building2, Mail, Phone, MapPin, CheckCircle, Loader2, Sparkles } from 'lucide-react';
 
 export default function CompanySettingsPage() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function CompanySettingsPage() {
 
   const { data } = useQuery({
     queryKey: ['company-settings'],
-    queryFn: () => apiClient.get('/companies/me/dashboard').then(r => r.data.data.company),
+    queryFn: () => apiClient.get('/companies/me/dashboard').then((r) => r.data.data.company),
     enabled: !!isAuthenticated && user?.role === 'COMPANY_OWNER',
   });
 
@@ -32,7 +32,7 @@ export default function CompanySettingsPage() {
     description: '',
     phone: '',
     email: '',
-    city: '',
+    city: 'Harare',
   });
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function CompanySettingsPage() {
         description: data.description || '',
         phone: data.phone || '',
         email: data.email || '',
-        city: data.city || '',
+        city: data.city || 'Harare',
       });
     }
   }, [data]);
@@ -63,58 +63,112 @@ export default function CompanySettingsPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="font-display text-3xl font-bold mb-1" style={{ color: '#F5F0E8' }}>Company Settings</h1>
-        <p style={{ color: '#6B6B72' }}>Manage your public company profile and contact info.</p>
+    <div className="max-w-3xl mx-auto text-[#0B192C]">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] text-[11px] font-bold uppercase tracking-wider mb-2">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Vendor Identity</span>
+        </div>
+        <h1 className="font-display text-3xl font-extrabold text-[#0B192C] mb-1">Company Settings</h1>
+        <p className="text-xs sm:text-sm font-semibold text-slate-500">
+          Manage your verified Zimbabwean corporate details, contact numbers, and public business profile.
+        </p>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8"
+      >
         <form onSubmit={handleSave} className="space-y-5">
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Company Name</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 block">
+              Business Legal / Trading Name
+            </label>
             <div className="relative">
-              <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-              <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="input-dark pl-11" required />
+              <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                required
+              />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Description</label>
-            <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="input-dark resize-none h-28" />
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 block">
+              Company Description
+            </label>
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              placeholder="About our fleet, customer service values, and fleet coverage in Zimbabwe..."
+              className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767] resize-none h-28"
+            />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Business Email</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 block">
+                Official Business Email
+              </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="input-dark pl-11" required />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                  required
+                />
               </div>
             </div>
+
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>Phone Number</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 block">
+                Primary Phone / WhatsApp Line
+              </label>
               <div className="relative">
-                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-                <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className="input-dark pl-11" required />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  value={form.phone}
+                  onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                  placeholder="+263 77 123 4567"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                  required
+                />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: '#6B6B72' }}>City</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 block">
+              Headquarters City (Zimbabwe)
+            </label>
             <div className="relative">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#5A5A60' }} />
-              <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} className="input-dark pl-11" required />
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                value={form.city}
+                onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+                placeholder="Harare"
+                className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#008767]"
+                required
+              />
             </div>
           </div>
 
-          <div className="flex items-center gap-3 pt-2">
-            <button type="submit" disabled={saving} className="btn-primary px-6">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Settings'}
+          <div className="flex items-center gap-3 pt-3">
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-6 py-3 rounded-xl bg-[#008767] hover:bg-[#007055] text-white font-bold text-xs shadow-sm transition disabled:opacity-50 flex items-center gap-2"
+            >
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Profile Changes'}
             </button>
             {saved && (
-              <div className="flex items-center gap-1.5 text-sm" style={{ color: '#34D399' }}>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#008767]">
                 <CheckCircle className="h-4 w-4" /> Company profile updated!
               </div>
             )}

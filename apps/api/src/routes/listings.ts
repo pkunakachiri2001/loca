@@ -212,15 +212,28 @@ router.post('/', authenticate, authorize('COMPANY_OWNER', 'ADMIN'), async (req: 
       throw new ApiError(403, 'Your company must be verified before adding listings.');
     }
 
-    const companyId = req.body.companyId || company?.id;
-    const slug = `${req.body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`;
+    const { images, ...rawBody } = req.body;
+    const companyId = rawBody.companyId || company?.id;
+    const slug = `${(rawBody.title || 'listing').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`;
 
     const listing = await prisma.listing.create({
       data: {
-        ...req.body,
+        ...rawBody,
         companyId,
         slug,
         status: req.user!.role === 'ADMIN' ? 'ACTIVE' : 'PENDING_APPROVAL',
+        ...(Array.isArray(images) && images.length > 0 ? {
+          images: {
+            create: images.map((img: any, idx: number) => ({
+              url: typeof img === 'string' ? img : img.url,
+              isPrimary: typeof img === 'object' && img.isPrimary !== undefined ? img.isPrimary : idx === 0,
+              order: idx,
+            })),
+          },
+        } : {}),
+      },
+      include: {
+        images: true,
       },
     });
 
@@ -249,7 +262,22 @@ router.put('/:id', authenticate, authorize('COMPANY_OWNER', 'ADMIN'), async (req
 
     const updated = await prisma.listing.update({
       where: { id },
-      data: updateData,
+      data: {
+        ...updateData,
+        ...(Array.isArray(images) && images.length > 0 ? {
+          images: {
+            deleteMany: {},
+            create: images.map((img: any, idx: number) => ({
+              url: typeof img === 'string' ? img : img.url,
+              isPrimary: typeof img === 'object' && img.isPrimary !== undefined ? img.isPrimary : idx === 0,
+              order: idx,
+            })),
+          },
+        } : {}),
+      },
+      include: {
+        images: true,
+      },
     });
 
     res.json({ success: true, message: 'Listing updated successfully.', data: updated });

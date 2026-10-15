@@ -112,8 +112,8 @@ router.get('/companies', async (req: Request, res: Response, next: NextFunction)
   } catch (err) { next(err); }
 });
 
-// PUT /api/admin/companies/:id/verify — Verify or reject company
-router.put('/companies/:id/verify', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+// PUT /api/admin/companies/:id/verify & /status — Verify or reject company
+const handleCompanyVerify = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { status, rejectionReason } = req.body;
     if (!['VERIFIED', 'REJECTED', 'SUSPENDED'].includes(status)) throw new ApiError(400, 'Invalid status.');
@@ -144,7 +144,10 @@ router.put('/companies/:id/verify', async (req: Request, res: Response, next: Ne
 
     res.json({ success: true, message: `Company ${status.toLowerCase()}.`, data: company });
   } catch (err) { next(err); }
-});
+};
+
+router.put('/companies/:id/verify', handleCompanyVerify);
+router.put('/companies/:id/status', handleCompanyVerify);
 
 // GET /api/admin/listings — All listings with status
 router.get('/listings', async (req: Request, res: Response, next: NextFunction): Promise<void> => {

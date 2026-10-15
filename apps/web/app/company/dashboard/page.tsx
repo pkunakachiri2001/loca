@@ -6,9 +6,9 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import {
   Car, Bookmark, Star, TrendingUp, Clock, CheckCircle,
-  XCircle, ArrowRight, Plus, AlertCircle
+  XCircle, ArrowRight, Plus, AlertCircle, Sparkles
 } from 'lucide-react';
-import { formatCurrency, formatDate, getStatusColor } from '@/lib/utils';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
@@ -40,166 +40,200 @@ export default function CompanyDashboardPage() {
     queryClient.invalidateQueries({ queryKey: ['company-dashboard'] });
   };
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'CONFIRMED':
+        return 'bg-emerald-50 text-[#008767] border-emerald-200';
+      case 'COMPLETED':
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'PENDING':
+        return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'CANCELLED':
+      case 'REJECTED':
+        return 'bg-rose-50 text-rose-700 border-rose-200';
+      default:
+        return 'bg-slate-100 text-slate-700 border-slate-200';
+    }
+  };
+
   const stats = [
-    { label: 'Active Listings', value: data?.company?.listings?.length ?? '—', icon: Car, color: '#60A5FA' },
-    { label: 'Pending', value: data?.pendingBookings ?? '—', icon: Clock, color: '#FBBF24' },
-    { label: 'Total Bookings', value: data?.company?.totalBookings ?? '—', icon: Bookmark, color: '#A78BFA' },
-    { label: 'Rating', value: data?.company?.rating ? `${data.company.rating.toFixed(1)}★` : '—', icon: Star, color: '#34D399' },
+    { label: 'Active Listings', value: data?.company?.listings?.length ?? '—', icon: Car, color: '#008767' },
+    { label: 'Pending Bookings', value: data?.pendingBookings ?? '—', icon: Clock, color: '#D97706' },
+    { label: 'Total Bookings', value: data?.company?.totalBookings ?? '—', icon: Bookmark, color: '#2563EB' },
+    { label: 'Customer Rating', value: data?.company?.rating ? `${data.company.rating.toFixed(1)}★` : '5.0★', icon: Star, color: '#F59E0B' },
   ];
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto text-[#0B192C]">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex items-start justify-between mb-8">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-display text-3xl font-bold mb-1" style={{ color: '#F5F0E8' }}>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] text-[11px] font-bold uppercase tracking-wider mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Vendor Operations Hub</span>
+          </div>
+          <h1 className="font-display text-3xl font-extrabold text-[#0B192C] mb-1">
             {data?.company?.name || 'Company Dashboard'}
           </h1>
-          <p style={{ color: '#6B6B72' }}>Manage your listings, bookings, and grow your business on Famba.</p>
+          <p className="text-xs sm:text-sm font-semibold text-slate-500">
+            Manage your fleet, confirm reservations, and scale your automotive business in Zimbabwe.
+          </p>
         </div>
-        <Link href="/company/listings/new" className="btn-primary text-sm shrink-0">
-          <Plus className="h-4 w-4" /> Add Listing
+        <Link
+          href="/company/listings/new"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#008767] hover:bg-[#007055] text-white font-bold text-xs shadow-sm transition shrink-0"
+        >
+          <Plus className="h-4 w-4" /> Add New Listing
         </Link>
       </motion.div>
 
-      {/* Verification banner */}
+      {/* Verification Banner */}
       {data?.company?.status === 'PENDING' && (
         <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="mb-6 rounded-xl p-4 flex items-center gap-3 text-sm"
-          style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)', color: '#FBBF24' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mb-6 rounded-2xl p-4.5 bg-amber-50/80 border border-amber-200 flex items-start gap-3 text-xs"
         >
-          <AlertCircle className="h-5 w-5 shrink-0" />
+          <AlertCircle className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
           <div>
-            <p className="font-semibold">Your company is pending verification</p>
-            <p style={{ color: 'rgba(251,191,36,0.7)', marginTop: 2 }}>Our team will review your details within 48–72 hours. Listings will go live once verified.</p>
+            <p className="font-bold text-amber-900 text-sm">Your business profile is pending verification</p>
+            <p className="text-amber-800/80 mt-1">
+              Famba administrators are reviewing your Zimbabwe corporate details. Once verified, all your published vehicles and workshop services will go live immediately on the marketplace.
+            </p>
           </div>
         </motion.div>
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat, i) => (
           <motion.div
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
-            className="card p-5"
+            transition={{ delay: i * 0.05 }}
+            className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm"
           >
-            <stat.icon className="h-5 w-5 mb-3" style={{ color: stat.color }} />
-            <p className="font-display text-3xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</p>
-            <p className="text-sm" style={{ color: '#6B6B72' }}>{stat.label}</p>
+            <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-3">
+              <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
+            </div>
+            <p className="font-display text-2xl font-extrabold text-[#0B192C] mb-1">{stat.value}</p>
+            <p className="text-xs font-semibold text-slate-500">{stat.label}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Revenue Banner */}
+      {/* Revenue Card */}
       {data?.company?.totalRevenue !== undefined && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="card p-6 mb-8 flex items-center justify-between"
-          style={{ background: 'linear-gradient(135deg, #1A1A1C 0%, rgba(232,165,71,0.06) 100%)' }}
+          transition={{ delay: 0.2 }}
+          className="bg-gradient-to-r from-emerald-50 via-teal-50 to-white rounded-2xl p-6 border border-emerald-200 shadow-sm mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.25)' }}>
-              <TrendingUp className="h-6 w-6" style={{ color: '#34D399' }} />
+            <div className="w-12 h-12 rounded-2xl bg-[#008767] text-white flex items-center justify-center shrink-0 shadow-sm">
+              <TrendingUp className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-sm" style={{ color: '#6B6B72' }}>Total Revenue Earned</p>
-              <p className="font-display text-3xl font-bold" style={{ color: '#F5F0E8' }}>
-                {formatCurrency(data.company.totalRevenue)}
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Marketplace Revenue</p>
+              <p className="font-display text-3xl font-extrabold text-[#008767] mt-0.5">
+                {formatCurrency(data.company.totalRevenue || 0)}
               </p>
             </div>
           </div>
-          <Link href="/company/analytics" className="btn-secondary text-sm">
-            Revenue Report <ArrowRight className="h-4 w-4" />
+          <Link
+            href="/company/revenue"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-xs font-bold text-slate-700 shadow-sm transition"
+          >
+            Revenue Report <ArrowRight className="h-3.5 w-3.5 text-[#008767]" />
           </Link>
         </motion.div>
       )}
 
       {/* Recent Bookings */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45 }}
-        className="card"
+        transition={{ delay: 0.25 }}
+        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
       >
-        <div className="flex items-center justify-between p-6" style={{ borderBottom: '1px solid #1E1E22' }}>
-          <h2 className="font-display font-semibold" style={{ color: '#F5F0E8' }}>Recent Bookings</h2>
-          <Link href="/company/bookings" className="flex items-center gap-1 text-sm" style={{ color: '#E8A547' }}>
-            View all <ArrowRight className="h-3 w-3" />
+        <div className="flex items-center justify-between p-5 border-b border-slate-100">
+          <div>
+            <h2 className="font-display text-lg font-bold text-[#0B192C]">Recent Customer Bookings</h2>
+            <p className="text-xs font-semibold text-slate-400">Incoming reservations and service requests</p>
+          </div>
+          <Link
+            href="/company/bookings"
+            className="text-xs font-bold text-[#008767] hover:underline flex items-center gap-1"
+          >
+            View all bookings <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
         {!data?.recentBookings?.length ? (
           <div className="p-12 text-center">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ background: '#242428', border: '1px solid #2E2E34' }}>
-              <Bookmark className="h-7 w-7" style={{ color: '#3A3A3E' }} />
+            <div className="w-14 h-14 rounded-2xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] flex items-center justify-center mx-auto mb-3">
+              <Bookmark className="h-7 w-7" />
             </div>
-            <p className="font-semibold mb-1" style={{ color: '#F5F0E8' }}>No bookings yet</p>
-            <p className="text-sm" style={{ color: '#6B6B72' }}>Bookings will appear here once customers book your listings.</p>
+            <p className="font-bold text-sm text-[#0B192C] mb-1">No bookings yet</p>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              Incoming bookings from customers searching for vehicles or workshops in Zimbabwe will show up here.
+            </p>
           </div>
         ) : (
-          <div>
+          <div className="divide-y divide-slate-100">
             {data.recentBookings.map((booking: any) => (
               <div
                 key={booking.id}
-                className="flex items-center gap-4 p-4 transition-colors"
-                style={{ borderBottom: '1px solid #1E1E22' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.02)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 hover:bg-slate-50/70 transition"
               >
-                {/* Avatar */}
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-display font-bold text-sm"
-                  style={{ background: 'rgba(232,165,71,0.1)', border: '1px solid rgba(232,165,71,0.2)', color: '#E8A547' }}>
-                  {booking.user?.firstName?.[0]}{booking.user?.lastName?.[0]}
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium" style={{ color: '#F5F0E8' }}>
-                    {booking.user?.firstName} {booking.user?.lastName}
-                  </p>
-                  <p className="text-xs" style={{ color: '#6B6B72' }}>{booking.listing?.title}</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#5A5A60' }}>
-                    {formatDate(booking.startDate)} → {formatDate(booking.endDate)}
-                  </p>
-                </div>
-
-                {/* Amount + status */}
-                <div className="text-right shrink-0">
-                  <p className="text-sm font-semibold" style={{ color: '#F5F0E8' }}>{formatCurrency(booking.totalAmount)}</p>
-                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold mt-1 ${getStatusColor(booking.status)}`}>
-                    {booking.status}
-                  </span>
-                </div>
-
-                {/* Accept / Reject buttons */}
-                {booking.status === 'PENDING' && (
-                  <div className="flex gap-2 shrink-0">
-                    <button
-                      onClick={() => handleBookingAction(booking.id, 'CONFIRMED')}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                      style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.25)' }}
-                      title="Confirm"
-                    >
-                      <CheckCircle className="h-4 w-4" style={{ color: '#34D399' }} />
-                    </button>
-                    <button
-                      onClick={() => handleBookingAction(booking.id, 'REJECTED', 'Not available')}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                      style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.25)' }}
-                      title="Reject"
-                    >
-                      <XCircle className="h-4 w-4" style={{ color: '#F87171' }} />
-                    </button>
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] font-bold text-xs flex items-center justify-center shrink-0">
+                    {booking.user?.firstName?.[0] || 'C'}
+                    {booking.user?.lastName?.[0] || 'U'}
                   </div>
-                )}
+                  <div>
+                    <p className="font-bold text-sm text-[#0B192C]">
+                      {booking.user?.firstName} {booking.user?.lastName}
+                    </p>
+                    <p className="text-xs font-semibold text-slate-500">{booking.listing?.title}</p>
+                    <p className="text-[11px] font-semibold text-slate-400 mt-0.5">
+                      {formatDate(booking.startDate)} → {formatDate(booking.endDate)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 sm:justify-end">
+                  <div className="text-right">
+                    <p className="font-bold text-sm text-[#008767]">{formatCurrency(booking.totalAmount)}</p>
+                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold mt-1 ${getStatusBadge(booking.status)}`}>
+                      {booking.status}
+                    </span>
+                  </div>
+
+                  {booking.status === 'PENDING' && (
+                    <div className="flex gap-1.5 shrink-0">
+                      <button
+                        onClick={() => handleBookingAction(booking.id, 'CONFIRMED')}
+                        className="px-3 py-1.5 rounded-lg bg-[#008767] hover:bg-[#007055] text-white font-bold text-xs flex items-center gap-1 transition"
+                        title="Confirm Booking"
+                      >
+                        <CheckCircle className="h-3.5 w-3.5" /> Confirm
+                      </button>
+                      <button
+                        onClick={() => {
+                          const reason = prompt('Rejection reason:') || 'Unavailable dates';
+                          handleBookingAction(booking.id, 'REJECTED', reason);
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1 transition"
+                        title="Decline"
+                      >
+                        <XCircle className="h-3.5 w-3.5" /> Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
