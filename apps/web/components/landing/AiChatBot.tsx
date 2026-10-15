@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react';
 
 const quickReplies = [
+  'How do I book a School Run?',
   'How do I book a car?',
   'What are your prices?',
   'How do I list my company?',

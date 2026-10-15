@@ -220,11 +220,11 @@ export function TrackingMap({
     // Add new markers
     filtered.forEach((item) => {
       const getCategoryColor = (cat: string) => {
-        if (cat === 'CAR_RENTAL') return '#E8A547'; // Warm Amber
+        if (cat === 'CAR_RENTAL') return '#008767'; // Famba Emerald Teal
         if (cat === 'BUS_RENTAL') return '#3B82F6'; // Blue
         if (cat === 'MECHANIC') return '#EF4444'; // Red
-        if (cat === 'CAR_WASH') return '#10B981'; // Emerald
-        return '#8B5CF6';
+        if (cat === 'CAR_WASH') return '#008767'; // Emerald
+        return '#008767';
       };
 
       const color = getCategoryColor(item.category);
@@ -310,8 +310,8 @@ export function TrackingMap({
           <a href="/search?q=${encodeURIComponent(item.title)}" style="
             display: block;
             text-align: center;
-            background: linear-gradient(135deg, #E8A547, #C68227);
-            color: #000;
+            background: #008767;
+            color: #ffffff;
             font-weight: 700;
             font-size: 12px;
             padding: 8px 12px;
@@ -373,23 +373,23 @@ export function TrackingMap({
     <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950">
       {/* Top Filter Bar */}
       {showControls && (
-        <div className="absolute top-4 left-4 right-4 z-[500] flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-900/90 backdrop-blur-md border border-white/10 shadow-lg">
+        <div className="absolute top-4 left-4 right-4 z-[500] flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-md">
           {/* Category Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             {[
               { id: 'ALL', label: 'All Fleet' },
               { id: 'CAR_RENTAL', label: 'Cars' },
               { id: 'BUS_RENTAL', label: 'Buses' },
-              { id: 'MECHANIC', label: 'Mechanics' },
+              { id: 'MECHANIC', label: 'Workshops' },
               { id: 'CAR_WASH', label: 'Wash' },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveFilter(tab.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                   activeFilter === tab.id
-                    ? 'bg-[#E8A547] text-slate-950 shadow-md shadow-[#E8A547]/20'
-                    : 'bg-white/5 text-slate-300 hover:bg-white/10'
+                    ? 'bg-[#008767] text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 {tab.label}
@@ -399,11 +399,11 @@ export function TrackingMap({
 
           {/* City Selector */}
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-[#E8A547]" />
+            <MapPin className="h-4 w-4 text-[#008767]" />
             <select
               value={activeCity}
               onChange={(e) => handleSelectCity(e.target.value)}
-              className="bg-slate-800 text-slate-200 text-xs font-medium px-3 py-1.5 rounded-lg border border-white/10 focus:outline-none focus:border-[#E8A547]"
+              className="bg-slate-50 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#008767]"
             >
               {ZIMBABWE_CITIES.map((c) => (
                 <option key={c.name} value={c.name}>
@@ -415,15 +415,15 @@ export function TrackingMap({
             {/* Live Tracking Indicator */}
             <button
               onClick={() => setLiveSimulation(!liveSimulation)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
                 liveSimulation
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                  : 'bg-slate-800 border-white/10 text-slate-400'
+                  ? 'bg-[#E6F4F1] border-[#B2E3D8] text-[#008767]'
+                  : 'bg-slate-100 border-slate-200 text-slate-500'
               }`}
             >
               <span
                 className={`h-2 w-2 rounded-full ${
-                  liveSimulation ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'
+                  liveSimulation ? 'bg-[#008767] animate-pulse' : 'bg-slate-400'
                 }`}
               />
               {liveSimulation ? 'Live GPS Active' : 'GPS Paused'}

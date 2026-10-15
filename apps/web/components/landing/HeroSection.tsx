@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import {
-  Search, MapPin, ArrowRight, Shield, Star, Zap, Car, Bus, User, Wrench,
+  Search, MapPin, ArrowRight, Shield, Star, Zap, Car, Bus, Cog, Wrench, User,
   Package, ShoppingBag, Utensils, Headphones, Clock, ArrowUpRight, CheckCircle2
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
@@ -13,8 +13,8 @@ import Link from 'next/link';
 const CATEGORY_TABS = [
   { label: 'Car Rental', value: 'CAR_RENTAL', icon: Car },
   { label: 'Bus Hire', value: 'BUS_RENTAL', icon: Bus },
-  { label: 'Pro Driver', value: 'DRIVER', icon: User },
-  { label: 'Mechanic', value: 'MECHANIC', icon: Wrench },
+  { label: 'Spare Parts', value: 'DRIVER', icon: Cog },
+  { label: 'Workshops', value: 'MECHANIC', icon: Wrench },
   { label: 'Deliveries', value: 'COURIER', icon: Package },
 ];
 

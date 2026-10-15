@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import {
   Bookmark, Heart, Star, Gift, ArrowRight, Car, CheckCircle,
-  Clock, MapPin, User, Search
+  Clock, MapPin, User, Search, DollarSign, Globe, ShieldCheck
 } from 'lucide-react';
 import { formatCurrency, formatDate, getStatusColor } from '@/lib/utils';
 import { useEffect } from 'react';
@@ -44,30 +44,45 @@ export default function CustomerDashboardPage() {
   const wishlistCount = (wishlistData || []).length;
 
   const stats = [
-    { icon: Bookmark, label: 'My Bookings', value: bookings.length, color: '#E8A547', bg: 'rgba(232,165,71,0.1)' },
-    { icon: CheckCircle, label: 'Completed Trips', value: bookings.filter((b: any) => b.status === 'COMPLETED').length, color: '#34D399', bg: 'rgba(52,211,153,0.1)' },
-    { icon: Gift, label: 'Loyalty Points', value: user?.loyaltyPoints || 0, color: '#FBBF24', bg: 'rgba(251,191,36,0.1)' },
-    { icon: Heart, label: 'Saved Vehicles', value: wishlistCount, color: '#F87171', bg: 'rgba(248,113,113,0.1)' },
+    { icon: Bookmark, label: 'My Bookings', value: bookings.length, color: '#008767', bg: '#E6F4F1' },
+    { icon: CheckCircle, label: 'Completed Trips', value: bookings.filter((b: any) => b.status === 'COMPLETED').length, color: '#059669', bg: '#D1FAE5' },
+    { icon: Gift, label: 'Loyalty Points', value: user?.loyaltyPoints || 0, color: '#D97706', bg: '#FEF3C7' },
+    { icon: Heart, label: 'Saved Vehicles', value: wishlistCount, color: '#E11D48', bg: '#FFE4E6' },
   ];
 
   if (!isAuthenticated || user?.role !== 'CUSTOMER') {
-    return null; // Prevents flash before redirection
+    return null;
   }
 
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="badge-info text-xs">Customer Portal</span>
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] text-xs font-bold uppercase tracking-wider">
+              Customer Portal
+            </span>
+            <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5 text-[#008767]" />
+              <span>Zimbabwe</span>
+            </span>
+            <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+              <DollarSign className="w-3.5 h-3.5 text-[#008767]" />
+              <span>USD</span>
+            </span>
+          </div>
         </div>
-        <h1 className="font-display text-3xl font-bold mb-1" style={{ color: '#F5F0E8' }}>
+
+        <h1 className="font-display text-3xl md:text-4xl font-extrabold text-[#0B192C] mb-1">
           Welcome back, {user?.firstName}! 👋
         </h1>
-        <p style={{ color: '#6B6B72' }}>Here's an overview of your bookings and saved services on Famba.</p>
+        <p className="text-slate-600 text-sm md:text-base">
+          Here is an overview of your bookings, verified vehicles, and saved services in Zimbabwe.
+        </p>
       </motion.div>
 
-      {/* Customer Stats */}
+      {/* Customer Stats Cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 mb-8">
         {stats.map((stat, i) => (
           <motion.div
@@ -75,14 +90,16 @@ export default function CustomerDashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="card p-5"
+            className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-[#008767] transition-all"
           >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-              style={{ background: stat.bg, border: `1px solid ${stat.color}33` }}>
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+              style={{ background: stat.bg }}
+            >
               <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
             </div>
-            <p className="font-display text-3xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</p>
-            <p className="text-sm" style={{ color: '#6B6B72' }}>{stat.label}</p>
+            <p className="font-display text-3xl font-extrabold text-[#0B192C] mb-0.5">{stat.value}</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
           </motion.div>
         ))}
       </div>
@@ -92,15 +109,26 @@ export default function CustomerDashboardPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="card p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4"
-        style={{ background: 'linear-gradient(135deg, #1A1A1C 0%, rgba(232,165,71,0.08) 100%)' }}
+        className="rounded-3xl p-6 sm:p-8 mb-8 flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-r from-emerald-50 via-teal-50/50 to-white border-2 border-[#008767]/30 shadow-sm"
       >
         <div>
-          <h3 className="font-display font-semibold text-lg mb-1" style={{ color: '#F5F0E8' }}>Ready for your next trip?</h3>
-          <p className="text-sm" style={{ color: '#6B6B72' }}>Explore 500+ verified car rentals, buses, and professional drivers.</p>
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#008767] mb-1">
+            <ShieldCheck className="w-4 h-4" />
+            <span>Famba Smart Mobility</span>
+          </div>
+          <h3 className="font-display font-extrabold text-xl text-[#0B192C] mb-1">
+            Ready for your next journey in Zimbabwe?
+          </h3>
+          <p className="text-sm text-slate-600">
+            Explore 500+ verified car rentals, buses, workshops, and defensible vehicle valuations with transparent USD pricing.
+          </p>
         </div>
-        <Link href="/search" className="btn-primary shrink-0 py-3 px-6">
-          <Search className="h-4 w-4" /> Browse Marketplace
+        <Link
+          href="/search"
+          className="px-6 py-3.5 rounded-xl bg-[#008767] hover:bg-[#007358] text-white font-bold text-sm shadow-md shadow-[#008767]/20 transition-all flex items-center gap-2 shrink-0"
+        >
+          <Search className="h-4 w-4" />
+          <span>Browse Marketplace</span>
         </Link>
       </motion.div>
 
@@ -109,55 +137,81 @@ export default function CustomerDashboardPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="card mb-8"
+        className="bg-white rounded-3xl border border-slate-200 shadow-sm mb-8 overflow-hidden"
       >
-        <div className="flex items-center justify-between p-6" style={{ borderBottom: '1px solid #1E1E22' }}>
-          <h2 className="font-display font-semibold" style={{ color: '#F5F0E8' }}>Recent Bookings</h2>
-          <Link href="/dashboard/bookings" className="flex items-center gap-1 text-sm font-medium" style={{ color: '#E8A547' }}>
-            View all <ArrowRight className="h-3 w-3" />
+        <div className="flex items-center justify-between p-6 border-b border-slate-100">
+          <div>
+            <h2 className="font-display font-bold text-lg text-[#0B192C]">Recent Bookings</h2>
+            <p className="text-xs text-slate-500">Live booking activity and status</p>
+          </div>
+          <Link
+            href="/dashboard/bookings"
+            className="flex items-center gap-1 text-sm font-bold text-[#008767] hover:text-[#007358] transition"
+          >
+            <span>View all</span>
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
         {isLoading ? (
           <div className="p-6 space-y-3">
-            {[...Array(3)].map((_, i) => <div key={i} className="skeleton h-16 rounded-xl" />)}
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-16 rounded-xl bg-slate-100 animate-pulse" />
+            ))}
           </div>
         ) : bookings.length === 0 ? (
           <div className="p-12 text-center">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ background: '#242428', border: '1px solid #2E2E34' }}>
-              <Car className="h-7 w-7" style={{ color: '#3A3A3E' }} />
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-4 text-[#008767]">
+              <Car className="h-7 w-7" />
             </div>
-            <p className="font-semibold mb-1" style={{ color: '#F5F0E8' }}>No bookings yet</p>
-            <p className="text-sm mb-5" style={{ color: '#6B6B72' }}>Find and reserve your ideal transport in under 60 seconds.</p>
-            <Link href="/search" className="btn-primary text-sm px-6">
-              Find a Vehicle
+            <p className="font-bold text-base text-[#0B192C] mb-1">No bookings yet</p>
+            <p className="text-sm text-slate-500 mb-5">
+              Find and reserve verified transport across Harare, Bulawayo, or Victoria Falls in under 60 seconds.
+            </p>
+            <Link
+              href="/search"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#008767] hover:bg-[#007358] text-white font-bold text-sm shadow-sm transition"
+            >
+              <span>Find a Vehicle</span>
             </Link>
           </div>
         ) : (
-          <div>
+          <div className="divide-y divide-slate-100">
             {bookings.map((booking: any) => (
               <div
                 key={booking.id}
-                className="flex items-center gap-4 p-4 transition-colors"
-                style={{ borderBottom: '1px solid #1E1E22' }}
+                className="flex items-center gap-4 p-5 hover:bg-slate-50/70 transition-colors"
               >
-                <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0" style={{ background: '#242428' }}>
+                <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-100 border border-slate-200">
                   {booking.listing?.images?.[0]?.url ? (
-                    <img src={booking.listing.images[0].url} alt={booking.listing.title} className="w-full h-full object-cover" />
+                    <img
+                      src={booking.listing.images[0].url}
+                      alt={booking.listing.title}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center"><Car className="h-5 w-5" style={{ color: '#3A3A3E' }} /></div>
+                    <div className="w-full h-full flex items-center justify-center text-slate-400">
+                      <Car className="h-5 w-5" />
+                    </div>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-sm truncate" style={{ color: '#F5F0E8' }}>{booking.listing?.title}</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#6B6B72' }}>
-                    {formatDate(booking.startDate)} → {formatDate(booking.endDate)}
+                  <p className="font-bold text-sm text-[#0B192C] truncate">
+                    {booking.listing?.title}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {formatDate(booking.startDate)} → {formatDate(booking.endDate)} • {booking.listing?.city || 'Harare, Zimbabwe'}
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-semibold" style={{ color: '#F5F0E8' }}>{formatCurrency(booking.totalAmount)}</p>
-                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold mt-1 ${getStatusColor(booking.status)}`}>
+                  <p className="text-sm font-extrabold text-[#0B192C]">
+                    ${booking.totalAmount || 0} USD
+                  </p>
+                  <span
+                    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold mt-1 ${getStatusColor(
+                      booking.status
+                    )}`}
+                  >
                     {booking.status}
                   </span>
                 </div>
@@ -175,18 +229,21 @@ export default function CustomerDashboardPage() {
         className="grid grid-cols-2 gap-4 md:grid-cols-4"
       >
         {[
-          { href: '/search', icon: Car, label: 'Search Marketplace', desc: 'Find rentals & services' },
+          { href: '/search', icon: Car, label: 'Search Marketplace', desc: 'Find rentals & workshops' },
+          { href: '/valuation', icon: DollarSign, label: 'Car Valuation', desc: 'Zimnat defensible certificate' },
           { href: '/dashboard/wishlist', icon: Heart, label: 'Saved Listings', desc: 'View saved items' },
-          { href: '/dashboard/loyalty', icon: Gift, label: 'Rewards Program', desc: 'Check point balance' },
-          { href: '/dashboard/profile', icon: User, label: 'Account Settings', desc: 'Edit profile & security' },
+          { href: '/dashboard/profile', icon: User, label: 'Account Settings', desc: 'Zimbabwe profile & USD' },
         ].map(({ href, icon: Icon, label, desc }) => (
-          <Link key={href} href={href} className="card p-5 transition-all hover:-translate-y-1 group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-105"
-              style={{ background: 'rgba(232,165,71,0.1)', border: '1px solid rgba(232,165,71,0.25)' }}>
-              <Icon className="h-5 w-5" style={{ color: '#E8A547' }} />
+          <Link
+            key={href}
+            href={href}
+            className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-[#008767] hover:-translate-y-1 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] border border-[#B2E3D8] flex items-center justify-center mb-3 text-[#008767] group-hover:scale-105 transition-transform">
+              <Icon className="h-5 w-5" />
             </div>
-            <p className="font-semibold text-sm mb-0.5" style={{ color: '#F5F0E8' }}>{label}</p>
-            <p className="text-xs" style={{ color: '#6B6B72' }}>{desc}</p>
+            <p className="font-bold text-sm text-[#0B192C] mb-0.5">{label}</p>
+            <p className="text-xs text-slate-500">{desc}</p>
           </Link>
         ))}
       </motion.div>

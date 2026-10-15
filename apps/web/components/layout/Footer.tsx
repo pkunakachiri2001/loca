@@ -7,8 +7,8 @@ const footerLinks = {
   services: [
     { label: 'Car Rentals', href: '/search?category=CAR_RENTAL' },
     { label: 'Bus Hire', href: '/search?category=BUS_RENTAL' },
-    { label: 'Professional Drivers', href: '/search?category=DRIVER' },
-    { label: 'Mechanics', href: '/search?category=MECHANIC' },
+    { label: 'Spare Parts', href: '/search?category=DRIVER' },
+    { label: 'Workshops & Repairs', href: '/search?category=MECHANIC' },
     { label: 'Deliveries & Courier', href: '/search?category=COURIER' },
     { label: 'Emergency Roadside', href: '/search?category=EMERGENCY_ROADSIDE' },
   ],
@@ -54,28 +54,8 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-slate-600 leading-relaxed mb-6">
-              Zimbabwe's all-in-one smart travel & transport platform powered by <strong className="text-[#0B192C]">KUNAKA TECH</strong>.
+              Zimbabwe&apos;s all-in-one smart travel, transportation, and vehicle services marketplace. Move more, live better.
             </p>
-
-            {/* KUNAKA TECH Contact Info */}
-            <div className="space-y-2 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008767]">
-                <Building2 className="h-3.5 w-3.5" /> KUNAKA TECH
-              </div>
-              <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                <User className="h-3.5 w-3.5 text-[#008767]" />
-                <span>PKunaka And Locardia Munyuki(Developer)</span>
-                <span>George Hove (Project Manager)</span>
-              </div>
-              <a href="mailto:HRmanager@kunakatech.tech" className="flex items-center gap-2 text-xs text-slate-500 hover:text-[#008767] transition-colors">
-                <Mail className="h-3.5 w-3.5 text-[#008767]" />
-                HRmanager@kunakatech.tech
-              </a>
-              <a href="https://wa.me/917796787966" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-slate-500 hover:text-[#008767] transition-colors">
-                <Phone className="h-3.5 w-3.5 text-[#008767]" />
-                WhatsApp +91 7796787966
-              </a>
-            </div>
           </div>
 
           {/* Services */}

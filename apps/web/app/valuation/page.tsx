@@ -264,14 +264,14 @@ export default function ValuationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FAFCFB] text-[#0B192C] flex flex-col font-sans">
       <Navbar />
 
       <main className="flex-grow pt-28 pb-20">
         {/* Hero Section */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-semibold mb-4 shadow-sm">
-            <Scale className="w-4 h-4 text-emerald-600" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E6F4F1] border border-[#B2E3D8] text-[#008767] text-xs sm:text-sm font-bold uppercase tracking-wider mb-4 shadow-sm">
+            <Scale className="w-4 h-4 text-[#008767]" />
             <span>Zimbabwe&apos;s Independent Motor Vehicle Valuation Standard</span>
           </div>
 
@@ -344,7 +344,7 @@ export default function ValuationPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
             {/* Step Indicator Header */}
-            <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-6 sm:p-8">
+            <div className="bg-gradient-to-r from-[#008767] via-[#007358] to-[#0B192C] text-white p-6 sm:p-8">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider">

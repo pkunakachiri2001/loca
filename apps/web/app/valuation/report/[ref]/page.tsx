@@ -181,17 +181,17 @@ export default function ValuationReportPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FAFCFB] text-[#0B192C] flex flex-col font-sans">
       <div className="print:hidden">
         <Navbar />
       </div>
 
-      <main className="flex-grow pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
+      <main className="flex-grow pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
         {/* Top Action Bar (hidden in print) */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6 print:hidden">
           <Link
             href="/valuation"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-emerald-700 transition"
+            className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#008767] transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>New Valuation</span>
@@ -202,13 +202,13 @@ export default function ValuationReportPage() {
               onClick={handleCopyLink}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-sm transition"
             >
-              <Share2 className="w-3.5 h-3.5" />
+              <Share2 className="w-3.5 h-3.5 text-[#008767]" />
               <span>{copied ? 'Link Copied!' : 'Share'}</span>
             </button>
 
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold shadow-md transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#008767] hover:bg-[#007358] text-white text-xs font-bold shadow-md shadow-[#008767]/20 transition"
             >
               <Printer className="w-4 h-4" />
               <span>Print / Save PDF</span>
@@ -217,9 +217,9 @@ export default function ValuationReportPage() {
         </div>
 
         {/* OFFICIAL CERTIFICATE CONTAINER */}
-        <div className="bg-white rounded-3xl border border-slate-300/80 shadow-2xl overflow-hidden print:border-none print:shadow-none print:m-0">
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden print:border-none print:shadow-none print:m-0">
           {/* Certificate Header Banner */}
-          <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950 text-white p-6 sm:p-10 border-b border-emerald-900/40 relative">
+          <div className="bg-gradient-to-r from-[#008767] via-[#007358] to-[#0B192C] text-white p-6 sm:p-10 border-b border-emerald-900/40 relative">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
@@ -289,7 +289,7 @@ export default function ValuationReportPage() {
               </div>
 
               {/* Confidence Score Card */}
-              <div className="bg-slate-900 text-white p-6 rounded-2xl flex flex-col justify-between border border-slate-800">
+              <div className="bg-[#0B192C] text-white p-6 rounded-2xl flex flex-col justify-between border border-[#008767]/30 shadow-md">
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">

@@ -4,9 +4,9 @@ import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#FAFCFB]">
       <Navbar />
-      <div className="pt-16 flex">
+      <div className="pt-20 flex">
         <DashboardSidebar />
         <main className="flex-1 min-w-0 p-6 lg:p-8">{children}</main>
       </div>

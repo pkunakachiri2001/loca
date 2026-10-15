@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Car, Bus, User, Wrench, Utensils, Store, Package, TriangleAlert } from 'lucide-react';
+import { Car, Bus, Cog, Wrench, Utensils, Store, Package, TriangleAlert } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 import { useRouter } from 'next/navigation';
 
@@ -12,56 +12,48 @@ const categories = [
     label: 'Car Rentals',
     description: 'Self-drive & chauffeur-driven cars for any occasion',
     href: '/search?category=CAR_RENTAL',
-    count: '250+ listings',
   },
   {
     icon: Bus,
     label: 'Bus Hire',
     description: 'Buses for events, group tours & corporate travel',
     href: '/search?category=BUS_RENTAL',
-    count: '80+ listings',
   },
   {
-    icon: User,
-    label: 'Pro Drivers',
-    description: 'Certified & background-checked executive drivers',
+    icon: Cog,
+    label: 'Spare Parts',
+    description: 'Genuine auto parts, engines, suspension & accessories',
     href: '/search?category=DRIVER',
-    count: '500+ drivers',
   },
   {
     icon: Wrench,
-    label: 'Mechanics',
-    description: 'Auto repair, maintenance & diagnostic services',
+    label: 'Workshops',
+    description: 'Certified auto repair, panel beating & diagnostic garages',
     href: '/search?category=MECHANIC',
-    count: '120+ workshops',
   },
   {
     icon: Utensils,
     label: 'Restaurants & Dining',
     description: 'Find local eateries, diners & luxury restaurants',
     href: '/search?category=CAR_WASH',
-    count: '200+ centers',
   },
   {
     icon: Store,
     label: 'Vehicle Dealers',
-    description: 'Buy & sell verified new and used vehicles',
+    description: 'Buy & sell verified new and used vehicles in Zimbabwe',
     href: '/search?category=VEHICLE_DEALER',
-    count: '60+ dealers',
   },
   {
     icon: Package,
     label: 'Courier & Deliveries',
-    description: 'Delivery vans, trucks & cargo transport',
+    description: 'Delivery vans, trucks & reliable cargo transport',
     href: '/search?category=COURIER',
-    count: '90+ vehicles',
   },
   {
     icon: TriangleAlert,
     label: 'Emergency Roadside',
     description: '24/7 breakdown recovery & towing assistance',
     href: '/search?category=EMERGENCY_ROADSIDE',
-    count: '40+ teams',
   },
 ];
 
@@ -120,9 +112,9 @@ export function CategoriesSection() {
                   <h3 className="font-display font-bold text-lg text-[#0B192C] mb-1.5">{cat.label}</h3>
                   <p className="text-xs text-slate-500 leading-relaxed mb-4">{cat.description}</p>
 
-                  {/* Count */}
+                  {/* Action Link */}
                   <div className="text-xs font-bold text-[#008767] flex items-center gap-1">
-                    <span>{cat.count}</span>
+                    <span>Explore</span>
                     <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </div>
                 </div>
