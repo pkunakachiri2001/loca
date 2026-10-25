@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-// Supported Groq models in order of priority
+// Supported Groq models in order of priority (matching user Groq account access)
 const GROQ_MODELS = [
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'qwen/qwen3.8-27b',
   'llama-3.3-70b-versatile',
   'llama-3.1-8b-instant',
-  'llama3-70b-8192',
-  'llama3-8b-8192',
 ];
 
 const SYSTEM_PROMPT = `You are the official Famba AI Intelligence Assistant (powered by KUNAKA TECH) for Famba — Zimbabwe's premier unified digital automotive, mobility, and fleet marketplace.
