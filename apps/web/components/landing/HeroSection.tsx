@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 import Link from 'next/link';
+import { ChatMessageFormatted } from '@/lib/formatChatMessage';
 
 const CATEGORY_TABS = [
   { label: 'Car Rental', value: 'CAR_RENTAL', icon: Car },
@@ -207,9 +208,9 @@ export function HeroSection() {
                     <div className="flex items-center justify-between text-xs text-slate-400 font-bold px-1">
                       <div className="flex items-center gap-1.5">
                         <span>9:41</span>
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-[#008767] border border-emerald-200">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-emerald-50 text-[#008767] border border-emerald-200 font-semibold">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#008767] animate-pulse" />
-                          Groq AI Live
+                          Famba Copilot
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -345,21 +346,32 @@ export function HeroSection() {
                     </div>
                   </div>
                 ) : (
-                  /* Active Groq Chat View */
+                  /* Active Copilot Chat View */
                   <div className="space-y-3">
                     {/* Header */}
-                    <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs">
+                    <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 text-xs">
                       <button
                         type="button"
                         onClick={() => setShowChatView(false)}
-                        className="flex items-center gap-1 text-slate-600 hover:text-slate-900 font-semibold"
+                        className="flex items-center gap-1 text-slate-600 hover:text-slate-900 font-bold px-2 py-1 rounded-lg hover:bg-slate-100 transition-colors"
                       >
                         <ChevronLeft className="h-4 w-4" />
                         <span>Back</span>
                       </button>
-                      <div className="flex items-center gap-1.5 font-bold text-[#0B192C]">
-                        <span className="w-2 h-2 rounded-full bg-[#008767] animate-pulse" />
-                        <span>Tapiwa • Famba AI</span>
+                      <div className="flex items-center gap-2">
+                        <div className="relative">
+                          <img
+                            src="/avatars/tapiwa.jpg"
+                            alt="Tapiwa"
+                            className="w-7 h-7 rounded-full object-cover border-2 border-[#008767]"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }}
+                          />
+                          <span className="absolute bottom-0 right-0 w-2 h-2 bg-[#008767] border border-white rounded-full" />
+                        </div>
+                        <div className="text-left">
+                          <p className="font-extrabold text-[#0B192C] text-xs leading-none">Tapiwa</p>
+                          <p className="text-[9.5px] text-[#008767] font-semibold">Famba Copilot • Online</p>
+                        </div>
                       </div>
                       <button
                         type="button"
@@ -368,52 +380,58 @@ export function HeroSection() {
                           setShowChatView(false);
                         }}
                         title="Clear & Reset"
-                        className="text-slate-400 hover:text-slate-600 p-1"
+                        className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
                       >
                         <RotateCcw className="h-3.5 w-3.5" />
                       </button>
                     </div>
 
                     {/* Message stream */}
-                    <div className="h-[230px] overflow-y-auto pr-1 space-y-2 text-xs">
+                    <div className="h-[310px] overflow-y-auto pr-1 space-y-3 text-xs sm:text-[13px]">
                       {heroMessages.length === 0 ? (
-                        <div className="h-full flex flex-col items-center justify-center text-center p-3 text-slate-400">
-                          <Bot className="h-7 w-7 text-[#008767] mb-2 animate-bounce" />
-                          <p className="font-semibold text-slate-700">Ask Tapiwa about Famba</p>
-                          <p className="text-[11px] mt-1 text-slate-500">I know every detail about car rentals, school runs, spare parts, valuation, and payments.</p>
+                        <div className="h-full flex flex-col items-center justify-center text-center p-4 text-slate-400">
+                          <Bot className="h-8 w-8 text-[#008767] mb-2 animate-bounce" />
+                          <p className="font-bold text-slate-700 text-sm">Ask Tapiwa about Famba</p>
+                          <p className="text-xs mt-1 text-slate-500 max-w-[260px] leading-relaxed">
+                            I can help you with car rentals, school runs, spare parts, vehicle valuation, and payments.
+                          </p>
                         </div>
                       ) : (
                         heroMessages.map((msg, i) => (
                           <div
                             key={i}
-                            className={`flex gap-1.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                            className={`flex gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                           >
                             {msg.sender === 'bot' && (
-                              <div className="w-5 h-5 rounded-full bg-[#008767] text-white flex-shrink-0 flex items-center justify-center mt-0.5">
-                                <Bot className="h-3 w-3" />
+                              <div className="w-6 h-6 rounded-full bg-[#008767] text-white flex-shrink-0 flex items-center justify-center mt-0.5 shadow-xs">
+                                <Bot className="h-3.5 w-3.5" />
                               </div>
                             )}
                             <div
-                              className={`max-w-[85%] px-3 py-2 rounded-2xl text-[11px] leading-relaxed shadow-sm ${
+                              className={`max-w-[88%] p-3.5 rounded-2xl shadow-xs ${
                                 msg.sender === 'user'
-                                  ? 'bg-[#008767] text-white rounded-br-none'
-                                  : 'bg-slate-100 text-slate-800 border border-slate-200/80 rounded-bl-none whitespace-pre-wrap'
+                                  ? 'bg-[#008767] text-white rounded-br-none shadow-sm'
+                                  : 'bg-slate-50/90 text-slate-800 border border-slate-200/90 rounded-bl-none'
                               }`}
                             >
-                              {msg.text}
+                              <ChatMessageFormatted text={msg.text} isUser={msg.sender === 'user'} />
                             </div>
                           </div>
                         ))
                       )}
 
                       {heroLoading && (
-                        <div className="flex gap-1.5 justify-start items-center">
-                          <div className="w-5 h-5 rounded-full bg-[#008767] text-white flex-shrink-0 flex items-center justify-center">
-                            <Bot className="h-3 w-3" />
+                        <div className="flex gap-2 justify-start items-center pt-1">
+                          <div className="w-6 h-6 rounded-full bg-[#008767] text-white flex-shrink-0 flex items-center justify-center">
+                            <Bot className="h-3.5 w-3.5" />
                           </div>
-                          <div className="bg-slate-100 border border-slate-200/80 px-3 py-2 rounded-2xl rounded-bl-none flex items-center gap-1.5 text-[11px] text-slate-500">
-                            <Loader2 className="h-3 w-3 animate-spin text-[#008767]" />
-                            <span>Tapiwa is consulting Groq...</span>
+                          <div className="bg-slate-100 border border-slate-200/80 px-3.5 py-2.5 rounded-2xl rounded-bl-none flex items-center gap-2 shadow-xs">
+                            <div className="flex gap-1 items-center">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#008767] animate-bounce [animation-delay:-0.3s]" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#008767] animate-bounce [animation-delay:-0.15s]" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#008767] animate-bounce" />
+                            </div>
+                            <span className="text-[11px] text-slate-600 font-medium">Tapiwa is typing...</span>
                           </div>
                         </div>
                       )}
@@ -432,7 +450,7 @@ export function HeroSection() {
                         type="text"
                         value={heroInput}
                         onChange={(e) => setHeroInput(e.target.value)}
-                        placeholder="Ask follow-up about Famba..."
+                        placeholder="Ask Tapiwa anything about Famba..."
                         disabled={heroLoading}
                         className="w-full bg-slate-100/90 border border-slate-200 focus:border-[#008767] rounded-xl py-2.5 pl-3 pr-9 text-xs font-medium text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner"
                       />
@@ -448,8 +466,12 @@ export function HeroSection() {
                 )}
               </div>
 
-              {/* Floating User Person Silhouette overlay */}
-              <div className="absolute -bottom-6 -right-6 hidden sm:block pointer-events-none">
+              {/* Floating User Person Silhouette overlay (Fades away when chat view is open so it NEVER covers text) */}
+              <div
+                className={`absolute -bottom-6 -right-6 hidden sm:block pointer-events-none transition-all duration-300 ${
+                  showChatView ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+                }`}
+              >
                 <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-2xl bg-emerald-700">
                   <img
                     src="/avatars/hero-user.jpg"

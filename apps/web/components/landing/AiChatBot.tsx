@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react';
+import { ChatMessageFormatted } from '@/lib/formatChatMessage';
 
 const quickReplies = [
   'How do I book a School Run?',
@@ -25,7 +26,7 @@ export function AiChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Welcome to Famba ✨ I\'m your AI assistant powered by Groq. How can I assist with your transport, delivery, or business today?',
+      text: 'Welcome to Famba ✨ I\'m your official platform AI assistant. How can I assist with your car rentals, school runs, workshops, or business today?',
       sender: 'bot',
       time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
     },
@@ -108,7 +109,7 @@ export function AiChatBot() {
                   <h3 className="font-display font-bold text-sm text-white">Famba Assistant</h3>
                   <p className="text-[10px] flex items-center gap-1 text-emerald-100">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                    AI · Powered by Groq
+                    AI Copilot • Online
                   </p>
                 </div>
               </div>
@@ -134,15 +135,15 @@ export function AiChatBot() {
                   )}
 
                   <div
-                    className={`max-w-[80%] rounded-2xl p-3.5 text-xs leading-relaxed ${
+                    className={`max-w-[85%] rounded-2xl p-3.5 text-xs sm:text-[13px] leading-relaxed shadow-xs ${
                       m.sender === 'user'
                         ? 'rounded-tr-none bg-[#008767] text-white shadow-sm font-semibold'
                         : m.isError
                         ? 'rounded-tl-none bg-red-50 text-red-700 border border-red-200 shadow-sm'
-                        : 'rounded-tl-none bg-white text-slate-800 border border-slate-200 shadow-sm'
+                        : 'rounded-tl-none bg-white text-slate-800 border border-slate-200/90 shadow-xs'
                     }`}
                   >
-                    {m.text}
+                    <ChatMessageFormatted text={m.text} isUser={m.sender === 'user'} />
                     <p className={`text-[9px] mt-1 text-right ${m.sender === 'user' ? 'text-white/80' : m.isError ? 'text-red-400' : 'text-slate-400'}`}>
                       {m.time}
                     </p>
