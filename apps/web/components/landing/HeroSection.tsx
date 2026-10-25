@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import {
   Search, MapPin, ArrowRight, Shield, Star, Zap, Car, Bus, Cog, Wrench, User,
-  Package, ShoppingBag, Utensils, Headphones, Clock, ArrowUpRight, CheckCircle2
+  Package, ShoppingBag, Utensils, Headphones, Clock, ArrowUpRight, CheckCircle2,
+  Send, Bot, Sparkles, RotateCcw, ChevronLeft, Loader2
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 import Link from 'next/link';
@@ -31,6 +32,53 @@ export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('CAR_RENTAL');
+
+  // Interactive Hero Mobile Phone AI Copilot (Groq-Powered)
+  const [heroInput, setHeroInput] = useState('');
+  const [heroLoading, setHeroLoading] = useState(false);
+  const [showChatView, setShowChatView] = useState(false);
+  const [heroMessages, setHeroMessages] = useState<Array<{ sender: 'user' | 'bot'; text: string }>>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (showChatView) {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [heroMessages, heroLoading, showChatView]);
+
+  const handleHeroSubmit = async (queryText?: string) => {
+    const textToSend = (queryText || heroInput).trim();
+    if (!textToSend || heroLoading) return;
+
+    setShowChatView(true);
+    setHeroInput('');
+    setHeroLoading(true);
+
+    const updated = [...heroMessages, { sender: 'user' as const, text: textToSend }];
+    setHeroMessages(updated);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: textToSend,
+          history: updated.slice(-8),
+        }),
+      });
+
+      const data = await res.json();
+      const reply = res.ok ? data.reply : (data.error || 'Sorry, I could not retrieve an answer right now.');
+      setHeroMessages((prev) => [...prev, { sender: 'bot' as const, text: reply }]);
+    } catch {
+      setHeroMessages((prev) => [
+        ...prev,
+        { sender: 'bot' as const, text: 'Network connection issue. Please try asking again shortly.' },
+      ]);
+    } finally {
+      setHeroLoading(false);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,97 +200,252 @@ export function HeroSection() {
               <div className="absolute top-8 right-0 w-64 h-64 rounded-full bg-[#008767] -z-10 opacity-90" />
 
               {/* Mobile Phone Mockup Card */}
-              <div className="bg-white rounded-[32px] p-5 shadow-2xl border-4 border-slate-900/10 text-slate-900 space-y-4">
-                {/* Status bar header */}
-                <div className="flex items-center justify-between text-xs text-slate-400 font-bold px-2">
-                  <span>9:41</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-slate-900" />
-                    <span className="w-2 h-2 rounded-full bg-slate-900" />
-                  </div>
-                </div>
-
-                {/* User Greeting */}
-                <div className="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                  <div>
-                    <p className="text-xs text-slate-500 font-semibold">Hello, Tapiwa</p>
-                    <p className="text-base font-extrabold text-[#0B192C]">Where to today?</p>
-                  </div>
-                  <div className="relative">
-                    <img
-                      src="/avatars/tapiwa.jpg"
-                      alt="Tapiwa"
-                      className="w-10 h-10 rounded-full object-cover border-2 border-[#008767]"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }}
-                    />
-                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#008767] border-2 border-white rounded-full" />
-                  </div>
-                </div>
-
-                {/* Search Bar Input Mock */}
-                <div className="relative">
-                  <input
-                    disabled
-                    type="text"
-                    placeholder="Where are you going?"
-                    className="w-full bg-slate-100/80 border border-slate-200 rounded-xl py-3 pl-4 pr-10 text-xs font-medium text-slate-600"
-                  />
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-[#008767] rounded-lg flex items-center justify-center text-white">
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </div>
-                </div>
-
-                {/* Service Icons Grid */}
-                <div className="grid grid-cols-4 gap-2 text-center pt-1">
-                  <div className="bg-[#E6F4F1] p-3 rounded-2xl border border-[#B2E3D8] flex flex-col items-center">
-                    <Car className="h-5 w-5 text-[#008767] mb-1" />
-                    <span className="text-[10px] font-bold text-[#008767]">Transport</span>
-                  </div>
-                  <div className="bg-blue-50 p-3 rounded-2xl border border-blue-100 flex flex-col items-center">
-                    <Package className="h-5 w-5 text-blue-600 mb-1" />
-                    <span className="text-[10px] font-bold text-blue-700">Deliveries</span>
-                  </div>
-                  <div className="bg-amber-50 p-3 rounded-2xl border border-amber-100 flex flex-col items-center">
-                    <ShoppingBag className="h-5 w-5 text-amber-600 mb-1" />
-                    <span className="text-[10px] font-bold text-amber-700">Errands</span>
-                  </div>
-                  <div className="bg-orange-50 p-3 rounded-2xl border border-orange-100 flex flex-col items-center">
-                    <Utensils className="h-5 w-5 text-orange-600 mb-1" />
-                    <span className="text-[10px] font-bold text-orange-700">Food</span>
-                  </div>
-                </div>
-
-                {/* Recent Activity List */}
-                <div className="space-y-2 pt-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-[#0B192C]">Recent Trips</span>
-                    <span className="text-[#008767] font-semibold text-[11px]">See all</span>
-                  </div>
-                  <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                        <Car className="h-4 w-4" />
+              <div className="bg-white rounded-[32px] p-5 shadow-2xl border-4 border-slate-900/10 text-slate-900">
+                {!showChatView ? (
+                  <div className="space-y-3.5">
+                    {/* Status bar header */}
+                    <div className="flex items-center justify-between text-xs text-slate-400 font-bold px-1">
+                      <div className="flex items-center gap-1.5">
+                        <span>9:41</span>
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-[#008767] border border-emerald-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#008767] animate-pulse" />
+                          Groq AI Live
+                        </span>
                       </div>
-                      <div>
-                        <p className="font-bold text-[#0B192C]">Home</p>
-                        <p className="text-[10px] text-slate-400">Samora Machel Ave, Harare</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-slate-900" />
+                        <span className="w-2 h-2 rounded-full bg-slate-900" />
                       </div>
                     </div>
-                    <span className="font-bold text-[#008767]">$2.50</span>
-                  </div>
-                  <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#008767] flex items-center justify-center">
-                        <User className="h-4 w-4" />
-                      </div>
+
+                    {/* User Greeting */}
+                    <div className="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-100">
                       <div>
-                        <p className="font-bold text-[#0B192C]">Work</p>
-                        <p className="text-[10px] text-slate-400">Borrowdale Rd, Harare</p>
+                        <p className="text-xs text-slate-500 font-semibold flex items-center gap-1">
+                          <span>Hello, Tapiwa</span>
+                          <span className="text-[10px] text-[#008767] bg-[#E6F4F1] px-1.5 py-0.5 rounded-full font-bold">Harare, ZW</span>
+                        </p>
+                        <p className="text-base font-extrabold text-[#0B192C]">Where to today?</p>
+                      </div>
+                      <div className="relative">
+                        <img
+                          src="/avatars/tapiwa.jpg"
+                          alt="Tapiwa"
+                          className="w-10 h-10 rounded-full object-cover border-2 border-[#008767]"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }}
+                        />
+                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#008767] border-2 border-white rounded-full ring-2 ring-emerald-400/50" />
                       </div>
                     </div>
-                    <span className="font-bold text-[#008767]">$2.50</span>
+
+                    {/* Interactive Search / Ask Input */}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleHeroSubmit();
+                      }}
+                      className="relative"
+                    >
+                      <input
+                        type="text"
+                        value={heroInput}
+                        onChange={(e) => setHeroInput(e.target.value)}
+                        placeholder="Ask anything about Famba services..."
+                        className="w-full bg-slate-100/90 border border-slate-200 hover:border-[#008767]/50 focus:border-[#008767] rounded-xl py-3 pl-4 pr-10 text-xs font-medium text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!heroInput.trim() || heroLoading}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-[#008767] hover:bg-[#007358] disabled:opacity-50 rounded-lg flex items-center justify-center text-white transition-all shadow-sm"
+                        title="Ask Tapiwa AI"
+                      >
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </button>
+                    </form>
+
+                    {/* Service Icons Grid with direct Groq AI prompts */}
+                    <div className="grid grid-cols-4 gap-2 text-center pt-1">
+                      <button
+                        type="button"
+                        onClick={() => handleHeroSubmit('What car rental and bus hire options are available on Famba?')}
+                        className="bg-[#E6F4F1] hover:bg-[#d5eee8] p-2.5 rounded-2xl border border-[#B2E3D8] flex flex-col items-center transition-all group cursor-pointer"
+                      >
+                        <Car className="h-4 w-4 text-[#008767] mb-1 group-hover:scale-110 transition-transform" />
+                        <span className="text-[10px] font-bold text-[#008767]">Transport</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleHeroSubmit('How does Famba vetted School Run shuttle work for kids in Harare & Bulawayo?')}
+                        className="bg-blue-50 hover:bg-blue-100 p-2.5 rounded-2xl border border-blue-100 flex flex-col items-center transition-all group cursor-pointer"
+                      >
+                        <Shield className="h-4 w-4 text-blue-600 mb-1 group-hover:scale-110 transition-transform" />
+                        <span className="text-[10px] font-bold text-blue-700">School Run</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleHeroSubmit('Where are verified mechanics and auto spare parts available in Zimbabwe?')}
+                        className="bg-amber-50 hover:bg-amber-100 p-2.5 rounded-2xl border border-amber-100 flex flex-col items-center transition-all group cursor-pointer"
+                      >
+                        <Wrench className="h-4 w-4 text-amber-600 mb-1 group-hover:scale-110 transition-transform" />
+                        <span className="text-[10px] font-bold text-amber-700">Workshops</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleHeroSubmit('How do I get an AI vehicle valuation certificate with QR code verification on Famba?')}
+                        className="bg-purple-50 hover:bg-purple-100 p-2.5 rounded-2xl border border-purple-100 flex flex-col items-center transition-all group cursor-pointer"
+                      >
+                        <Sparkles className="h-4 w-4 text-purple-600 mb-1 group-hover:scale-110 transition-transform" />
+                        <span className="text-[10px] font-bold text-purple-700">Valuation</span>
+                      </button>
+                    </div>
+
+                    {/* Quick Highlights / Direct Questions */}
+                    <div className="space-y-2 pt-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-[#0B192C] flex items-center gap-1">
+                          <Sparkles className="w-3.5 h-3.5 text-[#008767]" /> Platform Copilot
+                        </span>
+                        <span
+                          className="text-[#008767] font-semibold text-[11px] cursor-pointer hover:underline"
+                          onClick={() => setShowChatView(true)}
+                        >
+                          Open Chat
+                        </span>
+                      </div>
+                      <div
+                        onClick={() => handleHeroSubmit('What payment methods are supported on Famba? Can I pay with EcoCash and USD cash?')}
+                        className="flex items-center justify-between bg-slate-50 hover:bg-slate-100 cursor-pointer p-2.5 rounded-xl border border-slate-100 text-xs transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#008767] flex items-center justify-center font-bold text-[11px]">
+                            $
+                          </div>
+                          <div>
+                            <p className="font-bold text-[#0B192C] text-[11px]">EcoCash & USD Payments</p>
+                            <p className="text-[9px] text-slate-400">Paynow, Zipit, OneMoney & Cash</p>
+                          </div>
+                        </div>
+                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                      </div>
+                      <div
+                        onClick={() => handleHeroSubmit('How do transport companies and mechanics register on Famba?')}
+                        className="flex items-center justify-between bg-slate-50 hover:bg-slate-100 cursor-pointer p-2.5 rounded-xl border border-slate-100 text-xs transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <Zap className="h-3.5 w-3.5" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-[#0B192C] text-[11px]">Vendor Registration</p>
+                            <p className="text-[9px] text-slate-400">List fleets, spare parts & workshops</p>
+                          </div>
+                        </div>
+                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  /* Active Groq Chat View */
+                  <div className="space-y-3">
+                    {/* Header */}
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setShowChatView(false)}
+                        className="flex items-center gap-1 text-slate-600 hover:text-slate-900 font-semibold"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        <span>Back</span>
+                      </button>
+                      <div className="flex items-center gap-1.5 font-bold text-[#0B192C]">
+                        <span className="w-2 h-2 rounded-full bg-[#008767] animate-pulse" />
+                        <span>Tapiwa • Famba AI</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHeroMessages([]);
+                          setShowChatView(false);
+                        }}
+                        title="Clear & Reset"
+                        className="text-slate-400 hover:text-slate-600 p-1"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Message stream */}
+                    <div className="h-[230px] overflow-y-auto pr-1 space-y-2 text-xs">
+                      {heroMessages.length === 0 ? (
+                        <div className="h-full flex flex-col items-center justify-center text-center p-3 text-slate-400">
+                          <Bot className="h-7 w-7 text-[#008767] mb-2 animate-bounce" />
+                          <p className="font-semibold text-slate-700">Ask Tapiwa about Famba</p>
+                          <p className="text-[11px] mt-1 text-slate-500">I know every detail about car rentals, school runs, spare parts, valuation, and payments.</p>
+                        </div>
+                      ) : (
+                        heroMessages.map((msg, i) => (
+                          <div
+                            key={i}
+                            className={`flex gap-1.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                          >
+                            {msg.sender === 'bot' && (
+                              <div className="w-5 h-5 rounded-full bg-[#008767] text-white flex-shrink-0 flex items-center justify-center mt-0.5">
+                                <Bot className="h-3 w-3" />
+                              </div>
+                            )}
+                            <div
+                              className={`max-w-[85%] px-3 py-2 rounded-2xl text-[11px] leading-relaxed shadow-sm ${
+                                msg.sender === 'user'
+                                  ? 'bg-[#008767] text-white rounded-br-none'
+                                  : 'bg-slate-100 text-slate-800 border border-slate-200/80 rounded-bl-none whitespace-pre-wrap'
+                              }`}
+                            >
+                              {msg.text}
+                            </div>
+                          </div>
+                        ))
+                      )}
+
+                      {heroLoading && (
+                        <div className="flex gap-1.5 justify-start items-center">
+                          <div className="w-5 h-5 rounded-full bg-[#008767] text-white flex-shrink-0 flex items-center justify-center">
+                            <Bot className="h-3 w-3" />
+                          </div>
+                          <div className="bg-slate-100 border border-slate-200/80 px-3 py-2 rounded-2xl rounded-bl-none flex items-center gap-1.5 text-[11px] text-slate-500">
+                            <Loader2 className="h-3 w-3 animate-spin text-[#008767]" />
+                            <span>Tapiwa is consulting Groq...</span>
+                          </div>
+                        </div>
+                      )}
+                      <div ref={chatEndRef} />
+                    </div>
+
+                    {/* Chat Input Bar */}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleHeroSubmit();
+                      }}
+                      className="relative pt-1"
+                    >
+                      <input
+                        type="text"
+                        value={heroInput}
+                        onChange={(e) => setHeroInput(e.target.value)}
+                        placeholder="Ask follow-up about Famba..."
+                        disabled={heroLoading}
+                        className="w-full bg-slate-100/90 border border-slate-200 focus:border-[#008767] rounded-xl py-2.5 pl-3 pr-9 text-xs font-medium text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!heroInput.trim() || heroLoading}
+                        className="absolute right-1 top-2 w-7 h-7 bg-[#008767] hover:bg-[#007358] disabled:opacity-50 rounded-lg flex items-center justify-center text-white transition-all shadow-sm"
+                      >
+                        <Send className="h-3.5 w-3.5" />
+                      </button>
+                    </form>
+                  </div>
+                )}
               </div>
 
               {/* Floating User Person Silhouette overlay */}
