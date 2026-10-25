@@ -100,6 +100,107 @@ RESPONSE STYLE & PERSONALITY
 - Always include relevant navigation links (e.g. "You can view available cars at /search", "Get a valuation at /valuation", or "Register your fleet at /company/register").
 `;
 
+function getLocalPlatformFallback(query: string): string {
+  const q = query.toLowerCase().trim();
+
+  // Guardrail check: if asking about outside topics
+  const outsideKeywords = [
+    'who is the president', 'capital of', 'weather in london', 'recipe', 'write python', 'write code',
+    'write essay', 'world war', 'sports score', 'premier league', 'crypto price', 'bitcoin',
+    'chatgpt', 'openai', 'gemini', 'who won the match'
+  ];
+  if (outsideKeywords.some((k) => q.includes(k))) {
+    return "I am Tapiwa, your dedicated Famba AI Assistant. I can only assist with questions regarding Famba Zimbabwe's transport, car rentals, school runs, spare parts, vehicle valuation, workshops, and payments. How can I help you navigate Famba today?";
+  }
+
+  // 1. School Run
+  if (q.includes('school') || q.includes('run') || q.includes('pupil') || q.includes('kids') || q.includes('child')) {
+    return `🚌 **Famba School Run Shuttle Service**
+
+Famba provides safe, vetted, and punctual daily school transport for pupils across Harare, Bulawayo, and surrounding suburbs.
+
+• **Safety First**: All drivers are background-checked, vetted, and vehicles undergo roadworthiness inspections.
+• **Live GPS Tracking**: Parents can view scheduled pickups and drop-offs in real time.
+• **Subscriptions**: Termly and monthly packages available starting from $45/month depending on route distance.
+• **How to Book**: Visit **[Explore Services](/search)** or register your child's route under the School Run section, or contact our 24/7 support line.`;
+  }
+
+  // 2. Car Rental & Bus Hire / Transport
+  if (q.includes('car') || q.includes('rent') || q.includes('bus') || q.includes('hire') || q.includes('transport') || q.includes('vehicle') || q.includes('fleet') || q.includes('toyota')) {
+    return `🚗 **Famba Car Rentals & Bus Charters**
+
+We offer verified vehicles across Harare (CBD, Airport, Msasa, Borrowdale), Bulawayo (Belmont, Airport), Victoria Falls, Mutare, and Gweru:
+
+• **Economy & Daily Drivers**: Toyota Corolla Axio, Fielder, Honda Fit Hybrid from **$25 – $40/day**.
+• **Mid-Size SUVs & Pickups**: Toyota Hilux GD-6, Fortuner 2.8, Isuzu D-Max from **$65 – $95/day**.
+• **Luxury & 4x4 Safari**: Land Cruiser Prado, Land Cruiser 79 Series, Mercedes-Benz from **$110 – $180/day**.
+• **Bus Hire & Shuttles**: Toyota HiAce commuter vans (14-seater) and luxury coaches (30–65 seater) for weddings, church trips, and inter-city routes.
+
+👉 Browse all live vehicles and book directly at **[Explore Cars & Buses](/search?category=CAR_RENTAL)**.`;
+  }
+
+  // 3. Valuation / Car Value / Certificate
+  if (q.includes('valua') || q.includes('worth') || q.includes('certificate') || q.includes('price of my car') || q.includes('zmdf')) {
+    return `📊 **Famba Vehicle Valuation (ZMDVF-v1)**
+
+Get an instant, defensible market valuation certificate in USD accepted by commercial banks, asset financiers, and Zimnat Insurance:
+
+• **Zimbabwe-Specific Calibration**: Incorporates ZIMRA landed customs duties (40%-60%), surtax schedules, and the 10-year age cliff.
+• **Parts Liquidity Index**: Adjusts for local spare parts availability (Gazaland & Kaguvi Street) and Zimbabwean road durability.
+• **Tamper-Proof QR Code**: Every certificate includes an instant cryptographic verification link.
+• **Pricing Range**: Delivers Fair Market Value, Forced Liquidation (trade-in), and Retail Showroom asking price.
+
+👉 Generate your instant vehicle valuation report now at **[Vehicle Valuation](/valuation)**.`;
+  }
+
+  // 4. Payments / EcoCash / Pricing
+  if (q.includes('pay') || q.includes('ecocash') || q.includes('onemoney') || q.includes('zipit') || q.includes('cash') || q.includes('currency') || q.includes('price')) {
+    return `💳 **Payment Options on Famba**
+
+All rates and quotes on Famba are denominated in **US Dollars ($ USD)** with zero hidden fees:
+
+• **Paynow Zimbabwe**: Instant EcoCash USSD prompt (Econet 077/078), OneMoney (NetOne 071), and Zipit / Zimswitch bank transfers.
+• **USD Cash on Handover**: Pay in cash directly upon collecting your vehicle or completing your trip/service.
+• **Secure Escrow**: Vehicle rentals and services are protected until delivery is verified.`;
+  }
+
+  // 5. Company / Vendor Registration
+  if (q.includes('list') || q.includes('company') || q.includes('vendor') || q.includes('register') || q.includes('partner') || q.includes('fleet owner') || q.includes('mechanic')) {
+    return `🏢 **List Your Company or Vehicles on Famba**
+
+Are you a car rental operator, fleet manager, independent driver, auto workshop, or spare parts supplier?
+
+• **100% Free Registration**: Onboard your business in under 3 minutes at **[/company/register](/company/register)**.
+• **Verification**: Our team reviews and verifies company documentation within 24–48 hours.
+• **Vendor Dashboard**: Manage bookings, track revenue, upload photos, and receive direct payouts.`;
+  }
+
+  // 6. Workshops / Mechanics / Spare Parts
+  if (q.includes('mechanic') || q.includes('workshop') || q.includes('repair') || q.includes('part') || q.includes('spares') || q.includes('gazaland') || q.includes('kaguvi')) {
+    return `🔧 **Workshops & Auto Spare Parts**
+
+• **Verified Mechanics**: Engine servicing, computerized diagnostics, brakes, suspension, and air conditioning repairs in Harare and Bulawayo.
+• **Spare Parts Marketplace**: Access genuine and second-hand OEM replacement parts directly from verified suppliers in Harare's **Gazaland (Highfield)** and **Kaguvi Street** hubs.
+• **Emergency Roadside Assistance**: 24/7 breakdown towing, puncture repair, and battery jump-starts.
+
+👉 Find mechanics or order parts at **[Workshops & Spares](/search?category=MECHANIC)**.`;
+  }
+
+  // Default platform fallback
+  return `👋 **Welcome to Famba Zimbabwe!**
+
+I am Tapiwa, your dedicated platform AI assistant. Here is what I can help you with today:
+
+• 🚗 **Car Rental & Bus Hire**: Self-drive and chauffeur rentals from $25/day ([Explore Vehicles](/search)).
+• 🚌 **School Run Shuttles**: Vetted, punctual, GPS-tracked daily transport for pupils.
+• 📊 **Vehicle Valuation**: Instant bank-approved valuation certificates with QR codes ([Get Valuation](/valuation)).
+• 🔧 **Mechanics & Gazaland Spares**: Verified repair garages and replacement parts ([Find Workshops](/search?category=MECHANIC)).
+• 💳 **Payments**: Paynow (EcoCash / OneMoney / Zipit) & USD cash.
+• 🏢 **List Your Business**: Register your rental fleet or workshop for free ([Register Company](/company/register)).
+
+What would you like to know more about?`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { message, history } = await req.json();
@@ -109,72 +210,76 @@ export async function POST(req: NextRequest) {
     }
 
     const groqApiKey = process.env.GROQ_API_KEY;
-    if (!groqApiKey) {
-      return NextResponse.json(
-        { error: 'AI service is not configured. Please contact support.' },
-        { status: 503 }
-      );
-    }
-
-    // Build conversation history for context (last 12 messages max)
-    const conversationHistory = Array.isArray(history)
-      ? history.slice(-12).map((msg: { sender: string; text: string }) => ({
-          role: msg.sender === 'user' ? 'user' : 'assistant',
-          content: msg.text,
-        }))
-      : [];
+    const hasValidGroqKey = Boolean(
+      groqApiKey &&
+      groqApiKey.trim() !== '' &&
+      !groqApiKey.includes('your_groq_api_key') &&
+      !groqApiKey.startsWith('your_')
+    );
 
     let reply = '';
     let lastError = '';
 
-    // Attempt through supported Groq models with graceful fallback
-    for (const model of GROQ_MODELS) {
-      try {
-        const groqRes = await fetch(GROQ_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${groqApiKey}`,
-          },
-          body: JSON.stringify({
-            model,
-            messages: [
-              { role: 'system', content: SYSTEM_PROMPT },
-              ...conversationHistory,
-              { role: 'user', content: message },
-            ],
-            max_tokens: 650,
-            temperature: 0.5,
-          }),
-        });
+    // If a valid Groq API key is provided, query Groq models
+    if (hasValidGroqKey) {
+      // Build conversation history for context (last 12 messages max)
+      const conversationHistory = Array.isArray(history)
+        ? history.slice(-12).map((msg: { sender: string; text: string }) => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.text,
+          }))
+        : [];
 
-        if (groqRes.ok) {
-          const data = await groqRes.json();
-          reply = data.choices?.[0]?.message?.content || '';
-          if (reply) break;
-        } else {
-          lastError = await groqRes.text();
-          console.warn(`Groq model ${model} failed:`, lastError);
+      for (const model of GROQ_MODELS) {
+        try {
+          const groqRes = await fetch(GROQ_API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${groqApiKey}`,
+            },
+            body: JSON.stringify({
+              model,
+              messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...conversationHistory,
+                { role: 'user', content: message },
+              ],
+              max_tokens: 650,
+              temperature: 0.5,
+            }),
+          });
+
+          if (groqRes.ok) {
+            const data = await groqRes.json();
+            reply = data.choices?.[0]?.message?.content || '';
+            if (reply) break;
+          } else {
+            lastError = await groqRes.text();
+            console.warn(`Groq model ${model} failed:`, lastError);
+          }
+        } catch (e: any) {
+          lastError = e?.message || 'Network error';
         }
-      } catch (e: any) {
-        lastError = e?.message || 'Network error';
       }
     }
 
+    // If Groq key is placeholder or Groq service returned error, use platform knowledge fallback
     if (!reply) {
-      console.error('All Groq models failed. Last error:', lastError);
-      return NextResponse.json(
-        { error: 'AI service is temporarily busy. Please try again shortly.' },
-        { status: 502 }
-      );
+      if (!hasValidGroqKey) {
+        console.info('GROQ_API_KEY is not configured or placeholder; serving from Famba local knowledge base.');
+      } else {
+        console.warn('Groq models unavailable, falling back to Famba local knowledge base. Error:', lastError);
+      }
+      reply = getLocalPlatformFallback(message);
     }
 
     return NextResponse.json({ reply });
   } catch (err) {
     console.error('Chat route error:', err);
-    return NextResponse.json(
-      { error: 'Something went wrong. Please try again.' },
-      { status: 500 }
-    );
+    // Never fail with a raw error screen; fallback safely
+    return NextResponse.json({
+      reply: getLocalPlatformFallback('help'),
+    });
   }
 }
