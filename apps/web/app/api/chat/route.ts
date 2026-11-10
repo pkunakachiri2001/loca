@@ -148,12 +148,13 @@ async function handleInsuranceStages(
   history: ChatMsg[],
   currentMsg: string,
   stage: number
-): Promise<string> {
+): Promise<{ reply: string; quickActions?: { label: string; value: string }[] }> {
   const input = currentMsg.trim();
 
   // STAGE 1: Kickoff -> Ask Vehicle Category
   if (stage === 1) {
-    return `🛡️ **Famba Instant Vehicle Insurance (Zimnat Certified)**
+    return {
+      reply: `🛡️ **Famba Instant Vehicle Insurance (Zimnat Certified)**
 
 Get your vehicle legally insured and your official digital disk issued in under 3 minutes!
 
@@ -163,7 +164,14 @@ Get your vehicle legally insured and your official digital disk issued in under 
 3️⃣ **Commuter Minibus / HiAce** (up to 15 seats)
 4️⃣ **Bus or Heavy Truck** (3 Tonnes+)
 
-*(Reply with 1, 2, 3, or 4, or type your vehicle model)*`;
+*(Tap an option below or type your vehicle model)*`,
+      quickActions: [
+        { label: '🚗 Saloon / Light Car', value: '1' },
+        { label: '🚙 SUV / Double Cab', value: '2' },
+        { label: '🚐 Minibus (HiAce)', value: '3' },
+        { label: '🚛 Heavy Truck / Bus', value: '4' },
+      ],
+    };
   }
 
   // STAGE 2: Got vehicle category -> Ask Registration Plate
@@ -177,24 +185,33 @@ Get your vehicle legally insured and your official digital disk issued in under 
       vehicle = 'Heavy Truck / Bus';
     }
 
-    return `Got it! **${vehicle}** selected 🚗
+    return {
+      reply: `Got it! **${vehicle}** selected 🚗
 
 **Step 2 of 5: What is your Vehicle Registration Plate number?**
-*(e.g., AFK 1234 or AEZ 9876)*`;
+*(e.g., AFK 1234 or AEZ 9876)*`,
+    };
   }
 
   // STAGE 3: Got Registration Plate -> Ask Coverage Tier
   if (stage === 3) {
     const plate = input.toUpperCase().replace(/[^A-Z0-9 ]/g, '').trim() || 'AFK 1234';
 
-    return `Vehicle Plate Registered: **${plate}** ✅
+    return {
+      reply: `Vehicle Plate Registered: **${plate}** ✅
 
 **Step 3 of 5: Which insurance coverage do you prefer?**
 1️⃣ **Statutory Third-Party (Zimnat)** — **$30 / term (4 months)** or $90/year (Legal minimum road compliance)
 2️⃣ **Full Comprehensive** — Covers accidental damage, theft, fire, and third-party liabilities (**$180 / term**)
 3️⃣ **ZINARA Combo Package** — Third-Party Insurance + ZINARA Road License + Radio License combined (**$65 / term**)
 
-*(Reply with 1, 2, or 3)*`;
+*(Tap an option below or reply with 1, 2, or 3)*`,
+      quickActions: [
+        { label: '🛡️ Third-Party ($30/term)', value: '1' },
+        { label: '⭐ Full Comprehensive ($180/term)', value: '2' },
+        { label: '📦 ZINARA Combo ($65/term)', value: '3' },
+      ],
+    };
   }
 
   // STAGE 4: Got Coverage -> Ask Policyholder Name & National ID
@@ -206,23 +223,27 @@ Get your vehicle legally insured and your official digital disk issued in under 
       coverName = 'ZINARA All-in-One Combo ($65/term)';
     }
 
-    return `Selected: **${coverName}** ✅
+    return {
+      reply: `Selected: **${coverName}** ✅
 
 **Step 4 of 5: Please provide the Policyholder details for the official certificate:**
 • **Full Legal Name**
 • **National ID Number** (e.g. 63-1894231-B-42)
 
-*(You can reply with both, e.g. "Tatenda Moyo, 63-1894231-B-42")*`;
+*(You can reply with both, e.g. "Tatenda Moyo, 63-1894231-B-42")*`,
+    };
   }
 
   // STAGE 5: Got Name & ID -> Ask Payment Mobile Number (EcoCash / OneMoney)
   if (stage === 5) {
     const namePart = input.split(/[,–-]/)[0]?.trim() || input;
 
-    return `Thank you, **${namePart}**! 📑
+    return {
+      reply: `Thank you, **${namePart}**! 📑
 
 **Step 5 of 5: What EcoCash or OneMoney number should receive the payment prompt?**
-*(e.g., 0772 123 456 or 0719 888 777)*`;
+*(e.g., 0772 123 456 or 0719 888 777)*`,
+    };
   }
 
   // STAGE 6: Final Stage -> Create Policy, Initiate EcoCash & Provide QR Receipt Link
@@ -285,7 +306,8 @@ Get your vehicle legally insured and your official digital disk issued in under 
       console.warn('Could not reach backend checkout endpoint, using instant local policy receipt link:', e);
     }
 
-    return `🎉 **Insurance Policy Created & Payment Prompt Dispatched!**
+    return {
+      reply: `🎉 **Insurance Policy Created & Payment Prompt Dispatched!**
 
 Here is your quotation and coverage summary:
 • **Vehicle Reg**: **${plate}**
@@ -306,10 +328,15 @@ If the prompt did not pop up automatically:
 Once your payment is approved, your official digital certificate is ready for download:
 👉 **[View Official Digital Receipt & QR Disk](${receiptUrl})**
 
-*(You can display this QR disk to Zimbabwe Republic Police (ZRP) or toll gate officials directly on your mobile screen)*.`;
+*(You can display this QR disk to Zimbabwe Republic Police (ZRP) or toll gate officials directly on your mobile screen)*.`,
+      quickActions: [
+        { label: '📄 View QR Receipt & Disk', value: 'view_receipt' },
+        { label: '🚗 Insure Another Car', value: 'Buy Vehicle Insurance 🛡️' },
+      ],
+    };
   }
 
-  return '';
+  return { reply: '' };
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -628,9 +655,9 @@ export async function POST(req: NextRequest) {
     // 1. CHECK PHASE 1: IN-CHAT INSURANCE STATE MACHINE
     const insuranceCheck = detectInsuranceFlow(convHistory, message);
     if (insuranceCheck.isInFlow) {
-      const insuranceReply = await handleInsuranceStages(convHistory, message, insuranceCheck.state.stage);
-      if (insuranceReply) {
-        return NextResponse.json({ reply: insuranceReply });
+      const result = await handleInsuranceStages(convHistory, message, insuranceCheck.state.stage);
+      if (result.reply) {
+        return NextResponse.json({ reply: result.reply, quickActions: result.quickActions });
       }
     }
 
@@ -649,7 +676,18 @@ export async function POST(req: NextRequest) {
         }
       }
       const serviceReply = handleServiceSearch(serviceCheck.category, suburb);
-      return NextResponse.json({ reply: serviceReply });
+      const serviceSlug = serviceCheck.category === 'carwash' ? 'car-wash' : serviceCheck.category === 'towing' ? 'towing' : 'mechanic';
+      const serviceQuickActions = suburb ? [
+        { label: `📄 View ${suburb.toUpperCase()} Directory`, value: `/services/${serviceSlug}/${suburb}` },
+        { label: '🔒 Unlock Contacts', value: 'login' },
+      ] : [
+        { label: '📍 Harare CBD', value: 'Harare CBD' },
+        { label: '📍 Borrowdale', value: 'Borrowdale' },
+        { label: '📍 Avondale', value: 'Avondale' },
+        { label: '📍 Mvurwi', value: 'Mvurwi' },
+        { label: '📍 Bulawayo', value: 'Bulawayo' },
+      ];
+      return NextResponse.json({ reply: serviceReply, quickActions: serviceQuickActions });
     }
 
     // 3. GROQ LLM ASSISTANT WITH INJECTED DIRECTIVES

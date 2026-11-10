@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle, Phone, ArrowUpRight } from 'lucide-react';
 import { ChatMessageFormatted } from '@/lib/formatChatMessage';
 
 const quickReplies = [
@@ -13,15 +14,22 @@ const quickReplies = [
   'Vehicle Valuation 📊',
 ];
 
+interface QuickAction {
+  label: string;
+  value: string;
+}
+
 interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
   time: string;
   isError?: boolean;
+  quickActions?: QuickAction[];
 }
 
 export function AiChatBot() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -29,6 +37,11 @@ export function AiChatBot() {
       text: 'Welcome to Famba ✨ I\'m your official platform AI assistant. How can I assist with your car rentals, school runs, workshops, or business today?',
       sender: 'bot',
       time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
+      quickActions: [
+        { label: '🛡️ Buy Vehicle Insurance', value: 'Buy Vehicle Insurance 🛡️' },
+        { label: '🧼 Find Car Wash Near Me', value: 'Find Car Wash Near Me 🧼' },
+        { label: '🚗 Car Rentals', value: 'Car Rentals & Prices 🚗' },
+      ],
     },
   ]);
   const [input, setInput] = useState('');
@@ -38,6 +51,22 @@ export function AiChatBot() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+
+  const handleActionClick = (action: QuickAction) => {
+    if (action.value === 'login') {
+      router.push('/auth/login');
+      return;
+    }
+    if (action.value.startsWith('/')) {
+      router.push(action.value);
+      return;
+    }
+    if (action.value === 'whatsapp') {
+      window.open('https://wa.me/263771234567?text=Hi%20Famba,%20I%20am%20chatting%20with%20Tapiwa%20on%20the%20website%20and%20want%20to%20continue%20here.', '_blank');
+      return;
+    }
+    sendMessage(action.label);
+  };
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isTyping) return;
@@ -71,6 +100,7 @@ export function AiChatBot() {
         sender: 'bot',
         isError: !res.ok,
         time: new Date().toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }),
+        quickActions: data.quickActions,
       };
 
       setMessages((prev) => [...prev, botMsg]);
@@ -113,12 +143,23 @@ export function AiChatBot() {
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/20 text-white"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                <a
+                  href="https://wa.me/263771234567?text=Hi%20Famba,%20I%20am%20chatting%20with%20Tapiwa%20on%20the%20website%20and%20want%20to%20continue%20here."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Continue on WhatsApp"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition-colors"
+                >
+                  <Phone className="w-3 h-3" /> WhatsApp
+                </a>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/20 text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
             {/* Chat Messages */}
@@ -144,6 +185,21 @@ export function AiChatBot() {
                     }`}
                   >
                     <ChatMessageFormatted text={m.text} isUser={m.sender === 'user'} />
+                    {m.quickActions && m.quickActions.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2 border-t border-slate-100">
+                        {m.quickActions.map((qa, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => handleActionClick(qa)}
+                            disabled={isTyping}
+                            className="text-[11px] px-2.5 py-1 rounded-lg bg-[#E6F4F1] text-[#008767] hover:bg-[#008767] hover:text-white transition-all font-bold border border-[#B2E3D8] shadow-2xs active:scale-95 disabled:opacity-50"
+                          >
+                            {qa.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                     <p className={`text-[9px] mt-1 text-right ${m.sender === 'user' ? 'text-white/80' : m.isError ? 'text-red-400' : 'text-slate-400'}`}>
                       {m.time}
                     </p>

@@ -102,6 +102,27 @@ export default function InsuranceReceiptPage() {
     fetchPolicy();
   }, [id]);
 
+  // Live polling for payment confirmation while PENDING
+  useEffect(() => {
+    if (!id || !policy || policy.paymentStatus === 'PAID') return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await apiClient.get(`/insurance/receipt/${id}`);
+        if (res.data?.success && res.data?.data) {
+          if (res.data.data.paymentStatus === 'PAID') {
+            setPolicy(res.data.data);
+            clearInterval(interval);
+          }
+        }
+      } catch {
+        // Silently continue polling
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [id, policy?.paymentStatus]);
+
   const handleSimulatePayment = async () => {
     if (!id) return;
     try {
