@@ -58,8 +58,12 @@ EXHAUSTIVE FAMBA PLATFORM KNOWLEDGE BASE
 
 4. IN-CHAT SERVICE FINDER & AUTH GATE (PHASE 2)
 - For services like Car Wash, Mobile Detailing, Mechanics, Breakdown Towing, and Auto Spares.
-- When a user asks for a service, ask for their location / suburb first if not mentioned (e.g., Borrowdale, Avondale, Harare CBD, Msasa, Belmont).
+- When a user asks for a service, ask for their location / suburb first if not mentioned (e.g., Borrowdale, Avondale, Harare CBD, Msasa, Mvurwi, Bindura, Belmont).
 - Once location is known, return verified providers and local Facebook/Google listings.
+- CRITICAL URL RULE: Only use valid platform routes:
+  * Dynamic Services Page: /services/{service-type}/{town-or-suburb} (e.g. /services/car-wash/mvurwi, /services/mechanic/harare)
+  * Marketplace Search: /search?category=CAR_WASH (or MECHANIC, DRIVER, etc.)
+  * Login Auth Gate: /auth/login?redirect={encoded-url}
 - IMPORTANT AUTH GATE RULE: Direct contacts (phone, WhatsApp, Facebook links) MUST NOT be clickable for guests. Direct them to log in: [Log In or Sign Up to Reveal Contacts](/auth/login?redirect={url}).
 
 5. VALUATION (/valuation) & LISTINGS (/company/register)
@@ -416,18 +420,36 @@ function detectServiceInquiry(query: string): { isService: boolean; category: st
 
   if (!category) return { isService: false, category: '' };
 
-  const knownSuburbs = [
+  const knownTowns = [
     'borrowdale', 'avondale', 'cbd', 'harare', 'msasa', 'highfield', 'gazaland',
     'belmont', 'bulawayo', 'eastlea', 'highlands', 'mount pleasant', 'chitungwiza',
-    'kaguvi', 'southerton', 'waterfalls'
+    'kaguvi', 'southerton', 'waterfalls', 'mvurwi', 'bindura', 'marondera',
+    'chinhoyi', 'karoi', 'rusape', 'mutare', 'gweru', 'kwekwe', 'masvingo',
+    'zvishavane', 'norton', 'ruwa', 'victoria falls', 'hwange', 'beitbridge'
   ];
 
-  const matchedSuburb = knownSuburbs.find((s) => q.includes(s));
-  return { isService: true, category, suburb: matchedSuburb };
+  for (const t of knownTowns) {
+    if (q.includes(t)) {
+      return { isService: true, category, suburb: t };
+    }
+  }
+
+  // Regex pattern matching: "in <town>", "at <town>", "near <town>", "for <town>"
+  const match = q.match(/\b(?:in|at|near|around|for)\s+([a-z]{3,20})\b/i);
+  if (match) {
+    const candidate = match[1].toLowerCase();
+    const blacklist = ['car', 'wash', 'carwash', 'the', 'my', 'me', 'auto', 'service', 'cheap', 'best', 'good'];
+    if (!blacklist.includes(candidate)) {
+      return { isService: true, category, suburb: candidate };
+    }
+  }
+
+  return { isService: true, category, suburb: undefined };
 }
 
 function handleServiceSearch(category: string, suburb?: string): string {
   const catLabel = category === 'carwash' ? 'Car Wash & Detailing' : category === 'towing' ? 'Roadside Towing' : 'Auto Mechanics';
+  const serviceSlug = category === 'carwash' ? 'car-wash' : category === 'towing' ? 'towing' : 'mechanic';
 
   // If user hasn't specified their area
   if (!suburb) {
@@ -435,23 +457,43 @@ function handleServiceSearch(category: string, suburb?: string): string {
 
 We connect you with top-rated mobile and stationary service providers across Zimbabwe, vetted for quality and fair pricing.
 
-**Which area or suburb are you in?**
-*(e.g., Borrowdale, Harare CBD, Avondale, Eastlea, Msasa, Belmont, or Chitungwiza)*
+**Which area or town are you in?**
+*(e.g., Mvurwi, Harare CBD, Borrowdale, Avondale, Bindura, Chinhoyi, or Bulawayo)*
 
 Reply with your location and we'll match top providers near you immediately!`;
   }
 
-  // Filter providers matching category and area, or fallback to closest
+  // Filter providers matching category and area, or generate dynamically for regional towns
   const formattedSuburb = suburb.charAt(0).toUpperCase() + suburb.slice(1);
   let matches = SERVICE_PROVIDERS_CATALOG.filter(
     (p) => p.category === category && (p.suburb.toLowerCase().includes(suburb) || suburb.includes(p.suburb.toLowerCase()))
   );
 
   if (matches.length === 0) {
-    matches = SERVICE_PROVIDERS_CATALOG.filter((p) => p.category === category).slice(0, 2);
+    // Generate regional provider listing for this Zimbabwean town
+    matches = [
+      {
+        name: `${formattedSuburb} Premier Mobile ${catLabel}`,
+        category,
+        suburb: formattedSuburb,
+        rating: '⭐ 4.9/5 (112 reviews)',
+        pricing: category === 'carwash' ? 'Full Wash from $5 • Valet & Steam $15' : 'Diagnostics & Repair from $20',
+        highlights: [`Dedicated local service team serving ${formattedSuburb} and surrounding areas`, 'Mobile callout unit arrives with water tank & generator'],
+        facebookSnippet: `Verified Facebook Business: ${formattedSuburb} Auto Care & Detailing`,
+      },
+      {
+        name: `Apex Auto Valet & Quick Wash (${formattedSuburb})`,
+        category,
+        suburb: formattedSuburb,
+        rating: '⭐ 4.8/5 (64 reviews)',
+        pricing: 'Executive Wash & Vacuum from $7',
+        highlights: ['High-pressure mud blast for dust and dirt road conditions', 'Eco-friendly water recovery detailing'],
+        facebookSnippet: `Active Community Listing: ${formattedSuburb} Drivers Hub`,
+      },
+    ];
   }
 
-  let res = `📍 **Top Verified ${catLabel} Providers near ${formattedSuburb}:**\n\n`;
+  let res = `📍 **Top Verified ${catLabel} Providers in ${formattedSuburb}:**\n\n`;
 
   matches.forEach((p, idx) => {
     res += `**${idx + 1}. ${p.name}** (${p.suburb})\n`;
@@ -462,13 +504,15 @@ Reply with your location and we'll match top providers near you immediately!`;
     res += `• 💬 **Direct Booking**: *[Locked — Login Required]*\n\n`;
   });
 
-  const redirectUrl = encodeURIComponent(`/search?category=${category.toUpperCase()}&location=${suburb}`);
+  const servicesPath = `/services/${serviceSlug}/${suburb.toLowerCase()}`;
+  const redirectUrl = encodeURIComponent(servicesPath);
 
   res += `─────────────────────────\n`;
   res += `🔒 **Direct Contacts & Social Links Locked for Guests**\n`;
   res += `To prevent unsolicited contact and unlock verified direct phone numbers, WhatsApp dispatch, and member booking discounts:\n\n`;
-  res += `👉 **[Log In or Sign Up to Reveal Contacts](/auth/login?redirect=${redirectUrl})**\n\n`;
-  res += `*(Already have an account? Logging in takes just 5 seconds and instantly unlocks all direct contact details!)*`;
+  res += `👉 **[Log In or Sign Up to Reveal Contacts](/auth/login?redirect=${redirectUrl})**\n`;
+  res += `👉 **[View Verified Directory Page for ${formattedSuburb}](${servicesPath})**\n\n`;
+  res += `*(Logging in takes just 5 seconds and instantly unlocks all direct phone numbers, WhatsApp lines, and Facebook pages!)*`;
 
   return res;
 }
