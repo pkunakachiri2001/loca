@@ -528,7 +528,7 @@ router.patch('/:id', authenticate, authorize('COMPANY_OWNER', 'ADMIN'), async (r
     }
 
     // Execute update & log event if status changed
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: any) => {
       const v = await tx.transitVehicle.update({
         where: { id: existing.id },
         data: dataToUpdate,
@@ -772,7 +772,8 @@ Pre-cleared with ZIMRA customs documentation underway. Reserve today before show
         data: { isPublishedAsArrivingSoon: true },
       });
 
-      return res.json({ success: true, data: updatedListing, message: 'Marketplace listing updated!' });
+      res.json({ success: true, data: updatedListing, message: 'Marketplace listing updated!' });
+      return;
     }
 
     // Create new listing
@@ -824,6 +825,239 @@ Pre-cleared with ZIMRA customs documentation underway. Reserve today before show
     });
 
     res.status(201).json({ success: true, data: newListing, message: 'Vehicle published to Famba Marketplace!' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ──────────────────────────────────────────────
+// POST /api/transit/:id/advance-insurance/quote
+// Instant Quote for Advance Zimnat Transit or Road Cover
+// ──────────────────────────────────────────────
+router.post('/:id/advance-insurance/quote', authenticate, authorize('COMPANY_OWNER', 'ADMIN'), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const company = await getDealerCompany(req.user!.id);
+    const vehicle = await (prisma.transitVehicle as any).findFirst({
+      where: { id: req.params.id, companyId: req.user!.role === 'ADMIN' ? undefined : company.id },
+    });
+    if (!vehicle) throw new ApiError(404, 'Transit vehicle not found.');
+
+    const { coverageType = 'TRANSIT_GIT', termMonths = 12 } = req.body;
+
+    let premium = 0;
+    let description = '';
+
+    if (coverageType === 'TRANSIT_GIT') {
+      // Goods-In-Transit: Port-to-Showroom Marine/Overland Cargo Protection
+      // 1.5% of total CIF, minimum $85
+      premium = Math.max(85, Math.round(vehicle.totalCifUsd * 0.015));
+      description = `Zimnat Marine & SADC Overland Goods-In-Transit cover for ${vehicle.yearOfManufacture} ${vehicle.make} ${vehicle.model} (Chassis: ${vehicle.vin}). Covers port of ${vehicle.portOfDischarge} to ${vehicle.destinationCity} via ${vehicle.borderPost}.`;
+    } else if (coverageType === 'THIRD_PARTY_ROAD') {
+      // Statutory 3rd Party Road Insurance based on Chassis/VIN for immediate border release
+      premium = Number(termMonths) <= 4 ? 35 : 75; // $35 for 1 term (4 months), $75 for annual
+      description = `Zimnat Statutory Motor Third-Party road insurance registered to chassis number ${vehicle.vin}. Valid immediately for road transit upon Zimbabwean border clearance.`;
+    } else if (coverageType === 'COMPREHENSIVE_ROAD') {
+      // Full Comprehensive Motor Insurance: 3.5% of projected landed cost, minimum $220
+      const landed = vehicle.projectedTotalLandedCostUsd || vehicle.totalCifUsd;
+      premium = Math.max(220, Math.round(landed * 0.035));
+      description = `Zimnat Full Comprehensive private/commercial vehicle cover for chassis ${vehicle.vin}. Total insured value: $${landed.toLocaleString()} USD.`;
+    }
+
+    res.json({
+      success: true,
+      data: {
+        coverageType,
+        termMonths,
+        premiumUsd: premium,
+        description,
+        vehicleVin: vehicle.vin,
+        vehicleTitle: `${vehicle.yearOfManufacture} ${vehicle.make} ${vehicle.model}`,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ──────────────────────────────────────────────
+// POST /api/transit/:id/advance-insurance/issue
+// Generate & Settle Advance Zimnat Insurance Policy
+// ──────────────────────────────────────────────
+router.post('/:id/advance-insurance/issue', authenticate, authorize('COMPANY_OWNER', 'ADMIN'), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const company = await getDealerCompany(req.user!.id);
+    const vehicle = await (prisma.transitVehicle as any).findFirst({
+      where: { id: req.params.id, companyId: req.user!.role === 'ADMIN' ? undefined : company.id },
+    });
+    if (!vehicle) throw new ApiError(404, 'Transit vehicle not found.');
+
+    const { coverageType = 'TRANSIT_GIT', termMonths = 12, ownerName } = req.body;
+
+    let premium = 0;
+    if (coverageType === 'TRANSIT_GIT') {
+      premium = Math.max(85, Math.round(vehicle.totalCifUsd * 0.015));
+    } else if (coverageType === 'THIRD_PARTY_ROAD') {
+      premium = Number(termMonths) <= 4 ? 35 : 75;
+    } else {
+      const landed = vehicle.projectedTotalLandedCostUsd || vehicle.totalCifUsd;
+      premium = Math.max(220, Math.round(landed * 0.035));
+    }
+
+    const randomSuffix = Math.floor(100000 + Math.random() * 900000);
+    const policyRef = `ZIMNAT-TRANSIT-${randomSuffix}`;
+    const expiryDate = new Date();
+    expiryDate.setMonth(expiryDate.getMonth() + (Number(termMonths) || 12));
+
+    // Generate Verification QR Code
+    const qrText = [
+      `ZIMNAT LION INSURANCE ZIMBABWE`,
+      `POLICY NO: ${policyRef}`,
+      `CHASSIS/VIN: ${vehicle.vin}`,
+      `VEHICLE: ${vehicle.yearOfManufacture} ${vehicle.make} ${vehicle.model}`,
+      `COVERAGE: ${coverageType.replace(/_/g, ' ')}`,
+      `PREMIUM: $${premium} USD (PAID)`,
+      `ISSUED TO: ${ownerName || company.name}`,
+      `EXPIRY: ${expiryDate.toISOString().split('T')[0]}`,
+      `TRANSIT CORRIDOR: ${vehicle.portOfDischarge} -> ${vehicle.borderPost} -> ${vehicle.destinationCity}`,
+      `AUTHENTICATED: FAMBA TRANSIT ESCROW`,
+    ].join('\n');
+
+    let qrCodeUrl = '';
+    try {
+      qrCodeUrl = await QRCode.toDataURL(qrText, {
+        width: 320,
+        margin: 2,
+        color: { dark: '#004D40', light: '#FFFFFF' },
+      });
+    } catch {
+      qrCodeUrl = '';
+    }
+
+    // Update TransitVehicle
+    const updatedVehicle = await (prisma.transitVehicle as any).update({
+      where: { id: vehicle.id },
+      data: {
+        transitInsuranceStatus: 'INSURED',
+        transitInsuranceType: coverageType,
+        transitInsurancePolicyRef: policyRef,
+        transitInsuranceExpiry: expiryDate,
+      },
+    });
+
+    // Auto-vault into TransitDocument
+    const doc = await prisma.transitDocument.create({
+      data: {
+        transitVehicleId: vehicle.id,
+        type: 'TRANSIT_INSURANCE',
+        title: `Zimnat Advance Insurance Certificate (${coverageType.replace(/_/g, ' ')})`,
+        fileUrl: qrCodeUrl || `https://famba.co.zw/insurance/policy/${policyRef}`,
+        fileName: `${policyRef}.png`,
+        mimeType: 'image/png',
+        notes: `Policy Ref: ${policyRef}. Premium: $${premium} USD. Issued in advance for transit via ${vehicle.borderPost}.`,
+      },
+    });
+
+    // Audit Event
+    await prisma.transitEvent.create({
+      data: {
+        transitVehicleId: vehicle.id,
+        status: vehicle.status,
+        location: vehicle.borderPost,
+        note: `Zimnat Advance Insurance issued & verified (${coverageType.replace(/_/g, ' ')}, Policy Ref: ${policyRef}, $${premium} USD). Ready for border clearance.`,
+      },
+    });
+
+    res.json({
+      success: true,
+      data: {
+        policyRef,
+        coverageType,
+        premiumUsd: premium,
+        expiresAt: expiryDate,
+        qrCodeUrl,
+        documentId: doc.id,
+        vehicle: updatedVehicle,
+      },
+      message: 'Advance Zimnat Insurance successfully issued and vaulted!',
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ──────────────────────────────────────────────
+// POST /api/transit/:id/zimra-assessment
+// Record or Update ZIMRA Duty Pre-Clearance & Assessment
+// ──────────────────────────────────────────────
+router.post('/:id/zimra-assessment', authenticate, authorize('COMPANY_OWNER', 'ADMIN'), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const company = await getDealerCompany(req.user!.id);
+    const vehicle = await (prisma.transitVehicle as any).findFirst({
+      where: { id: req.params.id, companyId: req.user!.role === 'ADMIN' ? undefined : company.id },
+    });
+    if (!vehicle) throw new ApiError(404, 'Transit vehicle not found.');
+
+    const {
+      zimraAssessmentNumber,
+      zimraBillOfEntryNumber,
+      clearingAgentName,
+      clearingAgentPhone,
+      advanceDutyPaymentStatus = 'ASSESSED',
+      advanceDutyAmountPaid,
+      zimraReceiptNumber,
+      receiptFileUrl,
+    } = req.body;
+
+    const dataToUpdate: any = {
+      zimraAssessmentNumber: zimraAssessmentNumber ?? vehicle.zimraAssessmentNumber,
+      zimraBillOfEntryNumber: zimraBillOfEntryNumber ?? vehicle.zimraBillOfEntryNumber,
+      clearingAgentName: clearingAgentName ?? vehicle.clearingAgentName,
+      clearingAgentPhone: clearingAgentPhone ?? vehicle.clearingAgentPhone,
+      advanceDutyPaymentStatus,
+      advanceDutyAmountPaid: advanceDutyAmountPaid ? Number(advanceDutyAmountPaid) : vehicle.advanceDutyAmountPaid,
+      zimraReceiptNumber: zimraReceiptNumber ?? vehicle.zimraReceiptNumber,
+    };
+
+    // If duty is paid in advance and status is still before border, optionally advance status to CUSTOMS_CLEARING
+    if (advanceDutyPaymentStatus === 'PAID_PRE_CLEARED' && vehicle.status === 'AT_BORDER') {
+      dataToUpdate.status = 'CUSTOMS_CLEARING';
+    }
+
+    const updated = await (prisma.transitVehicle as any).update({
+      where: { id: vehicle.id },
+      data: dataToUpdate,
+    });
+
+    // If receipt URL provided or duty paid, vault document
+    if (receiptFileUrl || (advanceDutyPaymentStatus === 'PAID_PRE_CLEARED' && zimraReceiptNumber)) {
+      await prisma.transitDocument.create({
+        data: {
+          transitVehicleId: vehicle.id,
+          type: 'PROOF_OF_PAYMENT',
+          title: `ZIMRA Duty Payment Voucher (${zimraReceiptNumber || 'Advance Prepayment'})`,
+          fileUrl: receiptFileUrl || `https://zimra.co.zw/customs/receipt/${zimraReceiptNumber || 'ADVANCE'}`,
+          fileName: `ZIMRA-Receipt-${zimraReceiptNumber || Date.now()}.pdf`,
+          mimeType: 'application/pdf',
+          notes: `ASYCUDA Bill of Entry: ${zimraBillOfEntryNumber || 'N/A'}. Assessment: ${zimraAssessmentNumber || 'N/A'}. Amount: $${advanceDutyAmountPaid || vehicle.projectedDutyUsd} USD.`,
+        },
+      });
+    }
+
+    // Audit Event
+    await prisma.transitEvent.create({
+      data: {
+        transitVehicleId: vehicle.id,
+        status: updated.status,
+        location: vehicle.borderPost,
+        note: `ZIMRA Pre-Clearance updated: Status=${advanceDutyPaymentStatus}, Bill of Entry=${zimraBillOfEntryNumber || 'N/A'}, Assessment=${zimraAssessmentNumber || 'N/A'}${advanceDutyAmountPaid ? ', Paid=$' + advanceDutyAmountPaid + ' USD' : ''}`,
+      },
+    });
+
+    res.json({
+      success: true,
+      data: updated,
+      message: 'ZIMRA Pre-Clearance assessment updated successfully!',
+    });
   } catch (err) {
     next(err);
   }

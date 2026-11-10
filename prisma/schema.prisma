@@ -647,6 +647,11 @@ model InsurancePolicy {
   nearestBranch   String?   // Nearest Zimnat branch (for self-collect)
   issuedAt        DateTime?
   expiresAt       DateTime? // Policy expiry (usually 1 year)
+  
+  // Transit CRM link for advance imported car insurance
+  transitVehicleId String?
+  transitVehicle   TransitVehicle? @relation(fields: [transitVehicleId], references: [id], onDelete: SetNull)
+
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
@@ -825,6 +830,18 @@ model TransitVehicle {
   clearingAgentPhone          String?
   clearingBondNumber          String?
   zimraAssessmentNumber       String?
+  zimraBillOfEntryNumber      String?
+  zimraReceiptNumber          String?
+  advanceDutyPaymentStatus    String              @default("UNPAID") // "UNPAID", "ASSESSED", "PAID_PRE_CLEARED"
+  advanceDutyAmountPaid       Float               @default(0)
+
+  // Advance Zimnat Insurance Integration
+  transitInsuranceStatus      String              @default("NOT_INSURED") // "NOT_INSURED", "PENDING_PAYMENT", "INSURED"
+  transitInsuranceType        String?             // "TRANSIT_GIT", "THIRD_PARTY_ROAD", "COMPREHENSIVE_ROAD"
+  transitInsurancePolicyRef   String?
+  transitInsuranceExpiry      DateTime?
+  insurancePolicies           InsurancePolicy[]
+
   status                      TransitStatus       @default(PURCHASED)
 
   // Marketplace Integration

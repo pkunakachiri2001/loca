@@ -93,10 +93,10 @@ router.get('/', optionalAuth, async (req: Request, res: Response, next: NextFunc
         where: { userId: req.user.id },
         select: { listingId: true },
       });
-      wishlistIds = wishlist.map((w) => w.listingId);
+      wishlistIds = wishlist.map((w: any) => w.listingId);
     }
 
-    const data = listings.map((l) => ({
+    const data = listings.map((l: any) => ({
       ...l,
       primaryImage: l.images[0]?.url || null,
       isWishlisted: wishlistIds.includes(l.id),
