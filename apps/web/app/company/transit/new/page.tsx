@@ -101,13 +101,14 @@ const POPULAR_PRESETS = [
 
 export default function NewTransitVehiclePage() {
   const router = useRouter();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, isHydrated } = useAuthStore();
 
   useEffect(() => {
+    if (!isHydrated) return;
     if (!isAuthenticated || (user?.role !== 'COMPANY_OWNER' && user?.role !== 'ADMIN')) {
       router.push('/auth/login?redirect=/company/transit/new');
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, isHydrated, user, router]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -328,6 +329,15 @@ export default function NewTransitVehiclePage() {
       setLoading(false);
     }
   };
+
+  if (!isHydrated) {
+    return (
+      <div className="max-w-6xl mx-auto py-20 flex flex-col items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[#008767] mb-3" />
+        <div className="text-slate-600 font-bold text-sm">Loading vehicle onboarding wizard...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 text-[#0B192C] pb-20">

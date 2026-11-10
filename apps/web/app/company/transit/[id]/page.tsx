@@ -91,14 +91,15 @@ export default function TransitVehicleDetailPage() {
   const params = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, isHydrated } = useAuthStore();
   const id = params?.id as string;
 
   useEffect(() => {
+    if (!isHydrated) return;
     if (!isAuthenticated || (user?.role !== 'COMPANY_OWNER' && user?.role !== 'ADMIN')) {
       router.push(`/auth/login?redirect=/company/transit/${id}`);
     }
-  }, [isAuthenticated, user, router, id]);
+  }, [isAuthenticated, isHydrated, user, router, id]);
 
   const [advancingStage, setAdvancingStage] = useState(false);
   const [selectedStage, setSelectedStage] = useState('');
@@ -447,7 +448,7 @@ export default function TransitVehicleDetailPage() {
     });
   };
 
-  if (isLoading) {
+  if (!isHydrated || isLoading) {
     return (
       <div className="max-w-6xl mx-auto py-16 flex flex-col items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-[#008767] mb-3" />

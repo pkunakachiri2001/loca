@@ -48,6 +48,17 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // If using a demo/mock session, do not force logout or redirect to session=expired.
+    // Instead reject so components can gracefully fallback to local demo data.
+    const authHeader = String(
+      originalRequest?.headers?.['Authorization'] ||
+      originalRequest?.headers?.['authorization'] ||
+      apiClient.defaults.headers.common['Authorization'] || ''
+    );
+    if (authHeader.includes('demo-')) {
+      return Promise.reject(error);
+    }
+
     // If 401 and not already retrying
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/login')) {
