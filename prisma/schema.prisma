@@ -115,6 +115,50 @@ enum CouponType {
   FIXED_AMOUNT
 }
 
+enum TransitStatus {
+  PURCHASED
+  ON_VESSEL
+  ARRIVED_PORT
+  INLAND_TRANSIT
+  AT_BORDER
+  CUSTOMS_CLEARING
+  CLEARED_DELIVERED
+  AVAILABLE_FOR_SALE
+  SOLD
+}
+
+enum PortOfDischarge {
+  DURBAN
+  WALVIS_BAY
+  BEIRA
+  DAR_ES_SALAAM
+  MAPUTO
+  OTHER
+}
+
+enum ZimbabweBorderPost {
+  BEITBRIDGE
+  FORBES_MUTARE
+  PLUMTREE
+  CHIRUNDU
+  NYAMAPANDA
+  KARIBA
+  VICTORIA_FALLS
+  OTHER
+}
+
+enum TransitDocumentType {
+  COMMERCIAL_INVOICE
+  BILL_OF_LADING
+  EXPORT_CERTIFICATE
+  INSPECTION_CERT_JEVIC_EAA
+  ZIMRA_BILL_OF_ENTRY
+  POLICE_INTERPOL_CLEARANCE
+  TRANSIT_INSURANCE
+  PROOF_OF_PAYMENT
+  OTHER
+}
+
 // ──────────────────────────────────────────────────────────────
 // USER
 // ──────────────────────────────────────────────────────────────
@@ -194,6 +238,7 @@ model Company {
   listings        Listing[]
   bookings        Booking[]
   reviews         Review[]
+  transitVehicles TransitVehicle[]
 
   @@map("companies")
 }
@@ -265,6 +310,8 @@ model Listing {
   bookings         Booking[]
   reviews          Review[]
   wishlistItems    WishlistItem[]
+  transitVehicle   TransitVehicle? @relation(fields: [transitVehicleId], references: [id], onDelete: SetNull)
+  transitVehicleId String?         @unique
 
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
@@ -705,5 +752,125 @@ model VehicleBenchmark {
 
   @@unique([make, model, variant, baseYear])
   @@map("vehicle_benchmarks")
+}
+
+// ──────────────────────────────────────────────────────────────
+// CAR DEALER CRM — CARS IN TRANSIT
+// ──────────────────────────────────────────────────────────────
+
+model TransitVehicle {
+  id                          String              @id @default(cuid())
+  companyId                   String
+  company                     Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Vehicle Identity
+  vin                         String              // Chassis number / VIN
+  make                        String
+  model                       String
+  variant                     String?
+  yearOfManufacture           Int
+  monthOfManufacture          Int?
+  engineCapacityCc            Int?                // e.g. 1490, 2755, 2982
+  fuelType                    FuelType            @default(PETROL)
+  transmission                TransmissionType    @default(AUTOMATIC)
+  mileage                     Int                 @default(0)
+  color                       String?
+  exteriorGrade               String?             // e.g. 4.5, 4.0, 3.5, RA
+  interiorGrade               String?             // e.g. A, B, C
+
+  // Purchase & Origin (CIF Breakdown in USD)
+  countryOfOrigin             String              // "Japan", "South Africa", "United Kingdom", "UAE", etc.
+  supplierName                String?             // "Be Forward", "SBT Japan", "Autocom", etc.
+  supplierInvoiceNumber       String?
+  fobPriceUsd                 Float               @default(0)
+  freightCostUsd              Float               @default(0)
+  insuranceCostUsd            Float               @default(0)
+  totalCifUsd                 Float               // FOB + Freight + Insurance
+
+  // Shipping & Routing
+  portOfDischarge             PortOfDischarge     @default(DURBAN)
+  vesselName                  String?
+  voyageNumber                String?
+  billOfLadingNumber          String?
+  containerNumber             String?
+  carrierCompany              String?             // Inland carrier / car transporter
+  borderPost                  ZimbabweBorderPost  @default(BEITBRIDGE)
+  destinationCity             String              @default("Harare")
+  destinationWarehouse        String?
+
+  // Critical Dates
+  purchaseDate                DateTime?
+  departureDate               DateTime?
+  portEta                     DateTime?           // ETA at Seaport (Durban/Beira/etc)
+  borderEta                   DateTime?           // ETA at Beitbridge/Forbes/etc
+  deliveryEta                 DateTime?           // ETA at Dealership
+  clearedAt                   DateTime?
+
+  // ZIMRA Advance Duty & Landed Cost Assessment (Computed via Valuation Engine)
+  projectedDutyUsd            Float               @default(0)
+  projectedSurtaxUsd          Float               @default(0)
+  projectedVatUsd             Float               @default(0)
+  projectedTotalLandedCostUsd Float               @default(0)
+
+  // Market Valuation & Profit Margins
+  projectedMarketValueUsd     Float               @default(0)
+  projectedLowValueUsd        Float               @default(0)
+  projectedHighValueUsd       Float               @default(0)
+  targetSellingPriceUsd       Float?
+  projectedMarginUsd          Float?
+  valuationRef                String?             // Reference ID in VehicleValuation
+
+  // Clearing & Customs Paperwork Status
+  clearingAgentName           String?
+  clearingAgentPhone          String?
+  clearingBondNumber          String?
+  zimraAssessmentNumber       String?
+  status                      TransitStatus       @default(PURCHASED)
+
+  // Marketplace Integration
+  isPublishedAsArrivingSoon   Boolean             @default(false)
+  publicListing               Listing?
+
+  notes                       String?             @db.Text
+
+  // Relations
+  documents                   TransitDocument[]
+  events                      TransitEvent[]
+
+  createdAt                   DateTime            @default(now())
+  updatedAt                   DateTime            @updatedAt
+
+  @@unique([companyId, vin])
+  @@map("transit_vehicles")
+}
+
+model TransitDocument {
+  id                 String              @id @default(cuid())
+  transitVehicleId   String
+  transitVehicle     TransitVehicle      @relation(fields: [transitVehicleId], references: [id], onDelete: Cascade)
+  type               TransitDocumentType
+  title              String
+  fileUrl            String              // URL or cloud storage path
+  fileName           String?
+  fileSize           Int?
+  mimeType           String?
+  verificationStatus String              @default("PENDING") // "PENDING", "VERIFIED", "ACTION_REQUIRED"
+  notes              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@map("transit_documents")
+}
+
+model TransitEvent {
+  id               String         @id @default(cuid())
+  transitVehicleId String
+  transitVehicle   TransitVehicle @relation(fields: [transitVehicleId], references: [id], onDelete: Cascade)
+  status           TransitStatus
+  location         String?        // e.g. "Durban Ocean Terminal", "Beitbridge Border Post"
+  note             String?        @db.Text
+  createdAt        DateTime       @default(now())
+
+  @@map("transit_events")
 }
 

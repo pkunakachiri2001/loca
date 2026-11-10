@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Car,
@@ -19,6 +20,7 @@ import {
   Scale,
   Award,
   Zap,
+  Ship,
 } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -337,6 +339,33 @@ export default function ValuationPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Dealer In-Transit CRM Callout */}
+          <div className="mt-4 max-w-4xl mx-auto p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-[#007358] to-[#0B192C] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                <Ship className="w-5 h-5 text-emerald-400" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white flex items-center gap-2">
+                  <span>Car Dealer Importing from Japan, UK, SA or UAE?</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-400/20 text-emerald-300 font-extrabold uppercase border border-emerald-400/30">
+                    Dealer CRM
+                  </span>
+                </div>
+                <div className="text-[11px] text-slate-200 mt-0.5">
+                  Pre-clear ZIMRA customs duties, manage advance Bill of Lading paperwork, and monitor landed margins before border arrival.
+                </div>
+              </div>
+            </div>
+            <Link
+              href="/company/transit"
+              className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-extrabold text-xs shadow-sm transition"
+            >
+              <span>Launch Dealer CRM</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 

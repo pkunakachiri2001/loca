@@ -32,6 +32,7 @@ import contactRoutes from './routes/contact';
 import whatsappRoutes from './routes/whatsapp';
 import insuranceRoutes from './routes/insurance';
 import valuationRoutes from './routes/valuation';
+import transitRoutes from './routes/transit';
 
 export const app = express();
 
@@ -152,6 +153,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/whatsapp', whatsappRoutes);
 app.use('/api/insurance', insuranceRoutes);
 app.use('/api/valuation', valuationRoutes);
+app.use('/api/transit', transitRoutes);
 
 // ──────────────────────────────────────────────
 // ERROR HANDLING

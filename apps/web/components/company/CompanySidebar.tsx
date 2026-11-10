@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Car, Bookmark, BarChart3, Settings, Plus, Building2, MapPin
+  LayoutDashboard, Car, Bookmark, BarChart3, Settings, Plus, Building2, MapPin, Ship
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const links = [
   { href: '/company/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
+  { href: '/company/transit', label: 'Cars in Transit (CRM)', icon: Ship },
   { href: '/company/listings', label: 'Listings', icon: Car },
   { href: '/company/bookings', label: 'Bookings', icon: Bookmark },
   { href: '/company/analytics', label: 'Analytics', icon: BarChart3 },
