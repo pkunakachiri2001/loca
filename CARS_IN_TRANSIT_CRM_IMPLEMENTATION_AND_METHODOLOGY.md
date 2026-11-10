@@ -171,11 +171,13 @@ To eliminate all manual data entry and transform Famba into the dominant automot
   - Enable an "Incoming Stock / Pre-Order" toggle on the vehicle dossier.
   - Automatically publish the vehicle to the public Famba marketplace with an **"In Transit (Arriving in X Days)"** badge, verified ZMDVF-v1 valuation certificate, and an escrow reservation option for prospective buyers.
 
-### 🛡️ Improvement 5: Embedded Marine & Inland Transit Insurance (Zimnat Partnership)
-* **Problem Solved:** Dealers frequently ship cars across Mozambique or South Africa without comprehensive overland transit insurance, risking catastrophic loss from carrier accidents or civil unrest.
-* **Implementation:**
-  - Partner with Zimnat Insurance to offer instant, 1-click single-trip transit insurance calculated automatically from the CIF value ($\sim 0.75\%$–$1.25\%$ of CIF).
-  - The policy certificate is auto-generated and stored in the vehicle's Document Vault.
+### 🛡️ Improvement 5: Embedded Advance Zimnat Insurance & ZIMRA Pre-Clearance (COMPLETED & DEPLOYED)
+* **Problem Solved:** Dealers frequently ship cars across Mozambique or South Africa without comprehensive overland transit insurance, risking catastrophic loss from carrier accidents or civil unrest, and face border delays because ZIMRA duties and road policies are settled only after arrival.
+* **Implementation Delivered:**
+  - **Advance Zimnat Underwriting Integration:** Dealers can select between *Transit Marine & Overland Cargo Protection (GIT)*, *Statutory Motor 3rd Party Road Cover (VIN/Chassis Discs)*, or *Full Comprehensive Cover* directly from the vehicle dossier.
+  - **Cryptographic Policy Disc & QR:** Instant issuance of official digital Zimnat policy certificates and verification QR codes that authorities (ZRP and ZIMRA) can scan electronically.
+  - **ZIMRA ASYCUDA Pre-Clearance Tracker:** Record and monitor Form 21 Bill of Entry numbers, assessment notices, clearing agent details, and advance duty prepayment vouchers.
+  - **Automatic Document Vaulting:** All advance policies and duty vouchers automatically vault into the vehicle's encrypted compliance repository.
 
 ---
 

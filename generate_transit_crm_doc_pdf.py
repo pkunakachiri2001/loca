@@ -189,10 +189,11 @@ def generate_pdf():
         "Prospective buyers can view the verified ZMDVF-v1 valuation certificate, review advance inspection documents, and place secure escrow reservation deposits."
     )
 
-    pdf.section_title('Improvement 5: Integrated Marine & Overland Transit Insurance (Zimnat Partnership)')
+    pdf.section_title('Improvement 5: Embedded Advance Zimnat Insurance & ZIMRA Pre-Clearance (Deployed)')
     pdf.body_p(
-        "In partnership with Zimnat Insurance, Famba will enable dealers to purchase 1-click single-trip marine cargo and inland transit insurance policies "
-        "calculated directly from the vehicle CIF value (~0.75%-1.25%). Coverage certificates will be automatically archived in the Document Vault."
+        "Deployed core integration enabling dealerships to purchase 1-click advance marine cargo (GIT) and statutory road insurance policies "
+        "issued directly to the vehicle chassis/VIN with authentic cryptographic verification QR discs, alongside comprehensive ZIMRA ASYCUDA "
+        "Form 21 Bill of Entry and advance duty voucher tracking in the Document Vault."
     )
     pdf.ln(1)
 
