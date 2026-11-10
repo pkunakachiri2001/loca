@@ -6,11 +6,11 @@ import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react
 import { ChatMessageFormatted } from '@/lib/formatChatMessage';
 
 const quickReplies = [
+  'Buy Vehicle Insurance 🛡️',
+  'Find Car Wash Near Me 🧼',
   'How do I book a School Run?',
-  'How do I book a car?',
-  'What are your prices?',
-  'How do I list my company?',
-  'Is payment secure?',
+  'Car Rentals & Prices 🚗',
+  'Vehicle Valuation 📊',
 ];
 
 interface Message {

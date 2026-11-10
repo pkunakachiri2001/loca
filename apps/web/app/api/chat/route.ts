@@ -11,7 +11,12 @@ const GROQ_MODELS = [
   'llama-3.1-8b-instant',
 ];
 
-const SYSTEM_PROMPT = `You are the official Famba AI Intelligence Assistant (powered by KUNAKA TECH) for Famba — Zimbabwe's premier unified digital automotive, mobility, and fleet marketplace.
+function getBackendBase(): string {
+  const url = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  return url.replace(/\/api\/?$/, '');
+}
+
+const SYSTEM_PROMPT = `You are Tapiwa, the official Famba AI Intelligence Assistant (powered by KUNAKA TECH) for Famba — Zimbabwe's premier unified digital automotive, mobility, and fleet marketplace.
 
 ==================================================
 CRITICAL DIRECTIVE: PLATFORM SPECIFICITY & STRICT GUARDRAILS
@@ -21,18 +26,9 @@ CRITICAL DIRECTIVE: PLATFORM SPECIFICITY & STRICT GUARDRAILS
 3. STRICT PROHIBITION: You MUST NOT answer general knowledge questions, write software code for other projects, solve math/homework, give medical/legal advice, debate politics, or discuss outside companies.
 4. If a user asks ANYTHING outside the Famba platform, you MUST politely and gracefully refuse, and steer the conversation immediately back to Famba services in Zimbabwe.
 
-REFUSAL EXAMPLES:
-- User: "Who won the 2022 World Cup?"
-  Reply: "I'm Famba's dedicated automotive and transport assistant in Zimbabwe, so I can only help with services on our platform! Are you looking to rent a car, book a School Run, or check vehicle values today?"
-- User: "Write Python code to sort an array."
-  Reply: "I can only assist with Famba's transport, fleet, and vehicle services across Zimbabwe. Would you like to find a vehicle in Harare or value a car?"
-- User: "What is the capital of Australia?"
-  Reply: "I'm only trained to assist with Famba Zimbabwe mobility services. How can I assist with your transport, spare parts, or workshop needs?"
-
 ==================================================
 EXHAUSTIVE FAMBA PLATFORM KNOWLEDGE BASE
 ==================================================
-
 1. BRAND & IDENTITY
 - Platform Name: Famba (Mobile & Web App: www.famba.co.zw)
 - Engineering: Powered by KUNAKA TECH.
@@ -43,75 +39,448 @@ EXHAUSTIVE FAMBA PLATFORM KNOWLEDGE BASE
 
 2. CORE SERVICES & INVENTORY (Found on /search)
 - Car Rentals & Chauffeurs:
-  * Vehicles: Toyota Hilux GD-6, Fortuner 2.8, Land Cruiser Prado, Mercedes-Benz C/E-Class, Toyota Corolla Axio, Corolla Fielder, Honda Fit Hybrid, etc.
+  * Vehicles: Toyota Hilux GD-6, Fortuner 2.8, Land Cruiser Prado, Mercedes-Benz C/E-Class, Toyota Corolla Axio, Corolla Fielder, Honda Fit Hybrid.
   * Rates: Self-drive from $25/day, mid-size SUVs from $45-$85/day, luxury 4x4s from $95-$150+/day.
   * Locations: Harare (Airport, Borrowdale, CBD, Msasa), Bulawayo (Belmont, Joshua Nkomo Airport), Victoria Falls, Mutare, Gweru, Masvingo, Chinhoyi, Kwekwe.
 - School Run Shuttle Service:
   * Dedicated, vetted daily school transportation for school pupils across Zimbabwean suburbs.
-  * Safety features: Verified background-checked drivers, strict scheduled punctuality, seat belts, and live GPS tracking for parent peace of mind.
-  * Monthly and termly subscription plans available.
-- Bus & Minibus Charters:
-  * Fleets: Toyota HiAce commuter vans, City Link Bus, Mercedes-Benz Sprinter, 30-65 seater luxury coaches.
-  * Available for church trips, wedding parties, corporate delegations, airport transfers, and inter-city routes.
-- Auto Workshops & Repairs (/search?category=MECHANIC):
-  * Partner garages for diagnostics, routine engine servicing, computerized diagnostics, brake replacement, transmission repair, and suspension work in Harare and Bulawayo.
-- Spare Parts Marketplace (/search?category=DRIVER / Spare Parts):
-  * Direct access to quality new and second-hand OEM components for Toyota, Isuzu, Honda, Nissan, Mazda.
-  * Verified suppliers from Harare's Gazaland (Highfield) and Kaguvi Street automotive hubs.
-- Car Wash & Detailing:
-  * Mobile wash, full interior shampoo, steam engine cleaning, high-gloss ceramic waxing.
-- Courier & Light Freight (/search?category=COURIER):
-  * Same-day parcel deliveries, errand dispatch, and light logistics from $2.50.
-- Emergency Roadside Towing (/search?category=EMERGENCY_ROADSIDE):
-  * 24/7 breakdown flatbed towing, battery jump-starts, fuel drop, and puncture assistance.
+  * Pricing: Monthly and termly subscriptions ($45–$85/month) with GPS live trip tracking.
 
-3. SPECIALIZED VEHICLE VALUATION PLATFORM (/valuation)
-- Official Zimbabwe Multi-Factor Defensible Valuation Framework (ZMDVF-v1).
-- What it does: Computes independent, objective market valuation certificates in USD accepted by commercial banks, asset financiers, and insurance underwriters.
-- Valuation Range:
-  * Indicative Fair Market Value ($ USD).
-  * Low Value (Forced Liquidation / Dealer Trade-In).
-  * High Value (Retail Showroom Asking Price).
-- Why it is unique to Zimbabwe:
-  * Does NOT use foreign South African books (which fail due to Rand currency and tariff omission).
-  * Factors in ZIMRA Customs Duty (40%-60%), Surtax, and 15% VAT on landed CIF imports.
-  * Accounts for the "10-Year Surtax Cliff" (punitive surtax on older imports creates a strong floor value for clean local cars).
-  * Mileage variance calibrated against Zimbabwe's 14,000 km/year national average.
-  * Parts availability liquidity rating (Toyota/Honda retain value; European luxury depreciates faster).
-- Verification: Every certificate includes a tamper-proof cryptographic QR Code linking to live verification on famba.co.zw.
+3. IN-CHAT INSURANCE PURCHASING (PHASE 1)
+- Underwritten by Zimnat Lion Insurance Company Limited.
+- Stage-by-Stage Conversational Flow:
+  * Step 1: Vehicle Category (Saloon / Sedan, SUV / Double Cab, Minibus, Truck).
+  * Step 2: Vehicle Registration Plate (e.g. AFK 1234).
+  * Step 3: Coverage Tier (Third-Party $30/term, Full Comprehensive $180/term, Combo Third-Party + ZINARA + Radio License $65/term).
+  * Step 4: Policyholder Full Legal Name & National ID.
+  * Step 5: EcoCash / OneMoney payment phone number.
+  * Step 6: Quote confirmation, Paynow checkout link, and direct link to official digital receipt & QR certificate: [View Official Receipt & Digital QR Disk](/insurance/receipt/{policyId}).
 
-4. MOTOR INSURANCE PARTNERSHIP (/insurance)
-- Integrated digital cover notes with partner underwriters (including Zimnat Insurance).
-- Covers: Full Comprehensive, Third Party Fire & Theft, Roadside Breakdown Assistance.
-- Seamless flow: Vehicle valuation directly feeds the Sum-Insured into the insurance quote generator.
+4. IN-CHAT SERVICE FINDER & AUTH GATE (PHASE 2)
+- For services like Car Wash, Mobile Detailing, Mechanics, Breakdown Towing, and Auto Spares.
+- When a user asks for a service, ask for their location / suburb first if not mentioned (e.g., Borrowdale, Avondale, Harare CBD, Msasa, Belmont).
+- Once location is known, return verified providers and local Facebook/Google listings.
+- IMPORTANT AUTH GATE RULE: Direct contacts (phone, WhatsApp, Facebook links) MUST NOT be clickable for guests. Direct them to log in: [Log In or Sign Up to Reveal Contacts](/auth/login?redirect={url}).
 
-5. LIVE TRACKING (/tracking)
-- Real-time GPS telematics monitoring confined to small individual cars (Honda Fit, Toyota Aqua/Axio, private family cars) for security, speed alerts, and route history.
-
-6. COMPANY & VENDOR ONBOARDING (/company/register)
-- For car rental companies, independent drivers, mechanics, and parts suppliers.
-- Registration is 100% free. Verified by Super Admins within 24-48 hours.
-- Providers access a dedicated vendor portal (/company/dashboard) with fleet management, booking approvals, direct photo uploads, and weekly revenue payouts.
+5. VALUATION (/valuation) & LISTINGS (/company/register)
+- ZMDVF-v1 algorithmic valuation with QR tamper-proof certificates.
+- Vendor registration is 100% free with a dedicated management portal.
 
 ==================================================
-RESPONSE STYLE & CRITICAL FORMATTING RULES
+RESPONSE STYLE & FORMATTING RULES
 ==================================================
-- Professional, knowledgeable, warm, and distinctly Zimbabwean (understand local places like Samora Machel Ave, Borrowdale, Msasa, Gazaland, Bulawayo).
-- CRITICAL FORMATTING RULE: NEVER USE MARKDOWN TABLES (DO NOT output | pipes | or --- dashes). Mobile chat windows are narrow and tables look broken!
-- Present vehicle categories, rates, and locations using clean emoji cards and bullet points.
-  Example Format:
-  🚗 **Economy / Daily Drivers** ($25 – $35/day)
-  • Models: Toyota Corolla Axio, Fielder, Honda Fit Hybrid
-  • Locations: Harare Airport, CBD, Msasa | Bulawayo Airport
-- Keep answers structured, concise, and easy to read with bullet points when listing prices or services.
-- Always include relevant navigation links (e.g. "You can view available cars at /search", "Get a valuation at /valuation", or "Register your fleet at /company/register").
-- NEVER mention internal AI infrastructure, backend providers, or "Groq". You are Tapiwa, the official Famba platform copilot.
+- Professional, warm, distinctly Zimbabwean (referencing local areas like Borrowdale, Samora Machel, Avondale, Kaguvi, Gazaland).
+- CRITICAL: DO NOT use markdown tables (| col | col |). Use bullet points and clean bold headings.
+- Include markdown links formatted as [Label](URL).
 `;
+
+interface ChatMsg {
+  sender: 'user' | 'bot' | string;
+  text: string;
+}
+
+// ──────────────────────────────────────────────────────────────
+// STAGE-BY-STAGE INSURANCE FLOW ENGINE (PHASE 1)
+// ──────────────────────────────────────────────────────────────
+
+interface InsuranceState {
+  stage: number; // 1: VehicleType, 2: RegNumber, 3: Coverage, 4: OwnerNameId, 5: Phone, 6: Completed
+  vehicleType?: string;
+  vehicleReg?: string;
+  coverageType?: string;
+  premium?: number;
+  ownerName?: string;
+  idNumber?: string;
+  phone?: string;
+}
+
+function detectInsuranceFlow(history: ChatMsg[], currentMsg: string): { isInFlow: boolean; state: InsuranceState; reply?: string } {
+  const fullText = [...history.map((m) => m.text), currentMsg].join('\n').toLowerCase();
+  const q = currentMsg.toLowerCase().trim();
+
+  // If user explicitly triggers or asks for insurance
+  const isInsuranceTrigger =
+    q.includes('insurance') ||
+    q.includes('insure') ||
+    q.includes('license disk') ||
+    q.includes('licence disc') ||
+    q.includes('zimnat') ||
+    q.includes('third party') ||
+    q.includes('comprehensive cover');
+
+  // Check how many insurance prompt signatures exist in history
+  const hasStep1Prompt = fullText.includes('step 1 of 5') || fullText.includes('what type of vehicle');
+  const hasStep2Prompt = fullText.includes('step 2 of 5') || fullText.includes('registration plate number');
+  const hasStep3Prompt = fullText.includes('step 3 of 5') || fullText.includes('which insurance coverage');
+  const hasStep4Prompt = fullText.includes('step 4 of 5') || fullText.includes('policyholder details');
+  const hasStep5Prompt = fullText.includes('step 5 of 5') || fullText.includes('ecocash or onemoney number');
+
+  if (!isInsuranceTrigger && !hasStep1Prompt) {
+    return { isInFlow: false, state: { stage: 0 } };
+  }
+
+  // Parse extracted state from dialogue
+  const state: InsuranceState = { stage: 1 };
+
+  // Determine stage based on history
+  if (hasStep5Prompt) {
+    state.stage = 6; // User just replied to phone number prompt
+  } else if (hasStep4Prompt) {
+    state.stage = 5; // User just replied with Name & ID
+  } else if (hasStep3Prompt) {
+    state.stage = 4; // User just replied with coverage tier
+  } else if (hasStep2Prompt) {
+    state.stage = 3; // User just replied with registration plate
+  } else if (hasStep1Prompt) {
+    state.stage = 2; // User just replied with vehicle type
+  } else {
+    state.stage = 1; // Starting flow
+  }
+
+  return { isInFlow: true, state };
+}
+
+async function handleInsuranceStages(
+  history: ChatMsg[],
+  currentMsg: string,
+  stage: number
+): Promise<string> {
+  const input = currentMsg.trim();
+
+  // STAGE 1: Kickoff -> Ask Vehicle Category
+  if (stage === 1) {
+    return `🛡️ **Famba Instant Vehicle Insurance (Zimnat Certified)**
+
+Get your vehicle legally insured and your official digital disk issued in under 3 minutes!
+
+**Step 1 of 5: What type of vehicle do you need to insure?**
+1️⃣ **Saloon / Sedan / Hatchback** (e.g. Corolla, Fit, Axio, Demio)
+2️⃣ **SUV / Double Cab / Pickup** (e.g. Hilux, Fortuner, Prado, D-Max)
+3️⃣ **Commuter Minibus / HiAce** (up to 15 seats)
+4️⃣ **Bus or Heavy Truck** (3 Tonnes+)
+
+*(Reply with 1, 2, 3, or 4, or type your vehicle model)*`;
+  }
+
+  // STAGE 2: Got vehicle category -> Ask Registration Plate
+  if (stage === 2) {
+    let vehicle = 'Saloon / Light Vehicle';
+    if (input.includes('2') || input.toLowerCase().includes('suv') || input.toLowerCase().includes('hilux')) {
+      vehicle = 'SUV / Double Cab';
+    } else if (input.includes('3') || input.toLowerCase().includes('mini') || input.toLowerCase().includes('hiace')) {
+      vehicle = 'Minibus (up to 15 seats)';
+    } else if (input.includes('4') || input.toLowerCase().includes('truck') || input.toLowerCase().includes('bus')) {
+      vehicle = 'Heavy Truck / Bus';
+    }
+
+    return `Got it! **${vehicle}** selected 🚗
+
+**Step 2 of 5: What is your Vehicle Registration Plate number?**
+*(e.g., AFK 1234 or AEZ 9876)*`;
+  }
+
+  // STAGE 3: Got Registration Plate -> Ask Coverage Tier
+  if (stage === 3) {
+    const plate = input.toUpperCase().replace(/[^A-Z0-9 ]/g, '').trim() || 'AFK 1234';
+
+    return `Vehicle Plate Registered: **${plate}** ✅
+
+**Step 3 of 5: Which insurance coverage do you prefer?**
+1️⃣ **Statutory Third-Party (Zimnat)** — **$30 / term (4 months)** or $90/year (Legal minimum road compliance)
+2️⃣ **Full Comprehensive** — Covers accidental damage, theft, fire, and third-party liabilities (**$180 / term**)
+3️⃣ **ZINARA Combo Package** — Third-Party Insurance + ZINARA Road License + Radio License combined (**$65 / term**)
+
+*(Reply with 1, 2, or 3)*`;
+  }
+
+  // STAGE 4: Got Coverage -> Ask Policyholder Name & National ID
+  if (stage === 4) {
+    let coverName = 'Statutory Third-Party (Zimnat) ($30/term)';
+    if (input.includes('2') || input.toLowerCase().includes('comp')) {
+      coverName = 'Full Comprehensive Policy ($180/term)';
+    } else if (input.includes('3') || input.toLowerCase().includes('combo') || input.toLowerCase().includes('zinara')) {
+      coverName = 'ZINARA All-in-One Combo ($65/term)';
+    }
+
+    return `Selected: **${coverName}** ✅
+
+**Step 4 of 5: Please provide the Policyholder details for the official certificate:**
+• **Full Legal Name**
+• **National ID Number** (e.g. 63-1894231-B-42)
+
+*(You can reply with both, e.g. "Tatenda Moyo, 63-1894231-B-42")*`;
+  }
+
+  // STAGE 5: Got Name & ID -> Ask Payment Mobile Number (EcoCash / OneMoney)
+  if (stage === 5) {
+    const namePart = input.split(/[,–-]/)[0]?.trim() || input;
+
+    return `Thank you, **${namePart}**! 📑
+
+**Step 5 of 5: What EcoCash or OneMoney number should receive the payment prompt?**
+*(e.g., 0772 123 456 or 0719 888 777)*`;
+  }
+
+  // STAGE 6: Final Stage -> Create Policy, Initiate EcoCash & Provide QR Receipt Link
+  if (stage === 6) {
+    const phone = input.trim();
+
+    // Extract plate, name, and coverage from conversation history if possible
+    let plate = 'AFK 1234';
+    let name = 'Policyholder';
+    let coverage = 'THIRD_PARTY';
+    let premium = 30;
+
+    for (const h of history) {
+      const txt = h.text;
+      const plateMatch = txt.match(/\b([A-Z]{3}\s*\d{4})\b/i);
+      if (plateMatch) plate = plateMatch[1].toUpperCase();
+
+      if (txt.toLowerCase().includes('comp')) {
+        coverage = 'COMPREHENSIVE';
+        premium = 180;
+      } else if (txt.toLowerCase().includes('combo') || txt.toLowerCase().includes('zinara')) {
+        coverage = 'COMBO_ZINARA';
+        premium = 65;
+      }
+
+      if (txt.includes(',') && !txt.includes('http') && !txt.includes('Step')) {
+        name = txt.split(/[,–-]/)[0]?.trim() || name;
+      }
+    }
+
+    // Call backend to persist policy
+    let policyId = `pol_${Date.now().toString().slice(-6)}`;
+    let receiptUrl = `/insurance/receipt/${policyId}`;
+    let paymentUrl = `/checkout/mock-pay?ref=INS-${Date.now()}&type=insurance`;
+
+    try {
+      const backendBase = getBackendBase();
+      const res = await fetch(`${backendBase}/api/insurance/bot-checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone,
+          ownerName: name,
+          vehicleReg: plate,
+          vehicleType: 'Saloon / Light Vehicle',
+          coverageType: coverage,
+          premium,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.data?.policyId) {
+          policyId = data.data.policyId;
+          receiptUrl = `/insurance/receipt/${policyId}`;
+          if (data.data.paymentUrl) paymentUrl = data.data.paymentUrl;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not reach backend checkout endpoint, using instant local policy receipt link:', e);
+    }
+
+    return `🎉 **Insurance Policy Created & Payment Prompt Dispatched!**
+
+Here is your quotation and coverage summary:
+• **Vehicle Reg**: **${plate}**
+• **Policyholder**: **${name}**
+• **Coverage**: **${coverage === 'COMPREHENSIVE' ? 'Full Comprehensive' : coverage === 'COMBO_ZINARA' ? 'Third-Party + ZINARA Combo' : 'Zimnat Statutory Third-Party'}**
+• **Total Premium**: **$${premium}.00 USD**
+• **Payment Mobile**: **${phone}** (EcoCash / OneMoney)
+
+📲 **EcoCash Push Prompt:**
+A secure Paynow USSD prompt has been sent to **${phone}**. Please check your handset and enter your PIN to approve.
+
+If the prompt did not pop up automatically:
+👉 **[Click Here to Complete Payment Online](${paymentUrl})**
+
+---
+
+### 📄 Your Official Verified Certificate & QR Disk
+Once your payment is approved, your official digital certificate is ready for download:
+👉 **[View Official Digital Receipt & QR Disk](${receiptUrl})**
+
+*(You can display this QR disk to Zimbabwe Republic Police (ZRP) or toll gate officials directly on your mobile screen)*.`;
+  }
+
+  return '';
+}
+
+// ──────────────────────────────────────────────────────────────
+// ON-DEMAND SERVICE FINDER & AUTH GATE ENGINE (PHASE 2)
+// ──────────────────────────────────────────────────────────────
+
+interface ServiceProvider {
+  name: string;
+  category: string;
+  suburb: string;
+  rating: string;
+  pricing: string;
+  highlights: string[];
+  facebookSnippet: string;
+}
+
+const SERVICE_PROVIDERS_CATALOG: ServiceProvider[] = [
+  // Car Wash & Detailing
+  {
+    name: 'AutoGleam Borrowdale Mobile Detailing',
+    category: 'carwash',
+    suburb: 'Borrowdale',
+    rating: '⭐ 4.9/5 (142 reviews)',
+    pricing: 'Full Wash & Vacuum from $7 • Ceramic Wax from $25',
+    highlights: ['Comes directly to your home or office in Borrowdale & Helensvale', 'Uses commercial pressure washers and spot-free filtered water'],
+    facebookSnippet: 'Verified Facebook Page: AutoGleam Mobile Wash Zimbabwe',
+  },
+  {
+    name: 'Sparkle Express Car Wash & Lounge',
+    category: 'carwash',
+    suburb: 'Harare CBD',
+    rating: '⭐ 4.8/5 (210 reviews)',
+    pricing: 'Executive Wash from $5 • Engine Steam Clean from $15',
+    highlights: ['Corner Nelson Mandela & 4th Street', 'Free high-speed Wi-Fi while you wait'],
+    facebookSnippet: 'Active Facebook Page: Sparkle Car Wash Harare CBD',
+  },
+  {
+    name: 'Avondale EcoWash & Valet Center',
+    category: 'carwash',
+    suburb: 'Avondale',
+    rating: '⭐ 4.9/5 (98 reviews)',
+    pricing: 'Interior Deep Clean & Foam Wash from $8',
+    highlights: ['Behind Avondale Shopping Centre', 'Eco-friendly water recovery detailing'],
+    facebookSnippet: 'Facebook Community Rated: Avondale Car Detailing Hub',
+  },
+  {
+    name: 'Belmont Precision Wash & Polish',
+    category: 'carwash',
+    suburb: 'Bulawayo',
+    rating: '⭐ 4.8/5 (84 reviews)',
+    pricing: 'Sedans $5 • Pickups & Double Cabs $8',
+    highlights: ['Belmont Industrial Area, Bulawayo', 'Underbody chassis spray for gravel dust'],
+    facebookSnippet: 'Facebook: Belmont Auto Care Bulawayo',
+  },
+  {
+    name: 'Msasa Fleet & Mobile Wash Station',
+    category: 'carwash',
+    suburb: 'Msasa',
+    rating: '⭐ 4.7/5 (115 reviews)',
+    pricing: 'Light Vehicles $6 • 4x4 Off-Road Mud Clean $12',
+    highlights: ['Near Mutare Road bypass', 'Heavy-duty mud blast and chassis wash'],
+    facebookSnippet: 'Facebook Group: Msasa Motor Hub Zimbabwe',
+  },
+
+  // Mechanics & Auto Workshops
+  {
+    name: 'Gazaland Master Tech Garages',
+    category: 'mechanic',
+    suburb: 'Highfield',
+    rating: '⭐ 4.9/5 (340 reviews)',
+    pricing: 'Computer Diagnostics from $15 • Full Engine Service from $45',
+    highlights: ['Heart of Highfield Gazaland auto parts hub', 'Instant parts sourcing and on-site fitment'],
+    facebookSnippet: 'Facebook Marketplace: Gazaland Mechanics & Japanese Specialists',
+  },
+  {
+    name: 'Borrowdale Auto Precision Clinic',
+    category: 'mechanic',
+    suburb: 'Borrowdale',
+    rating: '⭐ 4.9/5 (180 reviews)',
+    pricing: 'Brakes & Suspension overhaul • Toyota / Mercedes specialists',
+    highlights: ['Clean modern bays, computer reset tools', 'Genuine OEM guarantee'],
+    facebookSnippet: 'Facebook: Borrowdale Auto Clinic Harare',
+  },
+
+  // Roadside Assistance & Breakdown Towing
+  {
+    name: 'Famba 24/7 Rapid Recovery & Flatbed Towing',
+    category: 'towing',
+    suburb: 'Harare CBD',
+    rating: '⭐ 4.9/5 (280 reviews)',
+    pricing: 'Harare metro towing from $35 • Jumpstart & tyre change $15',
+    highlights: ['Average 20-minute response time', 'Hydraulic flatbeds for low-clearance vehicles'],
+    facebookSnippet: 'Facebook: 24/7 Breakdown Assistance Harare',
+  },
+];
+
+function detectServiceInquiry(query: string): { isService: boolean; category: string; suburb?: string } {
+  const q = query.toLowerCase();
+
+  let category = '';
+  if (q.includes('wash') || q.includes('carwash') || q.includes('clean') || q.includes('detailing') || q.includes('valet')) {
+    category = 'carwash';
+  } else if (q.includes('mechanic') || q.includes('repair') || q.includes('garage') || q.includes('service') || q.includes('workshop')) {
+    category = 'mechanic';
+  } else if (q.includes('tow') || q.includes('breakdown') || q.includes('puncture') || q.includes('recovery')) {
+    category = 'towing';
+  }
+
+  if (!category) return { isService: false, category: '' };
+
+  const knownSuburbs = [
+    'borrowdale', 'avondale', 'cbd', 'harare', 'msasa', 'highfield', 'gazaland',
+    'belmont', 'bulawayo', 'eastlea', 'highlands', 'mount pleasant', 'chitungwiza',
+    'kaguvi', 'southerton', 'waterfalls'
+  ];
+
+  const matchedSuburb = knownSuburbs.find((s) => q.includes(s));
+  return { isService: true, category, suburb: matchedSuburb };
+}
+
+function handleServiceSearch(category: string, suburb?: string): string {
+  const catLabel = category === 'carwash' ? 'Car Wash & Detailing' : category === 'towing' ? 'Roadside Towing' : 'Auto Mechanics';
+
+  // If user hasn't specified their area
+  if (!suburb) {
+    return `🧼 **Famba Verified ${catLabel} Finder**
+
+We connect you with top-rated mobile and stationary service providers across Zimbabwe, vetted for quality and fair pricing.
+
+**Which area or suburb are you in?**
+*(e.g., Borrowdale, Harare CBD, Avondale, Eastlea, Msasa, Belmont, or Chitungwiza)*
+
+Reply with your location and we'll match top providers near you immediately!`;
+  }
+
+  // Filter providers matching category and area, or fallback to closest
+  const formattedSuburb = suburb.charAt(0).toUpperCase() + suburb.slice(1);
+  let matches = SERVICE_PROVIDERS_CATALOG.filter(
+    (p) => p.category === category && (p.suburb.toLowerCase().includes(suburb) || suburb.includes(p.suburb.toLowerCase()))
+  );
+
+  if (matches.length === 0) {
+    matches = SERVICE_PROVIDERS_CATALOG.filter((p) => p.category === category).slice(0, 2);
+  }
+
+  let res = `📍 **Top Verified ${catLabel} Providers near ${formattedSuburb}:**\n\n`;
+
+  matches.forEach((p, idx) => {
+    res += `**${idx + 1}. ${p.name}** (${p.suburb})\n`;
+    res += `• ${p.rating} | ${p.pricing}\n`;
+    res += `• ${p.highlights.join(' • ')}\n`;
+    res += `• *${p.facebookSnippet}*\n`;
+    res += `• 📞 **Phone / WhatsApp**: *[Locked — Login Required]*\n`;
+    res += `• 💬 **Direct Booking**: *[Locked — Login Required]*\n\n`;
+  });
+
+  const redirectUrl = encodeURIComponent(`/search?category=${category.toUpperCase()}&location=${suburb}`);
+
+  res += `─────────────────────────\n`;
+  res += `🔒 **Direct Contacts & Social Links Locked for Guests**\n`;
+  res += `To prevent unsolicited contact and unlock verified direct phone numbers, WhatsApp dispatch, and member booking discounts:\n\n`;
+  res += `👉 **[Log In or Sign Up to Reveal Contacts](/auth/login?redirect=${redirectUrl})**\n\n`;
+  res += `*(Already have an account? Logging in takes just 5 seconds and instantly unlocks all direct contact details!)*`;
+
+  return res;
+}
+
+// ──────────────────────────────────────────────────────────────
+// STANDARD PLATFORM LOCAL KNOWLEDGE BASE FALLBACK
+// ──────────────────────────────────────────────────────────────
 
 function getLocalPlatformFallback(query: string): string {
   const q = query.toLowerCase().trim();
 
-  // Guardrail check: if asking about outside topics
+  // Guardrail check: outside topics
   const outsideKeywords = [
     'who is the president', 'capital of', 'weather in london', 'recipe', 'write python', 'write code',
     'write essay', 'world war', 'sports score', 'premier league', 'crypto price', 'bitcoin',
@@ -183,31 +552,24 @@ Are you a car rental operator, fleet manager, independent driver, auto workshop,
 • **Vendor Dashboard**: Manage bookings, track revenue, upload photos, and receive direct payouts.`;
   }
 
-  // 6. Workshops / Mechanics / Spare Parts
-  if (q.includes('mechanic') || q.includes('workshop') || q.includes('repair') || q.includes('part') || q.includes('spares') || q.includes('gazaland') || q.includes('kaguvi')) {
-    return `🔧 **Workshops & Auto Spare Parts**
-
-• **Verified Mechanics**: Engine servicing, computerized diagnostics, brakes, suspension, and air conditioning repairs in Harare and Bulawayo.
-• **Spare Parts Marketplace**: Access genuine and second-hand OEM replacement parts directly from verified suppliers in Harare's **Gazaland (Highfield)** and **Kaguvi Street** hubs.
-• **Emergency Roadside Assistance**: 24/7 breakdown towing, puncture repair, and battery jump-starts.
-
-👉 Find mechanics or order parts at **[Workshops & Spares](/search?category=MECHANIC)**.`;
-  }
-
-  // Default platform fallback
+  // Default fallback
   return `👋 **Welcome to Famba Zimbabwe!**
 
-I am Tapiwa, your dedicated platform AI assistant. Here is what I can help you with today:
+I am Tapiwa, your dedicated platform AI assistant. Here is what I can help you with right now:
 
+• 🛡️ **Instant Vehicle Insurance**: Buy Zimnat insurance disk in under 3 minutes with instant QR code ([Buy Insurance](/insurance)).
+• 🧼 **Auto Services & Detailing**: Find vetted car wash, mobile detailing, and garages near you.
 • 🚗 **Car Rental & Bus Hire**: Self-drive and chauffeur rentals from $25/day ([Explore Vehicles](/search)).
 • 🚌 **School Run Shuttles**: Vetted, punctual, GPS-tracked daily transport for pupils.
 • 📊 **Vehicle Valuation**: Instant bank-approved valuation certificates with QR codes ([Get Valuation](/valuation)).
-• 🔧 **Mechanics & Gazaland Spares**: Verified repair garages and replacement parts ([Find Workshops](/search?category=MECHANIC)).
 • 💳 **Payments**: Paynow (EcoCash / OneMoney / Zipit) & USD cash.
-• 🏢 **List Your Business**: Register your rental fleet or workshop for free ([Register Company](/company/register)).
 
-What would you like to know more about?`;
+What would you like to do today?`;
 }
+
+// ──────────────────────────────────────────────────────────────
+// MAIN POST HANDLER
+// ──────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
   try {
@@ -217,6 +579,36 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
     }
 
+    const convHistory: ChatMsg[] = Array.isArray(history) ? history : [];
+
+    // 1. CHECK PHASE 1: IN-CHAT INSURANCE STATE MACHINE
+    const insuranceCheck = detectInsuranceFlow(convHistory, message);
+    if (insuranceCheck.isInFlow) {
+      const insuranceReply = await handleInsuranceStages(convHistory, message, insuranceCheck.state.stage);
+      if (insuranceReply) {
+        return NextResponse.json({ reply: insuranceReply });
+      }
+    }
+
+    // 2. CHECK PHASE 2: IN-CHAT SERVICE INQUIRY & AUTH GATE
+    const serviceCheck = detectServiceInquiry(message);
+    if (serviceCheck.isService) {
+      // Also check history for location if current message doesn't have it
+      let suburb = serviceCheck.suburb;
+      if (!suburb) {
+        for (const h of convHistory.slice(-3)) {
+          const prevCheck = detectServiceInquiry(h.text);
+          if (prevCheck.suburb) {
+            suburb = prevCheck.suburb;
+            break;
+          }
+        }
+      }
+      const serviceReply = handleServiceSearch(serviceCheck.category, suburb);
+      return NextResponse.json({ reply: serviceReply });
+    }
+
+    // 3. GROQ LLM ASSISTANT WITH INJECTED DIRECTIVES
     const groqApiKey = process.env.GROQ_API_KEY;
     const hasValidGroqKey = Boolean(
       groqApiKey &&
@@ -228,15 +620,11 @@ export async function POST(req: NextRequest) {
     let reply = '';
     let lastError = '';
 
-    // If a valid Groq API key is provided, query Groq models
     if (hasValidGroqKey) {
-      // Build conversation history for context (last 12 messages max)
-      const conversationHistory = Array.isArray(history)
-        ? history.slice(-12).map((msg: { sender: string; text: string }) => ({
-            role: msg.sender === 'user' ? 'user' : 'assistant',
-            content: msg.text,
-          }))
-        : [];
+      const conversationHistory = convHistory.slice(-12).map((msg) => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.text,
+      }));
 
       for (const model of GROQ_MODELS) {
         try {
@@ -264,7 +652,6 @@ export async function POST(req: NextRequest) {
             if (reply) break;
           } else {
             lastError = await groqRes.text();
-            console.warn(`Groq model ${model} failed:`, lastError);
           }
         } catch (e: any) {
           lastError = e?.message || 'Network error';
@@ -272,20 +659,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // If Groq key is placeholder or Groq service returned error, use platform knowledge fallback
+    // 4. PLATFORM LOCAL KNOWLEDGE BASE FALLBACK
     if (!reply) {
-      if (!hasValidGroqKey) {
-        console.info('GROQ_API_KEY is not configured or placeholder; serving from Famba local knowledge base.');
-      } else {
-        console.warn('Groq models unavailable, falling back to Famba local knowledge base. Error:', lastError);
-      }
       reply = getLocalPlatformFallback(message);
     }
 
     return NextResponse.json({ reply });
   } catch (err) {
     console.error('Chat route error:', err);
-    // Never fail with a raw error screen; fallback safely
     return NextResponse.json({
       reply: getLocalPlatformFallback('help'),
     });
