@@ -25,6 +25,7 @@ import {
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { apiClient } from '@/lib/api';
+import { useAuthStore } from '@/store/auth';
 
 const QUICK_PRESETS = [
   {
@@ -86,10 +87,18 @@ const QUICK_PRESETS = [
 
 export default function ValuationPage() {
   const router = useRouter();
+  const { user, isAuthenticated, isHydrated } = useAuthStore();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (user?.role === 'INSURANCE_AGENT') {
+      router.replace('/insurance/dashboard');
+    }
+  }, [isHydrated, user, router]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -111,6 +120,22 @@ export default function ValuationPage() {
     requesterEmail: '',
     requesterPhone: '',
   });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const makeParam = params.get('make');
+    const modelParam = params.get('model');
+    const yearParam = Number(params.get('year'));
+    if (makeParam || modelParam || (yearParam >= 1980 && yearParam <= 2030)) {
+      setFormData((prev) => ({
+        ...prev,
+        ...(makeParam ? { make: makeParam } : {}),
+        ...(modelParam ? { model: modelParam } : {}),
+        ...(yearParam >= 1980 && yearParam <= 2030 ? { yearOfManufacture: yearParam } : {}),
+      }));
+    }
+  }, []);
 
   const availableExtras = [
     'ARB / Offroad Bullbar',
@@ -178,17 +203,20 @@ export default function ValuationPage() {
       console.error('Valuation error:', err);
       // Fallback: If backend is deploying, calculate local valuation client-side so user always sees the stunning result!
       const fallbackRef = `ZIM-VAL-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      const safeYear = Number(formData.yearOfManufacture) || 2019;
+      const safeMileage = Number(formData.mileage) || 85000;
       const baseLanded = formData.make === 'Toyota' ? 52000 : 25000;
-      const age = Math.max(0, 2026 - formData.yearOfManufacture);
+      const age = Math.max(0, 2026 - safeYear);
       const est = Math.round(baseLanded * Math.pow(0.92, age) * (formData.condition === 'EXCELLENT' ? 1.05 : 0.98) / 100) * 100;
+      const qrSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" fill="#fff"/><rect x="10" y="10" width="28" height="28" fill="#0B192C"/><rect x="16" y="16" width="16" height="16" fill="#008767"/><rect x="82" y="10" width="28" height="28" fill="#0B192C"/><rect x="88" y="16" width="16" height="16" fill="#008767"/><rect x="10" y="82" width="28" height="28" fill="#0B192C"/><rect x="16" y="88" width="16" height="16" fill="#008767"/><rect x="48" y="48" width="24" height="24" fill="#008767"/><text x="60" y="116" font-family="monospace" font-size="7" text-anchor="middle" fill="#475569">${fallbackRef}</text></svg>`;
       const fallbackData = {
         valuationRef: fallbackRef,
         vehicle: {
           make: formData.make,
           model: formData.model,
           variant: formData.variant,
-          year: formData.yearOfManufacture,
-          mileage: formData.mileage,
+          year: safeYear,
+          mileage: safeMileage,
           condition: formData.condition,
           fuelType: formData.fuelType,
           transmission: formData.transmission,
@@ -253,7 +281,7 @@ export default function ValuationPage() {
           disclaimer:
             'This valuation certificate provides an independent, objective indicative market range accepted by participating insurers, financial institutions, and automotive dealers.',
         },
-        qrCodeData: `https://famba.co.zw/valuation/report/${fallbackRef}`,
+        qrCodeData: `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}`,
       };
 
       if (typeof window !== 'undefined') {
@@ -341,32 +369,60 @@ export default function ValuationPage() {
             </div>
           </div>
 
-          {/* Dealer In-Transit CRM Callout */}
-          <div className="mt-4 max-w-4xl mx-auto p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-[#007358] to-[#0B192C] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md text-left">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                <Ship className="w-5 h-5 text-emerald-400" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-white flex items-center gap-2">
-                  <span>Car Dealer Importing from Japan, UK, SA or UAE?</span>
-                  <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-400/20 text-emerald-300 font-extrabold uppercase border border-emerald-400/30">
-                    Dealer CRM
-                  </span>
+          {/* Role-Aware Secondary Navigation Callout */}
+          {isHydrated && (user?.role === 'COMPANY_OWNER' || user?.role === 'ADMIN') ? (
+            <div className="mt-4 max-w-4xl mx-auto p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-[#007358] to-[#0B192C] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                  <Ship className="w-5 h-5 text-emerald-400" />
                 </div>
-                <div className="text-[11px] text-slate-200 mt-0.5">
-                  Pre-clear ZIMRA customs duties, manage advance Bill of Lading paperwork, and monitor landed margins before border arrival.
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-2">
+                    <span>Dealership Fleet Pipeline</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-400/20 text-emerald-300 font-extrabold uppercase border border-emerald-400/30">
+                      Company CRM
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-200 mt-0.5">
+                    Return to your Cars in Transit CRM to attach valuation certificates and pre-clear customs shipments.
+                  </div>
                 </div>
               </div>
+              <Link
+                href="/company/transit"
+                className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-extrabold text-xs shadow-sm transition"
+              >
+                <span>Open Company CRM</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
-            <Link
-              href="/company/transit"
-              className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-extrabold text-xs shadow-sm transition"
-            >
-              <span>Launch Dealer CRM</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+          ) : (
+            <div className="mt-4 max-w-4xl mx-auto p-4 rounded-2xl bg-gradient-to-r from-[#0B2A55] via-[#0B192C] to-[#007358] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                  <Ship className="w-5 h-5 text-orange-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-2">
+                    <span>Importing a Vehicle Yourself?</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] bg-orange-400/20 text-orange-200 font-extrabold uppercase border border-orange-400/30">
+                      Import Cover
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-200 mt-0.5">
+                    Calculate instant ZIMRA border duty estimates and pay pre-arrival cover in under 30 seconds.
+                  </div>
+                </div>
+              </div>
+              <Link
+                href="/import-cover"
+                className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-extrabold text-xs shadow-sm transition"
+              >
+                <span>Pre-Arrival Import Cover</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Valuation Wizard Form Card */}

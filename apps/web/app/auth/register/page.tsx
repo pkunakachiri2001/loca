@@ -34,6 +34,8 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [partnerOrg, setPartnerOrg] = useState<'ZIMNAT' | 'ZIMRA'>('ZIMNAT');
+  const [pendingApprovalMsg, setPendingApprovalMsg] = useState<string | null>(null);
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -45,6 +47,7 @@ export default function RegisterPage() {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     setError('');
+    setPendingApprovalMsg(null);
     try {
       const res = await apiClient.post('/auth/register', {
         firstName: data.firstName,
@@ -53,8 +56,18 @@ export default function RegisterPage() {
         phone: data.phone,
         password: data.password,
         role: data.role,
+        ...(data.role === 'INSURANCE_AGENT' ? { partnerOrg } : {}),
       });
-      const { user, accessToken } = res.data.data;
+      const payload = res.data.data;
+      if (payload?.pendingVerification || !payload?.accessToken) {
+        setPendingApprovalMsg(
+          res.data?.message ||
+            'Your Insurer Partner account is awaiting Famba Admin approval. You will be notified once activated.'
+        );
+        return;
+      }
+
+      const { user, accessToken } = payload;
       setAuth(user, accessToken);
       if (user.role === 'COMPANY_OWNER') {
         router.push('/company/register');
@@ -130,11 +143,11 @@ export default function RegisterPage() {
           </p>
 
           {/* Role selector */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
             {[
-              { value: 'CUSTOMER', label: 'Customer', icon: User, desc: 'Book & Value' },
-              { value: 'COMPANY_OWNER', label: 'Company', icon: Building2, desc: 'List Services' },
-              { value: 'INSURANCE_AGENT', label: 'Agent', icon: Briefcase, desc: 'Underwrite' },
+              { value: 'CUSTOMER', label: 'Simple Dealer', icon: User, desc: 'Import Cover & Bookings' },
+              { value: 'COMPANY_OWNER', label: 'Dealership', icon: Building2, desc: 'Full Transit CRM & Fleet' },
+              { value: 'INSURANCE_AGENT', label: 'Insurer / Partner', icon: Briefcase, desc: 'Zimnat / ZIMRA Portal' },
             ].map((opt) => (
               <button
                 key={opt.value}
@@ -165,6 +178,52 @@ export default function RegisterPage() {
             ))}
           </div>
 
+          {selectedRole === 'INSURANCE_AGENT' && (
+            <div className="mb-6 p-4 rounded-2xl bg-[#E6F4F1]/70 border border-[#B2E3D8] space-y-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-extrabold text-[#008767]">Partner Organization Verification Required</p>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-[#008767] border border-[#B2E3D8]">
+                  Scoped Portal
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Insurer partner accounts only access scoped underwriting & policy queues and require Famba Admin approval before sign-in.
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                {(['ZIMNAT', 'ZIMRA'] as const).map((org) => (
+                  <button
+                    key={org}
+                    type="button"
+                    onClick={() => setPartnerOrg(org)}
+                    className={cn(
+                      'py-2 px-3 rounded-xl text-xs font-bold border transition',
+                      partnerOrg === org
+                        ? 'bg-[#008767] text-white border-[#008767]'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-[#008767]'
+                    )}
+                  >
+                    {org === 'ZIMNAT' ? 'Zimnat Insurance' : 'ZIMRA Customs'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {pendingApprovalMsg ? (
+            <div className="p-6 rounded-2xl bg-[#E6F4F1] border border-[#B2E3D8] text-center space-y-4">
+              <CheckCircle2 className="w-10 h-10 text-[#008767] mx-auto" />
+              <div>
+                <h2 className="font-display text-lg font-extrabold text-[#0B192C]">Partner Application Submitted</h2>
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed">{pendingApprovalMsg}</p>
+              </div>
+              <Link
+                href="/auth/login"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#008767] text-white text-xs font-bold hover:bg-[#007358] transition"
+              >
+                Return to Sign In <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Name row */}
             <div className="grid grid-cols-2 gap-3">
@@ -288,6 +347,7 @@ export default function RegisterPage() {
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Create Account <ArrowRight className="h-4 w-4" /></>}
             </button>
           </form>
+          )}
         </motion.div>
       </div>
     </div>

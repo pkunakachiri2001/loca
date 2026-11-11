@@ -7,6 +7,21 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { apiClient } from '@/lib/api';
 
+export function getRoleHome(role?: string): string {
+  switch (role) {
+    case 'ADMIN':
+      return '/admin';
+    case 'COMPANY_OWNER':
+      return '/company/transit';
+    case 'INSURANCE_AGENT':
+      return '/insurance/dashboard';
+    case 'CUSTOMER':
+      return '/dashboard';
+    default:
+      return '/auth/login';
+  }
+}
+
 export interface AuthUser {
   id: string;
   email: string;

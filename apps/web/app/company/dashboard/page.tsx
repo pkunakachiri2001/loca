@@ -11,7 +11,7 @@ import {
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth';
+import { useAuthStore, getRoleHome } from '@/store/auth';
 
 export default function CompanyDashboardPage() {
   const router = useRouter();
@@ -21,11 +21,11 @@ export default function CompanyDashboardPage() {
   useEffect(() => {
     if (!isHydrated) return;
     if (!isAuthenticated) {
-      router.push('/auth/login?redirect=/company/dashboard');
-    } else if (user?.role === 'CUSTOMER') {
-      router.push('/dashboard');
-    } else if (user?.role === 'ADMIN') {
-      router.push('/admin');
+      router.replace('/auth/login?redirect=/company/dashboard');
+      return;
+    }
+    if (user?.role !== 'COMPANY_OWNER') {
+      router.replace(getRoleHome(user?.role));
     }
   }, [isAuthenticated, isHydrated, user, router]);
 

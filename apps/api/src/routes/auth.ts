@@ -55,7 +55,13 @@ function validate(req: Request, res: Response, next: NextFunction): void {
 // ──────────────────────────────────────────────
 router.post('/register', registerValidation, validate, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { email, password, firstName, lastName, phone, role = 'CUSTOMER' } = req.body;
+    const { email, password, firstName, lastName, phone, role = 'CUSTOMER', partnerOrg } = req.body;
+
+    // Enforce explicit self-registration role allowlist (never allow self-escalation to ADMIN)
+    const safeRole: 'CUSTOMER' | 'COMPANY_OWNER' | 'INSURANCE_AGENT' =
+      ['CUSTOMER', 'COMPANY_OWNER', 'INSURANCE_AGENT'].includes(role) ? role : 'CUSTOMER';
+    const requiresPartnerApproval = safeRole === 'INSURANCE_AGENT';
+    const initialStatus = requiresPartnerApproval ? 'PENDING_VERIFICATION' : 'ACTIVE';
 
     // Check if user already exists
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -77,14 +83,45 @@ router.post('/register', registerValidation, validate, async (req: Request, res:
         firstName,
         lastName,
         phone,
-        role,
+        role: safeRole,
+        status: initialStatus,
         emailVerifyToken,
       },
-      select: { id: true, email: true, firstName: true, lastName: true, role: true },
+      select: { id: true, email: true, firstName: true, lastName: true, phone: true, role: true, status: true },
     });
 
     // Send verification email (non-blocking)
     emailService.sendVerificationEmail(email, firstName, emailVerifyToken).catch(() => {});
+
+    // Insurer / customs partner accounts require Admin verification before receiving an active session
+    if (requiresPartnerApproval) {
+      const orgLabel = typeof partnerOrg === 'string' && partnerOrg.trim() ? partnerOrg.trim() : 'Zimnat / ZIMRA Partner';
+      prisma.user
+        .findMany({ where: { role: 'ADMIN', status: 'ACTIVE' }, select: { id: true } })
+        .then((admins: Array<{ id: string }>) =>
+          Promise.all(
+            admins.map((admin: { id: string }) =>
+              prisma.notification.create({
+                data: {
+                  userId: admin.id,
+                  type: 'SYSTEM',
+                  title: 'New Insurer Partner Pending Approval',
+                  message: `${firstName} ${lastName} (${email}) registered for ${orgLabel} portal access and awaits verification.`,
+                  link: '/admin/users',
+                },
+              })
+            )
+          )
+        )
+        .catch(() => {});
+
+      res.status(201).json({
+        success: true,
+        message: 'Partner account submitted for verification. A Famba administrator will activate your portal access shortly.',
+        data: { user, accessToken: null, pendingVerification: true },
+      });
+      return;
+    }
 
     // Generate tokens
     const tokens = generateTokenPair({ userId: user.id, email: user.email, role: user.role });
@@ -124,6 +161,9 @@ router.post('/login', loginValidation, validate, async (req: Request, res: Respo
       throw new ApiError(401, 'Invalid email or password.');
     }
 
+    if (user.status === 'PENDING_VERIFICATION') {
+      throw new ApiError(403, 'Your insurer partner account is pending Administrator verification.');
+    }
     if (user.status !== 'ACTIVE') {
       throw new ApiError(403, 'Your account has been suspended. Please contact support.');
     }
@@ -152,6 +192,7 @@ router.post('/login', loginValidation, validate, async (req: Request, res: Respo
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          phone: user.phone,
           role: user.role,
           avatar: user.avatar,
           isEmailVerified: user.isEmailVerified,

@@ -57,10 +57,12 @@ router.get('/users', async (req: Request, res: Response, next: NextFunction): Pr
     const limit = parseInt(req.query.limit as string || '20', 10);
     const q = req.query.q as string;
     const role = req.query.role as string;
+    const status = req.query.status as string;
 
     const where: any = {
       ...(q ? { OR: [{ email: { contains: q, mode: 'insensitive' } }, { firstName: { contains: q, mode: 'insensitive' } }] } : {}),
       ...(role ? { role } : {}),
+      ...(status ? { status } : {}),
     };
 
     const [users, total] = await Promise.all([
@@ -78,17 +80,43 @@ router.get('/users', async (req: Request, res: Response, next: NextFunction): Pr
   } catch (err) { next(err); }
 });
 
-// PUT /api/admin/users/:id — Update user (suspend/activate)
-router.put('/users/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+// PUT /api/admin/users/:id & PATCH /api/admin/users/:id/status — Update user status/role
+const handleUserUpdate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { status, role } = req.body;
+    if (status && !['ACTIVE', 'SUSPENDED', 'PENDING_VERIFICATION'].includes(status)) {
+      throw new ApiError(400, 'Invalid user status.');
+    }
+    if (role && !['CUSTOMER', 'COMPANY_OWNER', 'ADMIN', 'INSURANCE_AGENT'].includes(role)) {
+      throw new ApiError(400, 'Invalid user role.');
+    }
+
     const updated = await prisma.user.update({
       where: { id: req.params.id },
       data: { ...(status ? { status } : {}), ...(role ? { role } : {}) },
+      select: { id: true, email: true, firstName: true, lastName: true, role: true, status: true, createdAt: true, isEmailVerified: true },
     });
+
+    if (status === 'ACTIVE') {
+      prisma.notification
+        .create({
+          data: {
+            userId: updated.id,
+            type: 'SYSTEM',
+            title: 'Account Activated',
+            message: 'Your Famba portal account has been verified and activated.',
+            link: updated.role === 'INSURANCE_AGENT' ? '/insurance/dashboard' : '/dashboard',
+          },
+        })
+        .catch(() => {});
+    }
+
     res.json({ success: true, data: updated });
   } catch (err) { next(err); }
-});
+};
+
+router.put('/users/:id', handleUserUpdate);
+router.patch('/users/:id/status', handleUserUpdate);
 
 // GET /api/admin/companies — List all companies
 router.get('/companies', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
