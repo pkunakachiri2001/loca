@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useAuthStore } from '@/store/auth';
+import { useAuthStore, getRoleHome } from '@/store/auth';
 import { apiClient } from '@/lib/api';
 import {
   Ship,
@@ -105,8 +105,12 @@ export default function NewTransitVehiclePage() {
 
   useEffect(() => {
     if (!isHydrated) return;
-    if (!isAuthenticated || (user?.role !== 'COMPANY_OWNER' && user?.role !== 'ADMIN')) {
-      router.push('/auth/login?redirect=/company/transit/new');
+    if (!isAuthenticated) {
+      router.replace('/auth/login?redirect=/company/transit/new');
+      return;
+    }
+    if (user?.role !== 'COMPANY_OWNER' && user?.role !== 'ADMIN') {
+      router.replace(getRoleHome(user?.role));
     }
   }, [isAuthenticated, isHydrated, user, router]);
 

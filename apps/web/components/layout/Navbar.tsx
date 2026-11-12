@@ -11,14 +11,50 @@ import {
 import { useAuthStore } from '@/store/auth';
 import { cn, getInitials } from '@/lib/utils';
 
-const navLinks = [
+const publicNavLinks = [
   { label: 'Home', href: '/' },
   { label: 'Vehicle Valuation', href: '/valuation' },
+  { label: 'Import Cover', href: '/import-cover' },
   { label: 'Insurance', href: '/insurance' },
   { label: 'Services', href: '/search' },
   { label: 'Live GPS', href: '/tracking' },
   { label: 'For Providers', href: '/company/register' },
 ];
+
+function getVisibleNavLinks(role?: string) {
+  switch (role) {
+    case 'INSURANCE_AGENT':
+      return [
+        { label: 'Insurer Portal', href: '/insurance/dashboard' },
+      ];
+    case 'COMPANY_OWNER':
+      return [
+        { label: 'Transit CRM', href: '/company/transit' },
+        { label: 'Dashboard', href: '/company/dashboard' },
+        { label: 'Vehicle Valuation', href: '/valuation' },
+        { label: 'Services', href: '/search' },
+        { label: 'Live GPS', href: '/tracking' },
+      ];
+    case 'CUSTOMER':
+      return [
+        { label: 'Home', href: '/' },
+        { label: 'Import Cover', href: '/import-cover' },
+        { label: 'Insurance', href: '/insurance' },
+        { label: 'Vehicle Valuation', href: '/valuation' },
+        { label: 'Services', href: '/search' },
+        { label: 'Live GPS', href: '/tracking' },
+      ];
+    case 'ADMIN':
+      return [
+        { label: 'Admin Center', href: '/admin' },
+        { label: 'Insurer Queue', href: '/insurance/dashboard' },
+        { label: 'Users', href: '/admin/users' },
+        { label: 'Companies', href: '/admin/companies' },
+      ];
+    default:
+      return publicNavLinks;
+  }
+}
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -27,6 +63,7 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
+  const visibleNavLinks = getVisibleNavLinks(isAuthenticated ? user?.role : undefined);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -47,7 +84,8 @@ export function Navbar() {
   const getDashboardLink = () => {
     if (!user) return '/auth/login';
     if (user.role === 'ADMIN') return '/admin';
-    if (user.role === 'COMPANY_OWNER') return '/company/dashboard';
+    if (user.role === 'COMPANY_OWNER') return '/company/transit';
+    if (user.role === 'INSURANCE_AGENT') return '/insurance/dashboard';
     return '/dashboard';
   };
 
@@ -76,7 +114,7 @@ export function Navbar() {
 
             {/* Desktop Nav Links */}
             <div className="hidden lg:flex items-center gap-1 bg-slate-50/80 p-1.5 rounded-full border border-slate-200/80">
-              {navLinks.map((link) => (
+              {visibleNavLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -141,11 +179,14 @@ export function Navbar() {
                             </span>
                           </div>
 
-                          {/* Customer options */}
+                          {/* Customer / Simple Dealer options */}
                           {user.role === 'CUSTOMER' && (
                             <>
                               <Link href="/dashboard" className="sidebar-link">
                                 <LayoutDashboard className="h-4 w-4 shrink-0" /> Overview Dashboard
+                              </Link>
+                              <Link href="/import-cover" className="sidebar-link">
+                                <Shield className="h-4 w-4 shrink-0" /> Pre-Arrival Cover
                               </Link>
                               <Link href="/dashboard/bookings" className="sidebar-link">
                                 <Bookmark className="h-4 w-4 shrink-0" /> My Bookings
@@ -162,6 +203,9 @@ export function Navbar() {
                           {/* Company options */}
                           {user.role === 'COMPANY_OWNER' && (
                             <>
+                              <Link href="/company/transit" className="sidebar-link">
+                                <Compass className="h-4 w-4 shrink-0" /> Cars in Transit CRM
+                              </Link>
                               <Link href="/company/dashboard" className="sidebar-link">
                                 <Building2 className="h-4 w-4 shrink-0" /> Provider Portal
                               </Link>
@@ -174,11 +218,26 @@ export function Navbar() {
                             </>
                           )}
 
+                          {/* Insurer Partner options */}
+                          {user.role === 'INSURANCE_AGENT' && (
+                            <>
+                              <Link href="/insurance/dashboard" className="sidebar-link">
+                                <Shield className="h-4 w-4 shrink-0" /> Insurer Portal
+                              </Link>
+                            </>
+                          )}
+
                           {/* Admin options */}
                           {user.role === 'ADMIN' && (
                             <>
                               <Link href="/admin" className="sidebar-link">
                                 <Shield className="h-4 w-4 shrink-0" /> Admin Control Center
+                              </Link>
+                              <Link href="/insurance/dashboard" className="sidebar-link">
+                                <LayoutDashboard className="h-4 w-4 shrink-0" /> Insurer Queue
+                              </Link>
+                              <Link href="/admin/users" className="sidebar-link">
+                                <Settings className="h-4 w-4 shrink-0" /> User Approvals
                               </Link>
                               <Link href="/admin/companies" className="sidebar-link">
                                 <Building2 className="h-4 w-4 shrink-0" /> Moderate Companies
@@ -240,7 +299,7 @@ export function Navbar() {
             <div className="absolute right-0 top-0 h-full w-full max-w-xs bg-white border-l border-slate-200 p-6 pt-24 overflow-y-auto">
               {/* Mobile Nav Links */}
               <nav className="space-y-1.5 mb-8">
-                {navLinks.map((link, i) => (
+                {visibleNavLinks.map((link, i) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: 20 }}

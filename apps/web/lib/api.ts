@@ -9,7 +9,9 @@ import axios from 'axios';
 // to the Express backend — completely avoiding CORS restrictions.
 // On the server side (SSR), use the full absolute API URL directly.
 const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-const baseURL = rawApiUrl;
+// In the browser, route relative API calls through /api so Next.js API handlers
+// cleanly proxy to the Express backend or return JSON errors when offline (never Next.js HTML pages).
+const baseURL = typeof window !== 'undefined' ? (rawApiUrl || '/api') : (rawApiUrl || 'http://127.0.0.1:5000/api');
 
 export const apiClient = axios.create({
   baseURL,
@@ -44,7 +46,16 @@ function processQueue(error: Error | null, token: string | null) {
 }
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const contentType = String(response.headers?.['content-type'] || '');
+    if (
+      contentType.includes('text/html') ||
+      (typeof response.data === 'string' && response.data.trimStart().startsWith('<'))
+    ) {
+      return Promise.reject(new Error('API returned HTML instead of JSON'));
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 

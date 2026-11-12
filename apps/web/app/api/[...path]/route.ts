@@ -18,6 +18,12 @@ type Params = { path: string[] };
 
 async function handler(req: NextRequest, { params }: { params: Params }) {
   const backendBase = getBackendBase();
+  if (!backendBase || !/^https?:\/\//i.test(backendBase)) {
+    return NextResponse.json(
+      { success: false, message: 'Express API backend is not configured or offline (preview mode active).' },
+      { status: 503 }
+    );
+  }
   const path = (params.path ?? []).join('/');
   const search = req.nextUrl.search ?? '';
   const targetUrl = `${backendBase}/api/${path}${search}`;

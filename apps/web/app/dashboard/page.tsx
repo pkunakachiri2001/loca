@@ -25,6 +25,8 @@ export default function CustomerDashboardPage() {
       router.push('/admin');
     } else if (user?.role === 'COMPANY_OWNER') {
       router.push('/company/dashboard');
+    } else if (user?.role === 'INSURANCE_AGENT') {
+      router.push('/insurance/dashboard');
     }
   }, [isAuthenticated, isHydrated, user, router]);
 

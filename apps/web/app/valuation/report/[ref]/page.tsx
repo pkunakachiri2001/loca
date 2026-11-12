@@ -129,7 +129,9 @@ export default function ValuationReportPage() {
     durabilityPremiumPct: 22,
   };
 
-  const comparables = data?.comparables || [
+  const comparables = Array.isArray(data?.comparables)
+    ? data.comparables
+    : [
     {
       id: 'c1',
       title: '2019 Toyota Fortuner 2.8 GD-6 4x4',
@@ -258,9 +260,9 @@ export default function ValuationReportPage() {
                 </div>
                 <div className="flex items-baseline gap-2 mt-2">
                   <span className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight">
-                    ${val.indicativeMarketValue.toLocaleString()}
+                    ${Number(val?.indicativeMarketValue ?? 0).toLocaleString()}
                   </span>
-                  <span className="text-lg font-bold text-emerald-700">{val.currency}</span>
+                  <span className="text-lg font-bold text-emerald-700">{val?.currency || 'USD'}</span>
                 </div>
                 <p className="text-xs text-slate-600 mt-3 leading-relaxed">
                   Recommended benchmark for comprehensive insurance sum insured, bank asset finance,
@@ -274,7 +276,7 @@ export default function ValuationReportPage() {
                       Low (Trade-in / Forced Sale)
                     </div>
                     <div className="text-lg font-extrabold text-slate-800 mt-0.5">
-                      ${val.lowValue.toLocaleString()} {val.currency}
+                      ${Number(val?.lowValue ?? 0).toLocaleString()} {val?.currency || 'USD'}
                     </div>
                   </div>
                   <div>
@@ -282,7 +284,7 @@ export default function ValuationReportPage() {
                       High (Retail / Dealership)
                     </div>
                     <div className="text-lg font-extrabold text-slate-800 mt-0.5">
-                      ${val.highValue.toLocaleString()} {val.currency}
+                      ${Number(val?.highValue ?? 0).toLocaleString()} {val?.currency || 'USD'}
                     </div>
                   </div>
                 </div>
@@ -344,7 +346,7 @@ export default function ValuationReportPage() {
                 <div>
                   <div className="text-[11px] text-slate-500 font-semibold uppercase">Odometer (Mileage)</div>
                   <div className="text-sm font-bold text-slate-900 mt-0.5">
-                    {vehicle.mileage.toLocaleString()} km
+                    {Number(vehicle?.mileage ?? 0).toLocaleString()} km
                   </div>
                 </div>
 
@@ -385,7 +387,7 @@ export default function ValuationReportPage() {
                 <div className="p-4 rounded-xl border border-slate-200 bg-white">
                   <div className="text-xs font-bold text-slate-700 mb-1">ZIMRA Landed Baseline</div>
                   <div className="text-xl font-extrabold text-slate-900">
-                    ${breakdown.baseLandedValueUsd.toLocaleString()} USD
+                    ${Number(breakdown?.baseLandedValueUsd ?? 0).toLocaleString()} USD
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
                     Incorporates CIF import cost, customs duty, surtax and port clearance.
@@ -441,7 +443,7 @@ export default function ValuationReportPage() {
                       <tr key={comp.id} className="hover:bg-slate-50 transition">
                         <td className="p-3 font-semibold text-slate-900">{comp.title}</td>
                         <td className="p-3 text-slate-600">{comp.location}</td>
-                        <td className="p-3 text-slate-600">{comp.mileage.toLocaleString()} km</td>
+                        <td className="p-3 text-slate-600">{Number(comp.mileage ?? 0).toLocaleString()} km</td>
                         <td className="p-3">
                           <span
                             className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
@@ -454,7 +456,7 @@ export default function ValuationReportPage() {
                           </span>
                         </td>
                         <td className="p-3 font-bold text-slate-900">
-                          ${comp.priceUsd.toLocaleString()}
+                          ${Number(comp.priceUsd ?? 0).toLocaleString()}
                         </td>
                         <td className="p-3 text-right font-bold text-emerald-700">
                           {comp.similarityScore}%
@@ -470,7 +472,7 @@ export default function ValuationReportPage() {
             <div className="pt-6 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-6 items-center">
               {/* QR Verification Seal */}
               <div className="flex items-center gap-4 sm:col-span-2">
-                {data?.qrCodeData && (
+                {data?.qrCodeData?.startsWith('data:image/') && (
                   <img
                     src={data.qrCodeData}
                     alt="Valuation QR Code"
@@ -494,12 +496,12 @@ export default function ValuationReportPage() {
               <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-center print:hidden">
                 <div className="text-xs font-extrabold text-emerald-900">Need Comprehensive Insurance?</div>
                 <div className="text-[11px] text-emerald-700 mt-0.5 mb-3">
-                  Insure at this exact verified value of ${val.indicativeMarketValue.toLocaleString()} USD
+                  Insure at this exact verified value of ${Number(val?.indicativeMarketValue ?? 0).toLocaleString()} USD
                 </div>
                 <Link
-                  href={`/insurance?valRef=${ref}&sumInsured=${val.indicativeMarketValue}&make=${encodeURIComponent(
-                    vehicle.make
-                  )}&model=${encodeURIComponent(vehicle.model)}&year=${vehicle.year}`}
+                  href={`/insurance?valRef=${ref}&sumInsured=${Number(val?.indicativeMarketValue ?? 0)}&make=${encodeURIComponent(
+                    vehicle?.make || ''
+                  )}&model=${encodeURIComponent(vehicle?.model || '')}&year=${vehicle?.year || 2021}`}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
                 >
                   <span>Get Zimnat Quote</span>

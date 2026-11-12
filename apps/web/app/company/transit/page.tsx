@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from '@/store/auth';
+import { useAuthStore, getRoleHome } from '@/store/auth';
 import { apiClient } from '@/lib/api';
 import {
   Ship,
@@ -109,8 +109,12 @@ export default function TransitDashboardPage() {
 
   useEffect(() => {
     if (!isHydrated) return;
-    if (!isAuthenticated || (user?.role !== 'COMPANY_OWNER' && user?.role !== 'ADMIN')) {
-      router.push('/auth/login?redirect=/company/transit');
+    if (!isAuthenticated) {
+      router.replace('/auth/login?redirect=/company/transit');
+      return;
+    }
+    if (user?.role !== 'COMPANY_OWNER' && user?.role !== 'ADMIN') {
+      router.replace(getRoleHome(user?.role));
     }
   }, [isAuthenticated, isHydrated, user, router]);
 

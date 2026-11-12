@@ -19,8 +19,9 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const DEMO_ACCOUNTS = [
-  { label: 'Customer', email: 'john.doe@example.com', role: 'Customer' },
-  { label: 'Company (Dealer)', email: 'harare.motors@famba.co.zw', role: 'Provider' },
+  { label: 'Simple Dealer', email: 'john.doe@example.com', role: 'Customer' },
+  { label: 'Dealership CRM', email: 'harare.motors@famba.co.zw', role: 'Provider' },
+  { label: 'Insurer (Zimnat)', email: 'zimnat.underwriter@famba.co.zw', role: 'Insurer' },
   { label: 'Admin', email: 'admin@famba.co.zw', role: 'Admin' },
 ];
 
@@ -39,6 +40,24 @@ const DEMO_USERS_MAP: Record<string, any> = {
       slug: 'harare-motors',
       status: 'APPROVED',
     },
+  },
+  'zimnat.underwriter@famba.co.zw': {
+    id: 'demo-insurer-zimnat-1',
+    email: 'zimnat.underwriter@famba.co.zw',
+    firstName: 'Tinashe',
+    lastName: 'Zimnat',
+    role: 'INSURANCE_AGENT',
+    isEmailVerified: true,
+    loyaltyPoints: 0,
+  },
+  'zimra.customs@famba.co.zw': {
+    id: 'demo-insurer-zimra-1',
+    email: 'zimra.customs@famba.co.zw',
+    firstName: 'Rudo',
+    lastName: 'ZIMRA',
+    role: 'INSURANCE_AGENT',
+    isEmailVerified: true,
+    loyaltyPoints: 0,
   },
   'admin@famba.co.zw': {
     id: 'demo-admin-1',
@@ -73,18 +92,29 @@ function LoginContent() {
     resolver: zodResolver(schema),
   });
 
+  const getRoleHome = (userRole: string) => {
+    if (userRole === 'ADMIN') return '/admin';
+    if (userRole === 'COMPANY_OWNER') return '/company/transit';
+    if (userRole === 'INSURANCE_AGENT') return '/insurance/dashboard';
+    return '/dashboard';
+  };
+
+  const isRedirectAllowedForRole = (path: string, userRole: string) => {
+    if (!path.startsWith('/') || path.startsWith('//')) return false;
+    if (path.startsWith('/admin')) return userRole === 'ADMIN';
+    if (path.startsWith('/company')) return userRole === 'COMPANY_OWNER' || userRole === 'ADMIN';
+    if (path.startsWith('/insurance/dashboard')) return userRole === 'INSURANCE_AGENT' || userRole === 'ADMIN';
+    if (path.startsWith('/import-cover')) return userRole === 'CUSTOMER' || userRole === 'ADMIN';
+    if (path.startsWith('/dashboard')) return userRole === 'CUSTOMER';
+    return true;
+  };
+
   const handleSuccessRedirect = (userRole: string) => {
     const redirect = searchParams.get('redirect');
-    if (redirect) {
+    if (redirect && isRedirectAllowedForRole(redirect, userRole)) {
       router.push(redirect);
-    } else if (userRole === 'ADMIN') {
-      router.push('/admin');
-    } else if (userRole === 'COMPANY_OWNER') {
-      router.push('/company/transit');
-    } else if (userRole === 'INSURANCE_AGENT') {
-      router.push('/insurance/dashboard');
     } else {
-      router.push('/dashboard');
+      router.push(getRoleHome(userRole));
     }
   };
 
@@ -204,7 +234,7 @@ function LoginContent() {
         {/* Demo Accounts Helper */}
         <div className="mt-8 pt-6 border-t border-slate-100">
           <p className="text-xs text-center text-slate-400 font-semibold mb-3">Quick Demo Login (1-Click Fill)</p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {DEMO_ACCOUNTS.map((acc) => (
               <button
                 key={acc.label}

@@ -97,6 +97,19 @@ export default function InsuranceCustomerPage() {
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Get your vehicle insured in less than 3 minutes. Your digital insurance disc will be sent instantly to your WhatsApp.
           </p>
+
+          <div className="mt-6 inline-flex items-center gap-2 p-1.5 rounded-full bg-white border border-slate-200 shadow-sm">
+            <span className="px-4 py-2 rounded-full text-xs font-bold bg-[#008767] text-white">
+              Local Vehicle (Reg Plate)
+            </span>
+            <Link
+              href="/import-cover"
+              className="px-4 py-2 rounded-full text-xs font-bold text-slate-600 hover:text-[#0B2A55] hover:bg-slate-50 transition inline-flex items-center gap-1.5"
+            >
+              <span>Importing a Car? Pre-Arrival Cover</span>
+              <ArrowRight className="w-3.5 h-3.5 text-orange-500" />
+            </Link>
+          </div>
         </div>
 
         {/* Steps Tracker */}
