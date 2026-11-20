@@ -13,6 +13,7 @@ import { cn, getInitials } from '@/lib/utils';
 
 const publicNavLinks = [
   { label: 'Home', href: '/' },
+  { label: '🌐 Ecosystem', href: '/ecosystem' },
   { label: 'Vehicle Valuation', href: '/valuation' },
   { label: 'Import Cover', href: '/import-cover' },
   { label: 'Insurance', href: '/insurance' },
@@ -38,6 +39,7 @@ function getVisibleNavLinks(role?: string) {
     case 'CUSTOMER':
       return [
         { label: 'Home', href: '/' },
+        { label: '🌐 Ecosystem', href: '/ecosystem' },
         { label: 'Import Cover', href: '/import-cover' },
         { label: 'Insurance', href: '/insurance' },
         { label: 'Vehicle Valuation', href: '/valuation' },
