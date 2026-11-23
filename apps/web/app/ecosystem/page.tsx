@@ -11,7 +11,6 @@ import {
   ArrowRight,
   ExternalLink,
   Shield,
-  Heart,
   Gift,
   Users,
   Compass,
@@ -22,30 +21,28 @@ import {
   X,
   Baby,
   Activity,
-  Layers,
-  Star,
-  Check,
+  Phone,
   Linkedin,
   Facebook,
   Youtube,
   Instagram,
 } from 'lucide-react';
 
-// Brand definitions matching ParentaNova Ecosystem
+// Brand definitions matching ParentaNova Ecosystem with official inserted logos
 const brands = [
   {
     id: 'cloud-baby',
     name: 'Cloud Baby',
+    logoImage: '/ecosystem/logos/cloud-baby.png',
     url: 'https://www.cloudbaby.co',
     isExternal: true,
     tagline: 'One stop shop for moms everyday needs.',
     actionText: 'Explore Services',
     color: '#0284C7',
-    clayTone: 'from-sky-50/80 via-white to-sky-50/40',
-    badgeClay: 'bg-sky-100 text-sky-800 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(2,132,199,0.2)]',
+    clayTone: 'from-sky-50/90 via-white to-sky-50/40',
+    badgeClay: 'bg-sky-100 text-sky-900 border border-sky-200/80',
     description: 'A one-stop shop for mothers at every stage — infant care, maternity essentials, nursing, postpartum wellness and daily baby supplies.',
     image: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=800&q=80',
-    logoType: 'cloud',
     services: [
       { name: 'Moms & Newborn Essentials', desc: 'Strollers, cribs, feeding bottles, organic clothing & nursery supplies' },
       { name: 'Maternal Nutrition & Postpartum Care', desc: 'Prenatal vitamins, nursing recovery plans and lactation guides' },
@@ -55,16 +52,16 @@ const brands = [
   {
     id: 'everyday-dad',
     name: 'Everyday Dad',
+    logoImage: '/ecosystem/logos/everyday-dad.png',
     url: 'https://www.everydayday.club',
     isExternal: true,
     tagline: 'Supporting the modern father.',
     actionText: 'Explore Community',
     color: '#1E3A8A',
-    clayTone: 'from-indigo-50/80 via-white to-indigo-50/40',
-    badgeClay: 'bg-indigo-100 text-indigo-800 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(30,58,138,0.2)]',
+    clayTone: 'from-indigo-50/90 via-white to-indigo-50/40',
+    badgeClay: 'bg-indigo-100 text-indigo-900 border border-indigo-200/80',
     description: 'A thriving fraternity and resource network empowering fathers with mentorship, work-life balance tools, and family activities.',
     image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
-    logoType: 'dad',
     services: [
       { name: 'Fatherhood Circle & Mentorship', desc: 'Peer forums, weekly coaching & practical parenting guides' },
       { name: 'Father & Child Experiences', desc: 'Weekend outdoor camps, sports days & DIY workshops' },
@@ -74,16 +71,16 @@ const brands = [
   {
     id: 'moviva',
     name: 'Moviva',
+    logoImage: '/ecosystem/logos/moviva.png',
     url: 'https://www.moviva.co.zw',
     isExternal: true,
     tagline: 'Family wellness platform that help families manage diabetes, hypertension and cancer daily.',
     actionText: 'Explore Wellness',
     color: '#9333EA',
-    clayTone: 'from-purple-50/80 via-white to-purple-50/40',
-    badgeClay: 'bg-purple-100 text-purple-800 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(147,51,234,0.2)]',
+    clayTone: 'from-purple-50/90 via-white to-purple-50/40',
+    badgeClay: 'bg-purple-100 text-purple-900 border border-purple-200/80',
     description: 'A dedicated family wellness and chronic care platform helping families monitor and manage diabetes, hypertension, and cancer daily with specialized care teams and tools.',
     image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80',
-    logoType: 'moviva',
     services: [
       { name: 'Diabetes Daily Care & Blood Sugar Tracking', desc: 'Continuous glucose monitoring kits, insulin assistance & personalized dietary coaches' },
       { name: 'Hypertension & Cardiovascular Monitoring', desc: 'Daily BP logging, telehealth cardiology reviews & prescription refill delivery' },
@@ -93,16 +90,16 @@ const brands = [
   {
     id: 'famba',
     name: 'Famba',
+    logoImage: '/ecosystem/logos/famba.png',
     url: '/',
     isExternal: false,
     tagline: 'Your mobility platform for your everyday logistics and transport need.',
     actionText: 'Explore Mobility',
     color: '#008767',
-    clayTone: 'from-emerald-50/80 via-white to-emerald-50/40',
-    badgeClay: 'bg-emerald-100 text-emerald-800 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(0,135,103,0.2)]',
+    clayTone: 'from-emerald-50/90 via-white to-emerald-50/40',
+    badgeClay: 'bg-emerald-100 text-emerald-900 border border-emerald-200/80',
     description: 'Your complete mobility and logistics platform: passenger transport, vehicle insurance (ZINARA & third-party), auto spares, cargo haulage, and 24/7 emergency roadside towing.',
     image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80',
-    logoType: 'famba',
     services: [
       { name: 'Everyday Transport & Logistics Courier', desc: 'Safe commuter booking, intra-city courier deliveries, parcel haulage & school rides' },
       { name: 'Instant Motor & GIT Vehicle Insurance', desc: 'Stage-by-stage AI quotation, instant Paynow checkout & verified digital QR disc' },
@@ -114,12 +111,12 @@ const brands = [
 // Service categories with filter tags
 const categories = [
   { id: 'all', label: 'All Services', icon: Sparkles },
-  { id: 'wellness', label: 'Family Wellness (Diabetes, BP, Cancer)', icon: Activity, brandId: 'moviva' },
-  { id: 'mobility', label: 'Mobility & Logistics', icon: Compass, brandId: 'famba' },
-  { id: 'baby', label: 'Moms & Baby Needs', icon: Baby, brandId: 'cloud-baby' },
-  { id: 'insurance', label: 'Vehicle Insurance & GIT', icon: Shield, brandId: 'famba' },
-  { id: 'community', label: 'Fatherhood Community', icon: Users, brandId: 'everyday-dad' },
-  { id: 'vouchers', label: 'Vouchers & Gift Cards', icon: Gift, brandId: 'all' },
+  { id: 'wellness', label: 'Family Wellness (Diabetes, BP, Cancer)', icon: Activity },
+  { id: 'mobility', label: 'Mobility & Logistics', icon: Compass },
+  { id: 'baby', label: 'Moms & Baby Needs', icon: Baby },
+  { id: 'insurance', label: 'Vehicle Insurance & GIT', icon: Shield },
+  { id: 'community', label: 'Fatherhood Community', icon: Users },
+  { id: 'vouchers', label: 'Vouchers & Gift Cards', icon: Gift },
 ];
 
 export default function EcosystemPage() {
@@ -139,6 +136,7 @@ export default function EcosystemPage() {
       brandColor: string;
       brandUrl: string;
       category: string;
+      logoImage: string;
     }> = [];
 
     brands.forEach((b) => {
@@ -156,6 +154,7 @@ export default function EcosystemPage() {
           brandColor: b.color,
           brandUrl: b.url,
           category: cat,
+          logoImage: b.logoImage,
         });
       });
     });
@@ -165,8 +164,9 @@ export default function EcosystemPage() {
       desc: 'Redeemable across Cloud Baby, Moviva, Everyday Dad and Famba services.',
       brandName: 'ParentaNova',
       brandColor: '#0B1B3D',
-      brandUrl: '#',
+      brandUrl: 'https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20to%20order%20a%20Family%20Gift%20Voucher.',
       category: 'vouchers',
+      logoImage: '/ecosystem/logos/parentanova.png',
     });
     list.push({
       title: 'Instant Motor & GIT Vehicle Insurance Discs',
@@ -175,6 +175,7 @@ export default function EcosystemPage() {
       brandColor: '#008767',
       brandUrl: '/',
       category: 'insurance',
+      logoImage: '/ecosystem/logos/famba.png',
     });
     list.push({
       title: 'Chronic Illness Family Care Plan (Diabetes, BP & Oncology)',
@@ -183,14 +184,11 @@ export default function EcosystemPage() {
       brandColor: '#9333EA',
       brandUrl: 'https://www.moviva.co.zw',
       category: 'wellness',
+      logoImage: '/ecosystem/logos/moviva.png',
     });
 
     return list.filter((item) => {
-      const matchesCategory =
-        selectedCategory === 'all' ||
-        item.category === selectedCategory ||
-        (selectedCategory === 'wellness' && item.category === 'wellness');
-
+      const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
       const matchesQuery =
         searchQuery.trim() === '' ||
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -210,56 +208,29 @@ export default function EcosystemPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#F1F5F9] via-[#FAF7F2] to-[#EFF3F8] text-[#0B1B3D] selection:bg-[#0B1B3D] selection:text-white overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-[#F1F5F9] via-[#FAF7F2] to-[#EFF3F8] text-[#07132C] selection:bg-[#0B1B3D] selection:text-white overflow-hidden">
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* AMBIENT CLAYMOPRHIC 3D ORBS (Soft floating clay spheres) */}
+      {/* AMBIENT CLAYMORPHIC 3D ORBS */}
       {/* ════════════════════════════════════════════════════════════ */}
       <div className="absolute top-10 left-10 w-96 h-96 rounded-full bg-gradient-to-tr from-sky-200/40 via-indigo-200/30 to-pink-200/20 blur-3xl pointer-events-none -z-10" />
       <div className="absolute top-1/3 right-10 w-[500px] h-[500px] rounded-full bg-gradient-to-bl from-purple-200/30 via-emerald-100/30 to-amber-100/30 blur-3xl pointer-events-none -z-10" />
       <div className="absolute bottom-10 left-1/4 w-80 h-80 rounded-full bg-gradient-to-r from-emerald-200/30 via-teal-200/20 to-sky-200/30 blur-3xl pointer-events-none -z-10" />
 
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* 1. FLOATING CLAY NAVBAR */}
+      {/* 1. FLOATING CLAY NAVBAR WITH OFFICIAL PARENTANOVA LOGO */}
       {/* ════════════════════════════════════════════════════════════ */}
       <header className="sticky top-4 z-50 px-4 sm:px-6 lg:px-8 mb-4">
-        <div className="max-w-7xl mx-auto clay-card-static px-6 py-3.5 flex items-center justify-between gap-4 backdrop-blur-md bg-white/90">
-          {/* Brand Logo & Tagline */}
-          <Link href="/ecosystem" className="flex items-center gap-3 group">
-            {/* 3D Tactile ParentaNova Icon */}
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-white to-slate-100 flex items-center justify-center shadow-[0_6px_16px_rgba(11,27,61,0.08),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.2)] border border-white/80 group-hover:scale-105 transition-transform">
-              <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8 drop-shadow-xs">
-                <path
-                  d="M17 19C18.6569 19 20 17.6569 20 16C20 14.3431 18.6569 13 17 13C15.3431 13 14 14.3431 14 16C14 17.6569 15.3431 19 17 19Z"
-                  fill="#0284C7"
-                />
-                <path
-                  d="M31 19C32.6569 19 34 17.6569 34 16C34 14.3431 32.6569 13 31 13C29.3431 13 28 14.3431 28 16C28 17.6569 29.3431 19 31 19Z"
-                  fill="#F97316"
-                />
-                <circle cx="24" cy="22" r="2.5" fill="#EF4444" />
-                <path
-                  d="M24 25C19 25 14 29 14 34H34C34 29 29 25 24 25Z"
-                  fill="url(#parentaGradient2)"
-                />
-                <defs>
-                  <linearGradient id="parentaGradient2" x1="14" y1="25" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#0284C7" />
-                    <stop offset="0.5" stopColor="#EF4444" />
-                    <stop offset="1" stopColor="#F97316" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-black text-2xl tracking-tight text-[#0B1B3D]">ParentaNova</span>
-                <span className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/60 shadow-xs">
-                  Ecosystem
-                </span>
-              </div>
-              <p className="text-[11px] font-semibold text-slate-500 tracking-normal -mt-0.5">
-                For Everyday family
-              </p>
+        <div className="max-w-7xl mx-auto clay-card-static px-5 sm:px-7 py-3 flex items-center justify-between gap-4 backdrop-blur-md bg-white/95 border border-white shadow-md">
+          {/* Official ParentaNova Logo */}
+          <Link href="/ecosystem" className="flex items-center gap-3 group shrink-0">
+            <div className="relative h-11 w-44 sm:w-52 transition-transform group-hover:scale-102">
+              <Image
+                src="/ecosystem/logos/parentanova.png"
+                alt="ParentaNova - For Everyday family"
+                fill
+                priority
+                className="object-contain object-left"
+              />
             </div>
           </Link>
 
@@ -267,7 +238,7 @@ export default function EcosystemPage() {
           <nav className="hidden xl:flex items-center gap-1.5">
             <Link
               href="/ecosystem"
-              className="clay-btn-primary px-4 py-1.5 text-xs font-bold tracking-wide"
+              className="clay-btn-primary px-4 py-2 text-xs font-extrabold tracking-wide"
             >
               Home
             </Link>
@@ -276,7 +247,7 @@ export default function EcosystemPage() {
                 const el = document.getElementById('brands-grid');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
+              className="flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
             >
               Explore Brands <ChevronDown className="w-3.5 h-3.5 opacity-60" />
             </button>
@@ -285,45 +256,43 @@ export default function EcosystemPage() {
                 const el = document.getElementById('services-section');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
+              className="flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
             >
               Services <ChevronDown className="w-3.5 h-3.5 opacity-60" />
             </button>
             <Link
               href="/search"
-              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
+              className="px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
             >
               Marketplace
             </Link>
-            <button
-              onClick={() => {
-                const el = document.getElementById('ecosystem-join');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
+            <a
+              href="https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20to%20activate%20my%20ParentaNova%20Family%20Membership."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
             >
               Membership
-            </button>
+            </a>
             <button
               onClick={() => {
                 const el = document.getElementById('for-businesses');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
+              className="flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
             >
               Business Solutions <ChevronDown className="w-3.5 h-3.5 opacity-60" />
             </button>
             <Link
               href="/about"
-              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
+              className="px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
             >
               About Us
             </Link>
           </nav>
 
           {/* Right Header Controls (Search, Account, Cart) */}
-          <div className="flex items-center gap-3">
-            {/* Inset Clay Search Bar */}
+          <div className="flex items-center gap-3 shrink-0">
             <div className="relative hidden md:block">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
@@ -331,23 +300,21 @@ export default function EcosystemPage() {
                 placeholder="Search services..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="clay-input pl-9 pr-4 py-2 w-48 lg:w-56 text-xs text-slate-900 placeholder-slate-400 focus:outline-none"
+                className="clay-input pl-9 pr-4 py-2 w-48 lg:w-56 text-xs font-semibold text-slate-900 placeholder-slate-400 focus:outline-none"
               />
             </div>
 
-            {/* Clay Tactile User Button */}
             <Link
               href="/auth/login?redirect=/ecosystem"
-              className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-700 hover:text-[#0B1B3D] shadow-[0_6px_14px_rgba(148,163,184,0.25),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.15)] border border-white hover:scale-105 active:scale-95 transition-all"
+              className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-800 hover:text-[#0B1B3D] shadow-[0_6px_14px_rgba(148,163,184,0.25),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.15)] border border-white hover:scale-105 active:scale-95 transition-all"
               title="My Account"
             >
               <User className="w-4 h-4" />
             </Link>
 
-            {/* Clay Tactile Cart Button */}
             <button
-              onClick={() => alert('ParentaNova Unified Cart: 2 items active across Famba Insurance and Cloud Baby!')}
-              className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-700 hover:text-[#0B1B3D] shadow-[0_6px_14px_rgba(148,163,184,0.25),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.15)] border border-white hover:scale-105 active:scale-95 transition-all"
+              onClick={() => alert('ParentaNova Unified Cart: Active across Famba Mobility, Cloud Baby, Everyday Dad and Moviva!')}
+              className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-800 hover:text-[#0B1B3D] shadow-[0_6px_14px_rgba(148,163,184,0.25),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.15)] border border-white hover:scale-105 active:scale-95 transition-all"
               title="View Cart"
             >
               <ShoppingCart className="w-4 h-4" />
@@ -365,8 +332,8 @@ export default function EcosystemPage() {
       {/* 2. HERO CLAY CARD SECTION */}
       {/* ════════════════════════════════════════════════════════════ */}
       <section className="relative px-4 sm:px-6 lg:px-8 pt-2 pb-8">
-        <div className="max-w-7xl mx-auto clay-card-static overflow-hidden relative border border-white/90">
-          <div className="relative min-h-[480px] md:min-h-[540px] flex items-center">
+        <div className="max-w-7xl mx-auto clay-card-static overflow-hidden relative border border-white/90 shadow-xl">
+          <div className="relative min-h-[500px] md:min-h-[560px] flex items-center">
             {/* Background Image of joyful African family */}
             <div className="absolute inset-0">
               <Image
@@ -376,25 +343,25 @@ export default function EcosystemPage() {
                 priority
                 className="object-cover object-center"
               />
-              {/* Soft Clay Gradient Overlays */}
-              <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-transparent md:w-3/5" />
-              <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent" />
+              {/* Solid clay backdrop gradient to guarantee 100% text readability */}
+              <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-transparent md:w-3/5" />
+              <div className="absolute inset-0 bg-gradient-to-t from-white/50 via-transparent to-transparent" />
             </div>
 
             {/* Hero Content */}
-            <div className="relative z-10 max-w-2xl px-8 sm:px-14 py-12 md:py-16">
+            <div className="relative z-10 max-w-2xl px-7 sm:px-14 py-12 md:py-16">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                {/* 3D Soft Clay Indicator Badge */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-[0_6px_14px_rgba(148,163,184,0.2),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.15)] border border-white text-xs font-bold text-slate-700 mb-6">
+                {/* Official Tagline Badge */}
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white shadow-[0_6px_14px_rgba(148,163,184,0.25),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.15)] border border-slate-100 text-xs font-black text-[#0B1B3D] mb-6">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                   <span>ParentaNova: For Everyday Family</span>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0B1B3D] tracking-tight leading-[1.08] mb-5">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#07132C] tracking-tight leading-[1.08] mb-5">
                   One ecosystem. <br />
                   <span className="text-indigo-900">Four brands.</span> <br />
                   <span className="text-slate-800 text-3xl sm:text-4xl lg:text-5xl font-extrabold">
@@ -402,9 +369,9 @@ export default function EcosystemPage() {
                   </span>
                 </h1>
 
-                <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-xl font-normal mb-8">
-                  ParentaNova: For Everyday family — bringing together technology, healthcare, maternal products,
-                  fatherhood community, and mobility logistics that support your family at every stage of life.
+                <p className="text-base sm:text-lg text-slate-800 leading-relaxed max-w-xl font-medium mb-8">
+                  ParentaNova brings together technology, maternal care, family health management, fatherhood community,
+                  and transport logistics that support families at every stage of life.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4">
@@ -413,18 +380,21 @@ export default function EcosystemPage() {
                       const el = document.getElementById('brands-grid');
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="clay-btn-primary px-7 py-4 text-sm font-bold tracking-wide flex items-center gap-2 group"
+                    className="clay-btn-primary px-8 py-4 text-sm font-extrabold tracking-wide flex items-center gap-2.5 group"
                   >
                     <span>Explore Our Ecosystem</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                   </button>
 
-                  <Link
-                    href="/"
-                    className="clay-btn-secondary px-6 py-4 text-xs font-bold tracking-wide flex items-center gap-2"
+                  <a
+                    href="https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20more%20information%20about%20the%20ParentaNova%20Ecosystem."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="clay-btn-secondary px-6 py-4 text-xs font-extrabold tracking-wide flex items-center gap-2"
                   >
-                    <span>Return to Famba</span>
-                  </Link>
+                    <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>WhatsApp Support</span>
+                  </a>
                 </div>
               </motion.div>
             </div>
@@ -433,65 +403,47 @@ export default function EcosystemPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* 3. FOUR BRANDS CLAY NAVIGATOR GRID */}
+      {/* 3. FOUR BRANDS CLAY NAVIGATOR GRID WITH OFFICIAL LOGOS */}
       {/* ════════════════════════════════════════════════════════════ */}
       <section id="brands-grid" className="px-4 sm:px-6 lg:px-8 py-6">
         <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <span className="text-xs font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 px-3.5 py-1 rounded-full border border-indigo-200">
+              The Four Flagship Pillars
+            </span>
+            <h2 className="text-3xl font-black text-[#07132C] mt-2">
+              Everything Your Family Needs, Under One Roof
+            </h2>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {brands.map((b) => (
               <motion.div
                 key={b.id}
                 whileHover={{ y: -6, scale: 1.01 }}
                 transition={{ duration: 0.25 }}
-                className={`clay-card bg-gradient-to-b ${b.clayTone} p-6 flex flex-col justify-between group overflow-hidden border border-white`}
+                className={`clay-card bg-gradient-to-b ${b.clayTone} p-6 flex flex-col justify-between group overflow-hidden border border-white shadow-md`}
               >
-                {/* Brand Header & Info */}
+                {/* Brand Header with Official Inserted Logo */}
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    {/* 3D Sculpted Brand Icon */}
-                    <div className="flex items-center gap-3">
-                      {b.logoType === 'cloud' && (
-                        <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-sky-600 shadow-[0_8px_16px_rgba(2,132,199,0.18),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(2,132,199,0.2)] border border-sky-100">
-                          <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 stroke-current stroke-2">
-                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
-                            <path d="M12 12a1.5 1.5 0 0 1 1.5 1.5c0 1.5-2.5 3-2.5 3s-2.5-1.5-2.5-3A1.5 1.5 0 0 1 10 12c.5 0 1 .5 1.5 1 .5-.5 1-1 1.5-1Z" fill="#EC4899" stroke="none" />
-                          </svg>
-                        </div>
-                      )}
-                      {b.logoType === 'dad' && (
-                        <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-indigo-700 font-black text-2xl shadow-[0_8px_16px_rgba(30,58,138,0.18),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(30,58,138,0.2)] border border-indigo-100">
-                          D
-                        </div>
-                      )}
-                      {b.logoType === 'moviva' && (
-                        <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-purple-600 font-black text-xl shadow-[0_8px_16px_rgba(147,51,234,0.18),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(147,51,234,0.2)] border border-purple-100">
-                          M
-                        </div>
-                      )}
-                      {b.logoType === 'famba' && (
-                        <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-emerald-700 font-black italic text-2xl shadow-[0_8px_16px_rgba(0,135,103,0.18),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(0,135,103,0.2)] border border-emerald-100">
-                          F
-                        </div>
-                      )}
-
-                      <div>
-                        <span className="font-black text-xl tracking-tight text-[#0B1B3D] block">
-                          {b.name}
-                        </span>
-                        <span className="text-[10px] font-bold text-slate-400">
-                          {b.isExternal ? 'Live Platform' : 'Current Platform'}
-                        </span>
-                      </div>
+                    {/* Official Inserted Logo Image Capsule */}
+                    <div className="relative h-12 w-36 sm:w-40 bg-white rounded-2xl px-2.5 py-1.5 flex items-center justify-center shadow-[inset_1px_1px_2px_rgba(255,255,255,1),inset_-1px_-1px_2px_rgba(148,163,184,0.18),0_4px_10px_rgba(0,0,0,0.05)] border border-slate-100">
+                      <Image
+                        src={b.logoImage}
+                        alt={b.name}
+                        fill
+                        className="object-contain p-1"
+                      />
                     </div>
 
-                    {b.isExternal && (
-                      <span className="text-[10px] font-bold text-slate-500 bg-white/90 px-2 py-0.5 rounded-full shadow-[inset_1px_1px_2px_rgba(255,255,255,1),inset_-1px_-1px_2px_rgba(148,163,184,0.2)] flex items-center gap-1 border border-white">
-                        Live <ExternalLink className="w-2.5 h-2.5" />
-                      </span>
-                    )}
+                    <span className="text-[10px] font-black text-slate-700 bg-white px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1 border border-slate-200">
+                      {b.isExternal ? 'Live Platform' : 'Current'}
+                      {b.isExternal && <ExternalLink className="w-2.5 h-2.5" />}
+                    </span>
                   </div>
 
-                  <p className="text-xs text-slate-600 font-medium mb-4 min-h-[34px] leading-relaxed">
+                  <p className="text-xs text-slate-800 font-bold mb-4 min-h-[44px] leading-relaxed">
                     {b.tagline}
                   </p>
 
@@ -501,18 +453,18 @@ export default function EcosystemPage() {
                       href={b.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1B3D] hover:underline group-hover:gap-2.5 transition-all mb-4"
+                      className="inline-flex items-center gap-1.5 text-xs font-black text-[#0B1B3D] hover:underline group-hover:gap-2.5 transition-all mb-4"
                     >
                       <span>{b.actionText}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-700" />
+                      <ArrowRight className="w-3.5 h-3.5 text-indigo-700" />
                     </a>
                   ) : (
                     <Link
                       href={b.url}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1B3D] hover:underline group-hover:gap-2.5 transition-all mb-4"
+                      className="inline-flex items-center gap-1.5 text-xs font-black text-[#0B1B3D] hover:underline group-hover:gap-2.5 transition-all mb-4"
                     >
                       <span>{b.actionText}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-700" />
+                      <ArrowRight className="w-3.5 h-3.5 text-emerald-700" />
                     </Link>
                   )}
                 </div>
@@ -525,12 +477,12 @@ export default function EcosystemPage() {
                     fill
                     className="object-cover group-hover:scale-108 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <button
                     onClick={() => setActiveBrandModal(b)}
-                    className="absolute bottom-2.5 right-2.5 px-3 py-1.5 rounded-full bg-white/95 text-[11px] font-bold text-slate-900 shadow-[0_4px_10px_rgba(0,0,0,0.15)] opacity-0 group-hover:opacity-100 transition-opacity hover:scale-105 active:scale-95"
+                    className="absolute bottom-2.5 right-2.5 px-3.5 py-1.5 rounded-full bg-white text-[11px] font-black text-[#0B1B3D] shadow-[0_4px_12px_rgba(0,0,0,0.2)] opacity-0 group-hover:opacity-100 transition-opacity hover:scale-105 active:scale-95"
                   >
-                    Quick View
+                    View Details
                   </button>
                 </div>
               </motion.div>
@@ -545,26 +497,26 @@ export default function EcosystemPage() {
       <section id="services-section" className="px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Main Services Clay Card */}
-          <div className="clay-card-static p-8 sm:p-10 border border-white">
+          <div className="clay-card-static p-8 sm:p-10 border border-white shadow-lg">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
               <div>
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 shadow-xs" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Master Marketplace
+                  <span className="text-xs font-black uppercase tracking-wider text-indigo-900">
+                    Master Service Directory
                   </span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#0B1B3D] tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-black text-[#07132C] tracking-tight">
                   Discover Our Services
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
-                  Find and access a wide range of verified products and services for your family.
+                <p className="text-xs sm:text-sm text-slate-700 font-semibold mt-1">
+                  Find and access verified healthcare, maternity products, fatherhood community, and vehicle transport.
                 </p>
               </div>
 
               <button
                 onClick={() => setSelectedCategory('all')}
-                className="clay-pill px-4 py-2 text-xs font-bold text-[#0B1B3D] inline-flex items-center gap-1.5 self-start md:self-auto hover:scale-105"
+                className="clay-pill px-4 py-2 text-xs font-extrabold text-[#0B1B3D] inline-flex items-center gap-1.5 self-start md:self-auto hover:scale-105"
               >
                 <span>Browse All Services</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -573,18 +525,18 @@ export default function EcosystemPage() {
 
             {/* Deep Inset Clay Search Bar */}
             <div className="relative mb-8">
-              <Search className="w-5 h-5 text-slate-400 absolute left-5 top-1/2 -translate-y-1/2" />
+              <Search className="w-5 h-5 text-slate-500 absolute left-5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search services (e.g. insurance, baby products, travel, mechanics, fatherhood, vouchers...)"
+                placeholder="Search services (e.g. diabetes, hypertension, cancer, baby products, logistics, insurance...)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="clay-input w-full pl-14 pr-10 py-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
+                className="clay-input w-full pl-14 pr-10 py-4 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -600,11 +552,11 @@ export default function EcosystemPage() {
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`flex items-center gap-2 px-5 py-3 text-xs font-bold whitespace-nowrap transition-all ${
-                      isSelected ? 'clay-pill-active scale-105' : 'clay-pill text-slate-700 hover:text-[#0B1B3D]'
+                    className={`flex items-center gap-2 px-5 py-3 text-xs font-extrabold whitespace-nowrap transition-all ${
+                      isSelected ? 'clay-pill-active scale-105' : 'clay-pill text-slate-800 hover:text-[#0B1B3D]'
                     }`}
                   >
-                    <IconComponent className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-500'}`} />
+                    <IconComponent className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-600'}`} />
                     <span>{cat.label}</span>
                   </button>
                 );
@@ -616,25 +568,34 @@ export default function EcosystemPage() {
               {filteredServices.map((svc, i) => (
                 <div
                   key={i}
-                  className="p-5 rounded-2xl bg-white shadow-[0_8px_18px_rgba(148,163,184,0.12),inset_2px_2px_4px_rgba(255,255,255,0.9),inset_-2px_-2px_4px_rgba(148,163,184,0.12)] border border-white hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(148,163,184,0.18)] transition-all flex flex-col justify-between"
+                  className="p-5 rounded-2xl bg-white shadow-[0_8px_18px_rgba(148,163,184,0.14),inset_2px_2px_4px_rgba(255,255,255,0.95),inset_-2px_-2px_4px_rgba(148,163,184,0.12)] border border-slate-100 hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(148,163,184,0.2)] transition-all flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 shadow-[inset_1px_1px_2px_rgba(255,255,255,1),inset_-1px_-1px_2px_rgba(148,163,184,0.15)] border border-slate-200/50">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="relative h-7 w-24 bg-white rounded-lg px-2 py-0.5 flex items-center shadow-xs border border-slate-100">
+                        <Image
+                          src={svc.logoImage}
+                          alt={svc.brandName}
+                          fill
+                          className="object-contain p-0.5"
+                        />
+                      </div>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-800">
                         {svc.brandName}
                       </span>
                     </div>
-                    <h3 className="font-extrabold text-sm text-[#0B1B3D] mb-1.5">{svc.title}</h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">{svc.desc}</p>
+
+                    <h3 className="font-black text-sm text-[#07132C] mb-1.5 leading-snug">{svc.title}</h3>
+                    <p className="text-xs text-slate-700 leading-relaxed font-normal">{svc.desc}</p>
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-medium text-slate-400">Integrated Solution</span>
+                    <span className="text-[11px] font-bold text-slate-500">Verified Ecosystem Service</span>
                     <a
                       href={svc.brandUrl}
                       target={svc.brandUrl.startsWith('http') ? '_blank' : undefined}
                       rel={svc.brandUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="clay-pill px-3 py-1.5 text-xs font-bold text-[#0B1B3D] inline-flex items-center gap-1 hover:scale-105"
+                      className="clay-pill px-3 py-1.5 text-xs font-black text-[#0B1B3D] inline-flex items-center gap-1 hover:scale-105"
                     >
                       <span>Open</span>
                       <ArrowRight className="w-3 h-3" />
@@ -661,19 +622,19 @@ export default function EcosystemPage() {
                   fill
                   className="object-cover opacity-25"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0B1B3D] via-[#0B1B3D]/90 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0B1B3D] via-[#0B1B3D]/95 to-transparent" />
               </div>
 
               {/* Left Copy */}
               <div className="relative z-10 p-8 sm:p-14 lg:w-3/5">
-                <span className="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[11px] font-bold tracking-wider uppercase text-sky-300 border border-white/10 mb-4">
+                <span className="inline-block px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-black tracking-wider uppercase text-sky-300 border border-white/20 mb-4 shadow-sm">
                   Unified Family Account
                 </span>
                 <h3 className="text-3xl sm:text-4xl font-black tracking-tight mb-3">
                   Connected for a stronger family
                 </h3>
-                <p className="text-slate-300 text-sm sm:text-base font-normal max-w-lg mb-8 leading-relaxed">
-                  One account. Multiple benefits. A seamless, synchronized experience across all four platforms.
+                <p className="text-slate-200 text-sm sm:text-base font-medium max-w-lg mb-8 leading-relaxed">
+                  One account. Multiple benefits. A seamless experience across maternal supplies, fatherhood community, family chronic health, and logistics.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -687,31 +648,31 @@ export default function EcosystemPage() {
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </a>
 
-                  <span className="text-[11px] font-semibold text-emerald-300 flex items-center gap-1.5 bg-emerald-950/60 px-3 py-1.5 rounded-full border border-emerald-500/30">
+                  <span className="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5 bg-emerald-950/70 px-3.5 py-2 rounded-full border border-emerald-500/40">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                     Direct WhatsApp: +263 77 288 6467
                   </span>
                 </div>
               </div>
 
-              {/* Right Ecosystem Perks List (Squishy Glass-Clay Bubbles) */}
+              {/* Right Ecosystem Perks List */}
               <div className="relative z-10 p-8 sm:p-14 lg:w-2/5 flex flex-col gap-4 w-full">
                 {[
-                  { icon: ShoppingCart, text: 'Shop & Book' },
-                  { icon: Sparkles, text: 'Earn Rewards' },
-                  { icon: Shield, text: 'Access Exclusive Benefits' },
+                  { icon: ShoppingCart, text: 'Shop & Book Across Brands' },
+                  { icon: Sparkles, text: 'Earn NovaRewards on Every Order' },
+                  { icon: Shield, text: 'Access Exclusive Family Health Benefits' },
                   { icon: Users, text: 'Manage Your Family in One Place' },
                 ].map((perk, idx) => {
                   const Icon = perk.icon;
                   return (
                     <div
                       key={idx}
-                      className="flex items-center gap-3.5 px-5 py-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.3),0_6px_14px_rgba(0,0,0,0.2)]"
+                      className="flex items-center gap-3.5 px-5 py-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.3),0_6px_14px_rgba(0,0,0,0.25)]"
                     >
                       <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 shadow-inner">
                         <Icon className="w-4 h-4 text-white" />
                       </div>
-                      <span className="text-xs sm:text-sm font-bold tracking-wide">{perk.text}</span>
+                      <span className="text-xs sm:text-sm font-extrabold tracking-wide text-white">{perk.text}</span>
                     </div>
                   );
                 })}
@@ -726,23 +687,23 @@ export default function EcosystemPage() {
             {/* Card 1: For Businesses */}
             <div
               id="for-businesses"
-              className="clay-card-static p-7 flex flex-col justify-between border border-white"
+              className="clay-card-static p-7 flex flex-col justify-between border border-white shadow-md"
             >
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block mb-2 bg-indigo-50 px-2.5 py-1 rounded-md w-fit">
                   — For Businesses
                 </span>
-                <h4 className="text-xl font-black text-[#0B1B3D] mb-2 leading-snug">
+                <h4 className="text-xl font-black text-[#07132C] mb-2 leading-snug">
                   Invest in your people&apos;s family wellbeing
                 </h4>
-                <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                  Partner with ParentaNova for employee benefits, family solutions and corporate fleet transit support.
+                <p className="text-xs text-slate-700 leading-relaxed font-medium mb-4">
+                  Partner with ParentaNova for employee benefits, corporate chronic wellness care, and fleet transit support.
                 </p>
                 <a
                   href="https://wa.me/263772886467?text=Hi%20ParentaNova!%20We%20would%20like%20to%20partner%20with%20ParentaNova%20for%20our%20company's%20employee%20family%20benefits."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="clay-pill px-4 py-2 text-xs font-bold text-[#0B1B3D] inline-flex items-center gap-1.5 mb-4 hover:scale-105"
+                  className="clay-pill px-4 py-2 text-xs font-black text-[#0B1B3D] inline-flex items-center gap-1.5 mb-4 hover:scale-105"
                 >
                   <span>Partner With Us</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -760,20 +721,20 @@ export default function EcosystemPage() {
             </div>
 
             {/* Card 2: Our Vision */}
-            <div className="clay-card-static p-7 flex flex-col justify-between border border-white">
+            <div className="clay-card-static p-7 flex flex-col justify-between border border-white shadow-md">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 block mb-2 bg-emerald-50 px-2.5 py-1 rounded-md w-fit">
                   — Our Vision
                 </span>
-                <h4 className="text-xl font-black text-[#0B1B3D] mb-2 leading-snug">
+                <h4 className="text-xl font-black text-[#07132C] mb-2 leading-snug">
                   A future where every family thrives, everywhere.
                 </h4>
-                <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                  Innovative solutions for modern families, today and tomorrow across maternal care, fatherhood, transport and vehicle security.
+                <p className="text-xs text-slate-700 leading-relaxed font-medium mb-4">
+                  Innovative solutions for modern families, today and tomorrow across maternal care, fatherhood, chronic health, and vehicle security.
                 </p>
                 <Link
                   href="/about"
-                  className="clay-pill px-4 py-2 text-xs font-bold text-[#0B1B3D] inline-flex items-center gap-1.5 mb-4 hover:scale-105"
+                  className="clay-pill px-4 py-2 text-xs font-black text-[#0B1B3D] inline-flex items-center gap-1.5 mb-4 hover:scale-105"
                 >
                   <span>About ParentaNova</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -791,15 +752,15 @@ export default function EcosystemPage() {
             </div>
 
             {/* Card 3: Stay Connected Newsletter */}
-            <div className="clay-card-static bg-gradient-to-br from-indigo-50/90 via-purple-50/60 to-white p-7 flex flex-col justify-between border border-indigo-100">
+            <div className="clay-card-static bg-gradient-to-br from-indigo-50/90 via-purple-50/60 to-white p-7 flex flex-col justify-between border border-indigo-100 shadow-md">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-800 text-white flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(79,70,229,0.3),inset_2px_2px_4px_rgba(255,255,255,0.3)] border border-indigo-500">
                   <Mail className="w-6 h-6" />
                 </div>
-                <h4 className="text-xl font-black text-[#0B1B3D] mb-2">
+                <h4 className="text-xl font-black text-[#07132C] mb-2">
                   Stay Connected
                 </h4>
-                <p className="text-xs text-slate-600 leading-relaxed mb-6">
+                <p className="text-xs text-slate-700 leading-relaxed font-medium mb-6">
                   Get the latest ecosystem updates, subscriber offers, and family tips delivered straight to your inbox.
                 </p>
               </div>
@@ -811,7 +772,7 @@ export default function EcosystemPage() {
                   placeholder="Enter your email address"
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="clay-input w-full px-5 py-3.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none"
+                  className="clay-input w-full px-5 py-3.5 text-xs font-semibold text-slate-900 placeholder-slate-400 focus:outline-none"
                 />
                 <button
                   type="submit"
@@ -820,7 +781,7 @@ export default function EcosystemPage() {
                   Subscribe
                 </button>
                 {subscribed && (
-                  <p className="text-[11px] font-bold text-emerald-600 flex items-center gap-1.5 mt-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                  <p className="text-[11px] font-bold text-emerald-700 flex items-center gap-1.5 mt-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
                     <CheckCircle2 className="w-4 h-4" /> Thank you for subscribing to ParentaNova!
                   </p>
                 )}
@@ -831,70 +792,50 @@ export default function EcosystemPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* 7. CLAY FOOTER */}
+      {/* 7. CLAY FOOTER WITH ALL 5 OFFICIAL LOGOS */}
       {/* ════════════════════════════════════════════════════════════ */}
-      <footer className="bg-[#0B1B3D] text-white pt-14 pb-10 border-t border-slate-800 mt-16 shadow-[inset_0_10px_20px_rgba(0,0,0,0.3)]">
+      <footer className="bg-[#07132C] text-white pt-14 pb-10 border-t border-slate-800 mt-16 shadow-[inset_0_10px_20px_rgba(0,0,0,0.3)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           {/* Top Row: ParentaNova + 4 Brand Logos */}
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800/80">
-            {/* Left: ParentaNova */}
+            {/* Left: ParentaNova Official Logo in Clean Capsule */}
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.3)]">
-                <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-                  <circle cx="24" cy="24" r="22" fill="#1E293B" />
-                  <path d="M17 19C18.6569 19 20 17.6569 20 16C20 14.3431 18.6569 13 17 13C15.3431 13 14 14.3431 14 16C14 17.6569 15.3431 19 17 19Z" fill="#0284C7" />
-                  <path d="M31 19C32.6569 19 34 17.6569 34 16C34 14.3431 32.6569 13 31 13C29.3431 13 28 14.3431 28 16C28 17.6569 29.3431 19 31 19Z" fill="#F97316" />
-                  <circle cx="24" cy="22" r="2.5" fill="#EF4444" />
-                  <path d="M24 25C19 25 14 29 14 34H34C34 29 29 25 24 25Z" fill="#FFFFFF" opacity="0.8" />
-                </svg>
-              </div>
-              <div>
-                <span className="font-black text-2xl tracking-tight text-white">ParentaNova</span>
-                <p className="text-[11px] text-slate-400">For Everyday family</p>
+              <div className="relative h-12 w-48 bg-white/95 rounded-2xl px-3 py-1.5 flex items-center shadow-md border border-white">
+                <Image
+                  src="/ecosystem/logos/parentanova.png"
+                  alt="ParentaNova - For Everyday family"
+                  fill
+                  className="object-contain"
+                />
               </div>
             </div>
 
-            {/* Right: 4 Brands clickable items with 3D dots */}
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
-              <a
-                href="https://www.cloudbaby.co"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group"
-              >
-                <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.6)] group-hover:scale-125 transition-transform" />
-                <span className="text-xs font-bold tracking-wide">Cloud Baby</span>
-              </a>
-              <a
-                href="https://www.everydayday.club"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group"
-              >
-                <span className="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)] group-hover:scale-125 transition-transform" />
-                <span className="text-xs font-bold tracking-wide">Everyday Dad</span>
-              </a>
-              <a
-                href="https://www.moviva.co.zw"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group"
-              >
-                <span className="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.6)] group-hover:scale-125 transition-transform" />
-                <span className="text-xs font-bold tracking-wide">Moviva</span>
-              </a>
-              <Link
-                href="/"
-                className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group"
-              >
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-125 transition-transform" />
-                <span className="text-xs font-bold tracking-wide">Famba</span>
-              </Link>
+            {/* Right: 4 Official Brands Clickable Capsules */}
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+              {brands.map((b) => (
+                <a
+                  key={b.id}
+                  href={b.url}
+                  target={b.isExternal ? '_blank' : undefined}
+                  rel={b.isExternal ? 'noopener noreferrer' : undefined}
+                  className="bg-white/90 hover:bg-white px-3.5 py-1.5 rounded-2xl flex items-center gap-2 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:scale-105 transition-all group"
+                  title={b.name}
+                >
+                  <div className="relative w-24 h-7">
+                    <Image
+                      src={b.logoImage}
+                      alt={b.name}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Bottom Row: Links, Socials, Copyright */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-slate-400">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-slate-300 font-semibold">
             <div className="flex flex-wrap items-center gap-5 sm:gap-7">
               <Link href="/help" className="hover:text-white transition-colors">Help</Link>
               <Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link>
@@ -909,15 +850,15 @@ export default function EcosystemPage() {
               <a href="#" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 hover:text-white transition-all"><Instagram className="w-4 h-4" /></a>
             </div>
 
-            <p className="text-[11px] text-slate-500">
-              © {new Date().getFullYear()} ParentaNova. All rights reserved.
+            <p className="text-[11px] text-slate-400 font-medium">
+              © {new Date().getFullYear()} ParentaNova. For Everyday family. All rights reserved.
             </p>
           </div>
         </div>
       </footer>
 
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* 8. BRAND DETAILS 3D CLAY MODAL */}
+      {/* 8. BRAND DETAILS 3D CLAY MODAL WITH OFFICIAL LOGO */}
       {/* ════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {activeBrandModal && (
@@ -936,26 +877,31 @@ export default function EcosystemPage() {
               </button>
 
               <div className="flex items-center gap-3 mb-4">
-                <span className="font-black text-2xl tracking-tight text-[#0B1B3D]">
-                  {activeBrandModal.name}
-                </span>
+                <div className="relative h-10 w-36 bg-white rounded-xl px-2 py-1 flex items-center shadow-xs border border-slate-200">
+                  <Image
+                    src={activeBrandModal.logoImage}
+                    alt={activeBrandModal.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
                 <span className={`text-xs font-bold px-3 py-1 rounded-full ${activeBrandModal.badgeClay}`}>
                   Ecosystem Pillar
                 </span>
               </div>
 
-              <p className="text-sm text-slate-600 mb-6 font-normal leading-relaxed">
+              <p className="text-sm text-slate-800 mb-6 font-medium leading-relaxed">
                 {activeBrandModal.description}
               </p>
 
-              <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">
+              <h4 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-3">
                 Key Offerings & Solutions
               </h4>
               <div className="space-y-3 mb-8">
                 {activeBrandModal.services.map((svc, idx) => (
-                  <div key={idx} className="p-3.5 rounded-2xl bg-slate-50/80 shadow-[inset_1px_1px_3px_rgba(255,255,255,1),inset_-1px_-1px_3px_rgba(148,163,184,0.1)] border border-slate-100">
-                    <p className="font-black text-xs text-[#0B1B3D]">{svc.name}</p>
-                    <p className="text-[11px] text-slate-500 mt-0.5">{svc.desc}</p>
+                  <div key={idx} className="p-3.5 rounded-2xl bg-slate-50/90 shadow-[inset_1px_1px_3px_rgba(255,255,255,1),inset_-1px_-1px_3px_rgba(148,163,184,0.1)] border border-slate-200/60">
+                    <p className="font-black text-xs text-[#07132C]">{svc.name}</p>
+                    <p className="text-[11px] text-slate-600 font-medium mt-0.5">{svc.desc}</p>
                   </div>
                 ))}
               </div>
