@@ -5,17 +5,14 @@ export function middleware(request: NextRequest) {
   const host = (request.headers.get('host') || '').toLowerCase();
   const { pathname } = request.nextUrl;
 
-  // Check if incoming domain is the standalone ecosystem domain (e.g. from Namecheap)
-  // When a visitor hits your .co domain, it seamlessly rewrites the homepage to /ecosystem
+  // Determine if domain is Famba's main vehicle domain
   const isFambaDomain =
     host.includes('famba.co.zw') ||
     host.includes('famba.app') ||
-    host.includes('localhost');
+    host.includes('localhost:');
 
-  const isEcosystemDomain =
-    !isFambaDomain ||
-    host.includes('parentanova') ||
-    (host.endsWith('.co') && !host.includes('famba'));
+  // Any non-Famba custom domain (e.g. your .com or .co domain from Namecheap, parentanova, etc.)
+  const isEcosystemDomain = !isFambaDomain || host.includes('parentanova');
 
   if (isEcosystemDomain && pathname === '/') {
     return NextResponse.rewrite(new URL('/ecosystem', request.url));
