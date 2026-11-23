@@ -38,18 +38,18 @@ const brands = [
     name: 'Cloud Baby',
     url: 'https://www.cloudbaby.co',
     isExternal: true,
-    tagline: 'Everything for the motherhood journey.',
+    tagline: 'One stop shop for moms everyday needs.',
     actionText: 'Explore Services',
     color: '#0284C7',
     clayTone: 'from-sky-50/80 via-white to-sky-50/40',
     badgeClay: 'bg-sky-100 text-sky-800 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(2,132,199,0.2)]',
-    description: 'Trusted maternity essentials, infant care, prenatal wellness, and pediatric support designed for modern mothers.',
+    description: 'A one-stop shop for mothers at every stage — infant care, maternity essentials, nursing, postpartum wellness and daily baby supplies.',
     image: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=800&q=80',
     logoType: 'cloud',
     services: [
-      { name: 'Newborn Essentials & Gear', desc: 'Strollers, cribs, sterilized bottles & organic wear' },
-      { name: 'Maternal Nutrition & Wellness', desc: 'Prenatal vitamins, postpartum recovery plans' },
-      { name: 'Certified Lactation & Midwife Care', desc: 'On-demand consultations with licensed nurses' },
+      { name: 'Moms & Newborn Essentials', desc: 'Strollers, cribs, feeding bottles, organic clothing & nursery supplies' },
+      { name: 'Maternal Nutrition & Postpartum Care', desc: 'Prenatal vitamins, nursing recovery plans and lactation guides' },
+      { name: 'Certified Midwife & Pediatric Consultations', desc: 'On-demand tele-advice with licensed nurses and infant specialists' },
     ],
   },
   {
@@ -66,7 +66,7 @@ const brands = [
     image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
     logoType: 'dad',
     services: [
-      { name: 'Fatherhood Circle & Mentorship', desc: 'Peer forums, weekly coaching & parenting guides' },
+      { name: 'Fatherhood Circle & Mentorship', desc: 'Peer forums, weekly coaching & practical parenting guides' },
       { name: 'Father & Child Experiences', desc: 'Weekend outdoor camps, sports days & DIY workshops' },
       { name: 'Family Financial Planning', desc: 'Education trust funds, insurance planning & investments' },
     ],
@@ -76,18 +76,18 @@ const brands = [
     name: 'Moviva',
     url: 'https://www.moviva.co.zw',
     isExternal: true,
-    tagline: 'Making everyday mobility easier.',
-    actionText: 'Explore Services',
+    tagline: 'Family wellness platform that help families manage diabetes, hypertension and cancer daily.',
+    actionText: 'Explore Wellness',
     color: '#9333EA',
     clayTone: 'from-purple-50/80 via-white to-purple-50/40',
     badgeClay: 'bg-purple-100 text-purple-800 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(147,51,234,0.2)]',
-    description: 'Zimbabwe’s smart commuter & lifestyle transit service. Scheduled daily shuttles, airport transfers, and inter-city family trips.',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
+    description: 'A dedicated family wellness and chronic care platform helping families monitor and manage diabetes, hypertension, and cancer daily with specialized care teams and tools.',
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80',
     logoType: 'moviva',
     services: [
-      { name: 'School & Daily Family Shuttles', desc: 'Safe, vetted, GPS-tracked school pick-and-drop' },
-      { name: 'Airport & Intercity Travel', desc: 'Fixed-fare private transfers to all national airports' },
-      { name: 'Corporate Commute Subscriptions', desc: 'Reliable group transit for modern organizations' },
+      { name: 'Diabetes Daily Care & Blood Sugar Tracking', desc: 'Continuous glucose monitoring kits, insulin assistance & personalized dietary coaches' },
+      { name: 'Hypertension & Cardiovascular Monitoring', desc: 'Daily BP logging, telehealth cardiology reviews & prescription refill delivery' },
+      { name: 'Cancer Support & Oncology Family Navigation', desc: 'Specialized care pathways, holistic wellness resources & family counseling' },
     ],
   },
   {
@@ -95,18 +95,18 @@ const brands = [
     name: 'Famba',
     url: '/',
     isExternal: false,
-    tagline: 'Everything your vehicle needs.',
-    actionText: 'Explore Services',
+    tagline: 'Your mobility platform for your everyday logistics and transport need.',
+    actionText: 'Explore Mobility',
     color: '#008767',
     clayTone: 'from-emerald-50/80 via-white to-emerald-50/40',
     badgeClay: 'bg-emerald-100 text-emerald-800 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(0,135,103,0.2)]',
-    description: 'The all-in-one vehicle ecosystem: Instant ZINARA & third-party insurance, verified auto spares, towing and car wash dispatch.',
+    description: 'Your complete mobility and logistics platform: passenger transport, vehicle insurance (ZINARA & third-party), auto spares, cargo haulage, and 24/7 emergency roadside towing.',
     image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80',
     logoType: 'famba',
     services: [
-      { name: 'Instant Motor & GIT Insurance', desc: 'Stage-by-stage AI quotation with Paynow & QR disc' },
-      { name: 'Verified Auto Spares & Parts', desc: 'Genuine OEM parts delivered to your doorstep' },
-      { name: '24/7 Roadside Assistance & Towing', desc: 'GPS-powered mechanic and towing dispatch nationwide' },
+      { name: 'Everyday Transport & Logistics Courier', desc: 'Safe commuter booking, intra-city courier deliveries, parcel haulage & school rides' },
+      { name: 'Instant Motor & GIT Vehicle Insurance', desc: 'Stage-by-stage AI quotation, instant Paynow checkout & verified digital QR disc' },
+      { name: '24/7 Roadside Assistance & Spares', desc: 'GPS mechanic dispatch, towing rescue and verified auto spares delivered' },
     ],
   },
 ];
@@ -114,11 +114,11 @@ const brands = [
 // Service categories with filter tags
 const categories = [
   { id: 'all', label: 'All Services', icon: Sparkles },
-  { id: 'baby', label: 'Baby Products', icon: Baby, brandId: 'cloud-baby' },
-  { id: 'wellness', label: 'Wellness & Healthcare', icon: Activity, brandId: 'cloud-baby' },
-  { id: 'community', label: 'Family Community', icon: Users, brandId: 'everyday-dad' },
-  { id: 'mobility', label: 'Travel & Transport', icon: Compass, brandId: 'moviva' },
-  { id: 'insurance', label: 'Vehicle Insurance (GIT & Motor)', icon: Shield, brandId: 'famba' },
+  { id: 'wellness', label: 'Family Wellness (Diabetes, BP, Cancer)', icon: Activity, brandId: 'moviva' },
+  { id: 'mobility', label: 'Mobility & Logistics', icon: Compass, brandId: 'famba' },
+  { id: 'baby', label: 'Moms & Baby Needs', icon: Baby, brandId: 'cloud-baby' },
+  { id: 'insurance', label: 'Vehicle Insurance & GIT', icon: Shield, brandId: 'famba' },
+  { id: 'community', label: 'Fatherhood Community', icon: Users, brandId: 'everyday-dad' },
   { id: 'vouchers', label: 'Vouchers & Gift Cards', icon: Gift, brandId: 'all' },
 ];
 
@@ -146,8 +146,8 @@ export default function EcosystemPage() {
         let cat = 'general';
         if (b.id === 'cloud-baby') cat = 'baby';
         if (b.id === 'everyday-dad') cat = 'community';
-        if (b.id === 'moviva') cat = 'mobility';
-        if (b.id === 'famba') cat = 'insurance';
+        if (b.id === 'moviva') cat = 'wellness';
+        if (b.id === 'famba') cat = 'mobility';
 
         list.push({
           title: s.name,
@@ -169,11 +169,19 @@ export default function EcosystemPage() {
       category: 'vouchers',
     });
     list.push({
-      title: 'Family Health & Pediatric Tele-Clinic',
-      desc: 'Virtual checkups with certified pediatricians and family medical counselors.',
-      brandName: 'Cloud Baby & Wellness',
-      brandColor: '#0284C7',
-      brandUrl: 'https://www.cloudbaby.co',
+      title: 'Instant Motor & GIT Vehicle Insurance Discs',
+      desc: 'Digital insurance policy issuance with instant Paynow checkout and verified QR discs.',
+      brandName: 'Famba Insurance',
+      brandColor: '#008767',
+      brandUrl: '/',
+      category: 'insurance',
+    });
+    list.push({
+      title: 'Chronic Illness Family Care Plan (Diabetes, BP & Oncology)',
+      desc: 'Specialized daily healthcare packages with blood pressure logs, glucose tracking and medical delivery.',
+      brandName: 'Moviva Wellness',
+      brandColor: '#9333EA',
+      brandUrl: 'https://www.moviva.co.zw',
       category: 'wellness',
     });
 
@@ -249,8 +257,8 @@ export default function EcosystemPage() {
                   Ecosystem
                 </span>
               </div>
-              <p className="text-[11px] font-medium text-slate-500 tracking-normal -mt-0.5">
-                Making family life work better.
+              <p className="text-[11px] font-semibold text-slate-500 tracking-normal -mt-0.5">
+                For Everyday family
               </p>
             </div>
           </Link>
@@ -383,7 +391,7 @@ export default function EcosystemPage() {
                 {/* 3D Soft Clay Indicator Badge */}
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-[0_6px_14px_rgba(148,163,184,0.2),inset_2px_2px_4px_rgba(255,255,255,1),inset_-2px_-2px_4px_rgba(148,163,184,0.15)] border border-white text-xs font-bold text-slate-700 mb-6">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>The All-In-One Modern Family Network</span>
+                  <span>ParentaNova: For Everyday Family</span>
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0B1B3D] tracking-tight leading-[1.08] mb-5">
@@ -395,8 +403,8 @@ export default function EcosystemPage() {
                 </h1>
 
                 <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-xl font-normal mb-8">
-                  ParentaNova brings together technology, products, communities and services that support
-                  families at every stage of life.
+                  ParentaNova: For Everyday family — bringing together technology, healthcare, maternal products,
+                  fatherhood community, and mobility logistics that support your family at every stage of life.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4">
@@ -842,7 +850,7 @@ export default function EcosystemPage() {
               </div>
               <div>
                 <span className="font-black text-2xl tracking-tight text-white">ParentaNova</span>
-                <p className="text-[11px] text-slate-400">Making family life work better.</p>
+                <p className="text-[11px] text-slate-400">For Everyday family</p>
               </div>
             </div>
 
