@@ -61,7 +61,7 @@ const brands = [
     clayTone: 'from-indigo-50/90 via-white to-indigo-50/40',
     badgeClay: 'bg-indigo-100 text-indigo-900 border border-indigo-200/80',
     description: 'A thriving fraternity and resource network empowering fathers with mentorship, work-life balance tools, and family activities.',
-    image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1506863530036-1efeddceb993?auto=format&fit=crop&w=800&q=80',
     services: [
       { name: 'Fatherhood Circle & Mentorship', desc: 'Peer forums, weekly coaching & practical parenting guides' },
       { name: 'Father & Child Experiences', desc: 'Weekend outdoor camps, sports days & DIY workshops' },
@@ -166,7 +166,7 @@ export default function EcosystemPage() {
       brandColor: '#0B1B3D',
       brandUrl: 'https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20to%20order%20a%20Family%20Gift%20Voucher.',
       category: 'vouchers',
-      logoImage: '/ecosystem/logos/parentanova.png',
+      logoImage: '/ecosystem/logos/parentanova-official.png',
     });
     list.push({
       title: 'Instant Motor & GIT Vehicle Insurance Discs',
@@ -225,7 +225,7 @@ export default function EcosystemPage() {
           <Link href="/ecosystem" className="flex items-center gap-3 group shrink-0">
             <div className="relative h-11 w-44 sm:w-52 transition-transform group-hover:scale-102">
               <Image
-                src="/ecosystem/logos/parentanova.png"
+                src="/ecosystem/logos/parentanova-official.png"
                 alt="ParentaNova - For Everyday family"
                 fill
                 priority
@@ -337,8 +337,8 @@ export default function EcosystemPage() {
             {/* Background Image of joyful African family */}
             <div className="absolute inset-0">
               <Image
-                src="https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1800&q=85"
-                alt="ParentaNova Family Ecosystem"
+                src="https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=1800&q=85"
+                alt="ParentaNova Happy Family Ecosystem"
                 fill
                 priority
                 className="object-cover object-center"
@@ -802,7 +802,7 @@ export default function EcosystemPage() {
             <div className="flex items-center gap-3">
               <div className="relative h-12 w-48 bg-white/95 rounded-2xl px-3 py-1.5 flex items-center shadow-md border border-white">
                 <Image
-                  src="/ecosystem/logos/parentanova.png"
+                  src="/ecosystem/logos/parentanova-official.png"
                   alt="ParentaNova - For Everyday family"
                   fill
                   className="object-contain"
