@@ -164,7 +164,7 @@ export default function EcosystemPage() {
       desc: 'Redeemable across Cloud Baby, Moviva, Everyday Dad and Famba services.',
       brandName: 'ParentaNova',
       brandColor: '#0B1B3D',
-      brandUrl: 'https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20to%20order%20a%20Family%20Gift%20Voucher.',
+      brandUrl: 'https://wa.me/263788865949?text=Hi%20ParentaNova!%20I%20would%20like%20to%20order%20a%20Family%20Gift%20Voucher.',
       category: 'vouchers',
       logoImage: '/ecosystem/logos/parentanova-official.png',
     });
@@ -267,7 +267,7 @@ export default function EcosystemPage() {
               Marketplace
             </Link>
             <a
-              href="https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20to%20activate%20my%20ParentaNova%20Family%20Membership."
+              href="https://wa.me/263788865949?text=Hi%20ParentaNova!%20I%20would%20like%20to%20activate%20my%20ParentaNova%20Family%20Membership."
               target="_blank"
               rel="noopener noreferrer"
               className="px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 hover:text-[#0B1B3D] hover:bg-slate-100/80 transition-all"
@@ -387,7 +387,7 @@ export default function EcosystemPage() {
                   </button>
 
                   <a
-                    href="https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20more%20information%20about%20the%20ParentaNova%20Ecosystem."
+                    href="https://wa.me/263788865949?text=Hi%20ParentaNova!%20I%20would%20like%20more%20information%20about%20the%20ParentaNova%20Ecosystem."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="clay-btn-secondary px-6 py-4 text-xs font-extrabold tracking-wide flex items-center gap-2"
@@ -639,7 +639,7 @@ export default function EcosystemPage() {
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <a
-                    href="https://wa.me/263772886467?text=Hi%20ParentaNova!%20I%20would%20like%20to%20join%20the%20ParentaNova%20Ecosystem%20and%20activate%20my%20unified%20family%20membership%20across%20Cloud%20Baby,%20Everyday%20Dad,%20Moviva,%20and%20Famba."
+                    href="https://wa.me/263788865949?text=Hi%20ParentaNova!%20I%20would%20like%20to%20join%20the%20ParentaNova%20Ecosystem%20and%20activate%20my%20unified%20family%20membership%20across%20Cloud%20Baby,%20Everyday%20Dad,%20Moviva,%20and%20Famba."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="clay-btn-secondary px-8 py-4 text-xs font-black tracking-wide inline-flex items-center gap-2.5 group hover:scale-105 active:scale-95 bg-white text-[#0B1B3D]"
@@ -650,7 +650,7 @@ export default function EcosystemPage() {
 
                   <span className="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5 bg-emerald-950/70 px-3.5 py-2 rounded-full border border-emerald-500/40">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Direct WhatsApp: +263 77 288 6467
+                    Direct WhatsApp: +263 78 886 5949
                   </span>
                 </div>
               </div>
@@ -700,7 +700,7 @@ export default function EcosystemPage() {
                   Partner with ParentaNova for employee benefits, corporate chronic wellness care, and fleet transit support.
                 </p>
                 <a
-                  href="https://wa.me/263772886467?text=Hi%20ParentaNova!%20We%20would%20like%20to%20partner%20with%20ParentaNova%20for%20our%20company's%20employee%20family%20benefits."
+                  href="https://wa.me/263788865949?text=Hi%20ParentaNova!%20We%20would%20like%20to%20partner%20with%20ParentaNova%20for%20our%20company's%20employee%20family%20benefits."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="clay-pill px-4 py-2 text-xs font-black text-[#0B1B3D] inline-flex items-center gap-1.5 mb-4 hover:scale-105"
