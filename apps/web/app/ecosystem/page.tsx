@@ -337,8 +337,8 @@ export default function EcosystemPage() {
             {/* Background Image of joyful African family */}
             <div className="absolute inset-0">
               <Image
-                src="https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=1800&q=85"
-                alt="ParentaNova Happy Family Ecosystem"
+                src="/ecosystem/african-family-home.jpg"
+                alt="Happy Zimbabwean African Family - Mother, Father, and Children"
                 fill
                 priority
                 className="object-cover object-center"
