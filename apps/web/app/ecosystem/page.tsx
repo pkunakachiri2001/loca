@@ -61,7 +61,7 @@ const brands = [
     clayTone: 'from-indigo-50/90 via-white to-indigo-50/40',
     badgeClay: 'bg-indigo-100 text-indigo-900 border border-indigo-200/80',
     description: 'A thriving fraternity and resource network empowering fathers with mentorship, work-life balance tools, and family activities.',
-    image: 'https://images.unsplash.com/photo-1506863530036-1efeddceb993?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=800&q=80',
     services: [
       { name: 'Fatherhood Circle & Mentorship', desc: 'Peer forums, weekly coaching & practical parenting guides' },
       { name: 'Father & Child Experiences', desc: 'Weekend outdoor camps, sports days & DIY workshops' },
