@@ -53,7 +53,7 @@ const brands = [
     id: 'everyday-dad',
     name: 'Everyday Dad',
     logoImage: '/ecosystem/logos/everyday-dad.png',
-    url: 'https://www.everydayday.club',
+    url: 'https://www.everydaydad.club',
     isExternal: true,
     tagline: 'Supporting the modern father.',
     actionText: 'Explore Community',
